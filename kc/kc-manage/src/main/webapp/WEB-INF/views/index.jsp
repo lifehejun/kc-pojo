@@ -172,6 +172,11 @@
                             <i class="iconfont">&#xe6a7;</i>
                             <cite>帖子管理</cite></a>
                     </li>
+                    <li>
+                        <a onclick="xadmin.add_tab('违禁词管理','/forbidWord/list')">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>违禁词管理</cite></a>
+                    </li>
                 </ul>
             </li>
             <li>

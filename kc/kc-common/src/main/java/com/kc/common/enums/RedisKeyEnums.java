@@ -22,7 +22,9 @@ public enum RedisKeyEnums {
     STATISTICS_REG("kc:statistics:reg:", "注册数"),
     STATISTICS_RECHARGE("kc:statistics:recharge:", "充值数"),
     AUTH_USER_TOKEN("kc:auth:user:", "用户token"),
-    LOCK_USER_REGISTER("kc:lock:userRegister:", "用户注册锁");
+    LOCK_USER_REGISTER("kc:lock:userRegister:", "用户注册锁"),
+    FORBID_WORD("kc:forbidWord:","违禁词")
+    ;
 
 
     private String code;
