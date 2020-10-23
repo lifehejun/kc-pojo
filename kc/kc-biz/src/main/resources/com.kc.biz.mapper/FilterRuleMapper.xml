@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kc.biz.mapper.FilterRuleMapper">
+  <resultMap id="BaseResultMap" type="com.kc.biz.bean.FilterRule">
+    <id column="id" property="id" jdbcType="BIGINT"  />
+    <result column="rule_type" property="ruleType" jdbcType="BIGINT"/>
+    <result column="biz_type" property="bizType" jdbcType="BIGINT"/>
+    <result column="filter_item" property="filterItem" jdbcType="VARCHAR"/>
+    <result column="filter_value" property="filterValue" jdbcType="VARCHAR"/>
+    <result column="create_time" property="createTime" jdbcType="BIGINT"/>
+  </resultMap>
+
+    <sql id="select_condition_sql">
+        <where>
+            <trim prefix="(" suffix=")" prefixOverrides="and">
+                <if test="id != null ">
+                    and tfr.id = #{id}
+                </if>
+                <if test="ruleType != null">
+                    and tfr.rule_type = #{ruleType}
+                </if>
+                <if test="bizType != null">
+                    and tfr.biz_type = #{bizType}
+                </if>
+                <if test="filterItem != null and filterItem != ''">
+                    and tfr.filter_item = #{filterItem}
+                </if>
+                <if test="filterValue != null and filterValue != ''">
+                    and tfr.filter_value = #{filterValue}
+                </if>
+            </trim>
+        </where>
+    </sql>
+
+    <insert id="insert" parameterType="com.kc.biz.bean.FilterRule" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_filter_rule
+        (rule_type,biz_type , filter_item, filter_value,create_time)
+        VALUES
+        (#{ruleType}, #{bizType},#{filterItem}, #{filterValue},unix_timestamp())
+    </insert>
+
+    <insert id="insertBatch" parameterType="java.util.List" >
+        INSERT INTO tb_filter_rule
+        (rule_type,biz_type , filter_item, filter_value,create_time)
+        VALUES
+        <foreach collection ="list" item="filterRule" separator =",">
+            (#{filterRule.ruleType}, #{filterRule.bizType},#{filterRule.filterItem}, #{filterRule.filterValue},unix_timestamp())
+        </foreach >
+    </insert>
+
+    <select id="queryByPage" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+        SELECT tfr.id,
+        tfr.rule_type,
+        tfr.biz_type,
+        tfr.filter_item,
+        tfr.filter_value,
+        tfr.create_time
+        FROM tb_filter_rule tfr
+        <include refid="select_condition_sql"/>
+        ORDER BY tfr.create_time desc
+        LIMIT #{startRow}, #{pageSize}
+    </select>
+
+    <select id="getTotal" parameterType="com.kc.biz.bean.FilterRule" resultType="int">
+        SELECT count(1)
+        FROM tb_filter_rule tfr
+        <include refid="select_condition_sql"/>
+        ORDER BY tfr.create_time desc
+    </select>
+
+    <select id="findList" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+        SELECT tfr.id,
+        tfr.rule_type,
+        tfr.biz_type,
+        tfr.filter_item,
+        tfr.filter_value,
+        tfr.create_time
+        FROM tb_filter_rule tfr
+        <include refid="select_condition_sql"/>
+        ORDER BY tfr.create_time desc
+    </select>
+
+    <select id="queryById" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+        SELECT tfr.id,
+        tfr.rule_type,
+        tfr.biz_type,
+        tfr.filter_item,
+        tfr.filter_value,
+        tfr.create_time
+        FROM tb_filter_rule tfr
+        WHERE tfr.id = #{id}
+        ORDER BY tfr.create_time desc
+    </select>
+
+    <update id="updateById" parameterType="com.kc.biz.bean.FilterRule">
+        UPDATE tb_filter_rule tfr
+        <trim prefix="set" suffixOverrides=",">
+            <if test="ruleType !=null">tfr.rule_type = #{ruleType},</if>
+            <if test="bizType !=null ">tfr.biz_type = #{bizType},</if>
+            <if test="filterItem !=null and filterItem != ''">tfr.filter_item = #{filterItem},</if>
+            <if test="filterValue !=null and filterValue != ''">tfr.filter_value = #{filterValue},</if>
+        </trim>
+        WHERE id=#{id}
+    </update>
+
+    <delete id="deleteById" parameterType="com.kc.biz.bean.FilterRule">
+       DELETE FROM tb_filter_rule where id = #{id}
+    </delete>
+
+</mapper>

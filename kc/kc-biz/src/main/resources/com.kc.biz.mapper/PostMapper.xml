@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kc.biz.mapper.PostMapper">
+  <resultMap id="BaseResultMap" type="com.kc.biz.bean.Post">
+    <id column="id" property="id" jdbcType="BIGINT"  />
+    <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+    <result column="topic_code_list" property="topicCodeList" jdbcType="VARCHAR"/>
+    <result column="post_title" property="postTitle" jdbcType="VARCHAR"/>
+    <result column="status" property="status" jdbcType="BIGINT"/>
+    <result column="like_num" property="likeNum" jdbcType="BIGINT"/>
+    <result column="view_num" property="viewNum" jdbcType="BIGINT"/>
+    <result column="comment_num" property="commentNum" jdbcType="BIGINT"/>
+    <result column="reward_amount" property="rewardAmount" jdbcType="DECIMAL"/>
+    <result column="publish_time" property="publishTime" jdbcType="BIGINT"/>
+    <result column="create_time" property="createTime" jdbcType="BIGINT"/>
+    <result column="phone" property="phone" jdbcType="VARCHAR"/>
+  </resultMap>
+    <resultMap id="PostVideoResultMap" type="com.kc.biz.bean.PostVideo">
+        <id column="id" property="id" jdbcType="BIGINT"  />
+        <result column="post_id" property="postId" jdbcType="BIGINT"/>
+        <result column="vod_play_url" property="vodPlayUrl" jdbcType="VARCHAR"/>
+        <result column="vod_time" property="vodTime" jdbcType="BIGINT"/>
+        <result column="size" property="size" jdbcType="BIGINT"/>
+        <result column="create_time" property="createTime" jdbcType="BIGINT"/>
+    </resultMap>
+
+    <resultMap id="PostImageResultMap" type="com.kc.biz.bean.PostImage">
+        <id column="id" property="id" jdbcType="BIGINT"  />
+        <result column="post_id" property="postId" jdbcType="BIGINT"/>
+        <result column="img_url" property="imgUrl" jdbcType="VARCHAR"/>
+        <result column="size" property="size" jdbcType="BIGINT"/>
+        <result column="create_time" property="createTime" jdbcType="BIGINT"/>
+    </resultMap>
+
+    <resultMap id="PostVoResultMap" type="com.kc.biz.vo.PostVo">
+        <id column="id" property="id" jdbcType="BIGINT"  />
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="post_title" property="postTitle" jdbcType="VARCHAR"/>
+        <result column="likeNum" property="likeNum" jdbcType="BIGINT"/>
+        <result column="viewNum" property="viewNum" jdbcType="BIGINT"/>
+        <result column="comment_num" property="commentNum" jdbcType="BIGINT"/>
+        <result column="reward_amount" property="rewardAmount" jdbcType="DECIMAL"/>
+        <result column="publish_time" property="publishTime" jdbcType="BIGINT"/>
+
+        <result column="user_name" property="userName" jdbcType="VARCHAR"/>
+        <result column="address" property="address" jdbcType="VARCHAR"/>
+        <result column="head_url" property="headUrl" jdbcType="VARCHAR"/>
+        <result column="grade" property="grade" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="select_condition_sql">
+        <where>
+            <trim prefix="(" suffix=")" prefixOverrides="and">
+                <if test="id != null ">
+                    and tp.id = #{id}
+                </if>
+                <if test="status != null ">
+                    and tp.status = #{status}
+                </if>
+                <if test="userId != null and userId != ''">
+                    and tp.user_id  = #{userId}
+                </if>
+                <if test="topicCode != null and topicCode != ''">
+                    and tp.topic_code_list like concat('%',#{topicCode},'%')
+                </if>
+            </trim>
+        </where>
+    </sql>
+
+    <insert id="insert" parameterType="com.kc.biz.bean.Post" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_post
+        (user_id,topic_code_list, post_title, status,create_time,publish_time)
+        VALUES
+        (#{userId},#{topicCodeList},#{postTitle}, #{status},unix_timestamp(),unix_timestamp())
+    </insert>
+
+    <insert id="insertPostVideo" parameterType="com.kc.biz.bean.PostVideo" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_post_video
+        (post_id,vod_play_url, vod_time, size,create_time)
+        VALUES
+        (#{postId}, #{vodPlayUrl},#{vodTime}, #{size},unix_timestamp())
+    </insert>
+
+    <insert id="insertPostImage" parameterType="com.kc.biz.bean.PostImage" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_post_image
+        (post_id,img_url, size,create_time)
+        VALUES
+        (#{postId}, #{imgUrl},#{size},unix_timestamp())
+    </insert>
+
+
+
+    <select id="queryByPage" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+        SELECT tp.id,
+        tp.user_id,
+        tp.topic_code_list,
+        tp.post_title,
+        tp.status,
+        tp.like_num,
+        tp.view_num,
+        tp.comment_num,
+        tp.reward_amount,
+        tp.publish_time,
+        tp.create_time,
+        tu.phone
+        FROM tb_post tp
+        LEFT JOIN tb_user tu ON tp.user_id = tu.user_id
+        <include refid="select_condition_sql"/>
+        ORDER BY tp.create_time DESC
+        LIMIT #{startRow}, #{pageSize}
+    </select>
+
+
+    <select id="getTotal" parameterType="com.kc.biz.bean.Post" resultType="int">
+        SELECT count(1)
+        FROM tb_post tp
+        LEFT JOIN tb_user tu ON tp.user_id = tu.user_id
+        <include refid="select_condition_sql"/>
+        ORDER BY tp.create_time DESC
+    </select>
+
+    <select id="findPostByPage" parameterType="java.util.HashMap" resultMap="PostVoResultMap">
+        SELECT tp.id,
+        tp.user_id,
+        tp.topic_code_list,
+        tp.post_title,
+        tp.status,
+        tp.like_num,
+        tp.view_num,
+        tp.comment_num,
+        tp.reward_amount,
+        tp.publish_time,
+        tp.create_time,
+        tu.user_name,
+        tu.address,
+        tu.head_url,
+        tu.grade
+        FROM tb_post tp join tb_user tu on tp.user_id = tu.user_id
+        <include refid="select_condition_sql"/>
+        <choose>
+            <when test="sortType != null and sortType !=''">
+                <if test='sortType == "maxNew"'>
+                    ORDER BY tp.publish_time DESC
+                </if>
+                <if test='sortType == "maxHot"'>
+                    ORDER BY tp.like_num DESC
+                </if>
+                <if test='sortType == "maxComm"'>
+                    ORDER BY tp.comment_num DESC
+                </if>
+            </when>
+            <otherwise>
+                ORDER BY tp.create_time DESC
+            </otherwise>
+        </choose>
+        LIMIT #{startRow}, #{pageSize}
+    </select>
+
+    <select id="findPostTotal" parameterType="com.kc.biz.bean.Post" resultType="int">
+        SELECT count(1)
+        FROM tb_post tp
+        <include refid="select_condition_sql"/>
+        ORDER BY tp.create_time DESC
+    </select>
+
+    <update id="updateById" parameterType="com.kc.biz.bean.Post">
+        UPDATE tb_post tp
+        <trim prefix="set" suffixOverrides=",">
+            <if test="status !=null">tp.status = #{status},</if>
+            <if test="likeNum !=null">tp.like_num = #{likeNum},</if>
+            <if test="viewNum !=null">tp.view_num = #{viewNum},</if>
+            <if test="commentNum !=null">tp.comment_num = #{commentNum},</if>
+            <if test="rewardAmount !=null">tp.reward_amount = #{rewardAmount},</if>
+            <if test="publishTime !=null">tp.publish_time = #{publishTime},</if>
+        </trim>
+        WHERE id=#{id}
+    </update>
+
+    <select id="queryById" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+        SELECT tp.id,
+        tp.user_id,
+        tp.topic_code_list,
+        tp.post_title,
+        tp.status,
+        tp.like_num,
+        tp.view_num,
+        tp.comment_num,
+        tp.reward_amount,
+        tp.publish_time,
+        tp.create_time
+        FROM tb_post tp
+        WHERE tp.id = #{id}
+        ORDER BY tp.create_time DESC
+    </select>
+
+    <select id="findVideoByPostId" parameterType="java.util.HashMap" resultMap="PostVideoResultMap">
+        SELECT tpv.id,
+        tpv.post_id,
+        tpv.vod_play_url,
+        tpv.vod_time,
+        tpv.size,
+        tpv.create_time
+        FROM tb_post_video tpv
+        WHERE tpv.post_id = #{postId}
+        ORDER BY tpv.create_time DESC
+    </select>
+
+    <select id="findImgByPostId" parameterType="java.util.HashMap" resultMap="PostImageResultMap">
+        SELECT tpi.id,
+        tpi.post_id,
+        tpi.img_url,
+        tpi.size,
+        tpi.create_time
+        FROM tb_post_image tpi
+        WHERE tpi.post_id = #{postId}
+        ORDER BY tpi.create_time DESC
+    </select>
+
+    <delete id="deleteById" parameterType="com.kc.biz.bean.Post">
+       DELETE FROM tb_post where id = #{id}
+    </delete>
+
+
+</mapper>

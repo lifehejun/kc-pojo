@@ -1,0 +1,55 @@
+密码： 123456 :  QQm6zKYXZYcKIGom+conhQ==
+
+1.安装apache-tomcat-7.0.92 并配置jdk
+tar -zxvf 文件名
+
+jdk配置
+export JAVA_HOME=/usr/local/java/jdk1.8.0_201
+export JRE_HOME=${JAVA_HOME}/jre
+export CLASSPATH=.:${JAVA_HOME}/lib:${JRE_HOME}/lib:$CLASSPATH
+export JAVA_PATH=${JAVA_HOME}/bin:${JRE_HOME}/bin
+export PATH=$PATH:${JAVA_PATH}
+
+执行命令jdk生效: source /etc/profile
+
+2.linux下开放远程访问端口
+-centos 7版本以上用：
+firewall-cmd --zone=public --add-port=80/tcp --permanent
+firewall-cmd --reload
+
+-centos 7版本以下用
+cd /etc/sysconfig/iptables
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 8080 -j ACCEPT
+service iptables restart
+service iptables status
+
+3.安装activemq
+参考：https://www.cnblogs.com/lucia557/p/7602155.html
+./activemq start
+./activemq stop
+
+4.安装redis
+参照：https://www.cnblogs.com/teamemory/p/9482475.html
+启动redis：cd /src/  ./redis-server ../redis.conf
+停止redis：ps -ef|grep redis   kill -9 进程号
+
+5.端口开放
+-redis : 6379
+-activemq : 61616  8161
+-后端 ； 8080
+-前端：80
+
+ap背景颜色：#FD1E2B
+
+
+*************************************
+windows 启动redis命令
+cd : e>tool>redis
+redis-server.exe redis.windows.conf
+
+出现错误 ： creating server tcp listening socket 127.0.0.1:6379: bind No error
+
+1. Redis-cli.exe
+2. shutdown
+3. exit
+4. redis-server.exe redis.windows.conf

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kc.biz.mapper.TopicMapper">
+  <resultMap id="BaseResultMap" type="com.kc.biz.bean.Topic">
+    <id column="id" property="id" jdbcType="BIGINT"  />
+    <result column="topic_code" property="topicCode" jdbcType="VARCHAR"/>
+    <result column="topic_title" property="topicTitle" jdbcType="VARCHAR"/>
+    <result column="topic_img_url" property="topicImgUrl" jdbcType="VARCHAR"/>
+    <result column="topic_desc" property="topicDesc" jdbcType="VARCHAR"/>
+    <result column="like_num" property="likeNum" jdbcType="BIGINT"/>
+    <result column="view_num" property="viewNum" jdbcType="BIGINT"/>
+    <result column="post_num" property="postNum" jdbcType="BIGINT"/>
+      <result column="status" property="status" jdbcType="BIGINT"/>
+    <result column="create_time" property="createTime" jdbcType="BIGINT"/>
+  </resultMap>
+
+    <sql id="select_condition_sql">
+        <where>
+            <trim prefix="(" suffix=")" prefixOverrides="and">
+                <if test="id != null ">
+                    and tt.id = #{id}
+                </if>
+                <if test="topicTitle != null and topicTitle != ''">
+                    and tt.topic_title like concat('%',#{topicTitle},'%')
+                </if>
+                <if test="status != null ">
+                    and tt.status = #{status}
+                </if>
+
+            </trim>
+        </where>
+    </sql>
+
+    <insert id="insert" parameterType="com.kc.biz.bean.Topic" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_topic
+        (topic_code,topic_title,topic_desc, topic_img_url,status,create_time)
+        VALUES
+        (#{topicCode}, #{topicTitle},#{topicDesc}, #{topicImgUrl},#{status},unix_timestamp())
+    </insert>
+
+
+    <select id="queryByPage" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+        SELECT
+        tt.id,
+        tt.topic_code,
+        tt.topic_title,
+        tt.topic_desc,
+        tt.topic_img_url,
+        tt.like_num,
+        tt.view_num,
+        tt.post_num,
+        tt.status,
+        tt.create_time
+        FROM tb_topic tt
+        <include refid="select_condition_sql"/>
+        ORDER BY tt.create_time DESC
+        LIMIT #{startRow}, #{pageSize}
+    </select>
+    <select id="getTotal" parameterType="com.kc.biz.bean.Topic" resultType="int">
+        SELECT count(1)
+        FROM tb_topic tt
+        <include refid="select_condition_sql"/>
+        ORDER BY tt.create_time DESC
+    </select>
+
+    <select id="findList" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+        SELECT
+        tt.id,
+        tt.topic_code,
+        tt.topic_title,
+        tt.topic_desc,
+        tt.topic_img_url,
+        tt.like_num,
+        tt.view_num,
+        tt.post_num,
+        tt.status,
+        tt.create_time
+        FROM tb_topic tt
+        ORDER BY tt.create_time DESC
+    </select>
+    <update id="updateById" parameterType="com.kc.biz.bean.Topic">
+        UPDATE tb_topic tt
+        <trim prefix="set" suffixOverrides=",">
+            <if test="topicTitle !=null and topicTitle !='' ">tt.topic_title = #{topicTitle},</if>
+            <if test="topicImgUrl !=null   and topicImgUrl != ''" >tt.topic_img_url = #{topicImgUrl},</if>
+            <if test="topicDesc !=null   and topicDesc != ''" >tt.topic_desc = #{topicDesc},</if>
+            <if test="likeNum !=null">tt.like_num = #{likeNum},</if>
+            <if test="viewNum !=null">tt.view_num = #{viewNum},</if>
+            <if test="postNum !=null">tt.post_num = #{postNum},</if>
+            <if test="status !=null">tt.status = #{status},</if>
+        </trim>
+        WHERE id=#{id}
+    </update>
+
+    <select id="queryById" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+         SELECT
+        tt.id,
+        tt.topic_code,
+        tt.topic_title,
+        tt.topic_desc,
+        tt.topic_img_url,
+        tt.like_num,
+        tt.view_num,
+        tt.post_num,
+        tt.status,
+        tt.create_time
+        FROM tb_topic tt
+        WHERE tt.id = #{id}
+        ORDER BY tt.create_time DESC
+    </select>
+
+    <select id="queryByCode" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+         SELECT
+        tt.id,
+        tt.topic_code,
+        tt.topic_title,
+        tt.topic_desc,
+        tt.topic_img_url,
+        tt.like_num,
+        tt.view_num,
+        tt.post_num,
+        tt.status,
+        tt.create_time
+        FROM tb_topic tt
+        WHERE tt.topic_code = #{topicCode}
+        ORDER BY tt.create_time DESC
+    </select>
+
+
+    <delete id="deleteById" parameterType="com.kc.biz.bean.Topic">
+       DELETE FROM tb_topic where id = #{id}
+    </delete>
+
+</mapper>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kc.biz.mapper.BankCardMapper">
+  <resultMap id="BaseResultMap" type="com.kc.biz.bean.BankCard">
+    <id column="id" property="id" jdbcType="BIGINT"  />
+    <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+    <result column="receiver" property="receiver" jdbcType="VARCHAR"/>
+    <result column="bank_code" property="bankCode" jdbcType="VARCHAR"/>
+      <result column="bank_name" property="bankName" jdbcType="VARCHAR"/>
+      <result column="card_no" property="cardNo" jdbcType="VARCHAR"/>
+      <result column="sub_branch" property="subBranch" jdbcType="VARCHAR"/>
+      <result column="create_time" property="createTime" jdbcType="BIGINT"/>
+  </resultMap>
+
+    <sql id="select_condition_sql">
+        <where>
+            <trim prefix="(" suffix=")" prefixOverrides="and">
+                <if test="id != null ">
+                    and tbc.id = #{id}
+                </if>
+                <if test="userId != null and userId != ''">
+                    and tbc.user_id = #{userId}
+                </if>
+            </trim>
+        </where>
+    </sql>
+
+    <insert id="insert" parameterType="com.kc.biz.bean.BankCard" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_bank_card
+        (user_id,receiver, bank_code, bank_name,card_no,sub_branch,create_time)
+        VALUES
+        (#{userId},#{receiver},#{bankCode},#{bankName},#{cardNo},#{subBranch},unix_timestamp())
+    </insert>
+
+
+    <select id="queryByPage" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+        SELECT tbc.id,
+        tbc.user_id,
+        tbc.receiver,
+        tbc.bank_code,
+        tbc.bank_name,
+        tbc.card_no,
+        tbc.sub_branch,
+        tbc.create_time
+        FROM tb_bank_card tbc
+        <include refid="select_condition_sql"/>
+        ORDER BY tbc.create_time DESC
+        LIMIT #{startRow}, #{pageSize}
+
+    </select>
+
+    <select id="queryByUserId" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT tbc.id,
+        tbc.user_id,
+        tbc.receiver,
+        tbc.bank_code,
+        tbc.bank_name,
+        tbc.card_no,
+        tbc.sub_branch,
+        tbc.create_time
+        FROM tb_bank_card tbc
+        WHERE tbc.user_id = #{userId}
+
+    </select>
+
+</mapper>

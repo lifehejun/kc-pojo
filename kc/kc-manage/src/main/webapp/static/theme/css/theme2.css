@@ -1,0 +1,26 @@
+body{
+    background:#EEF5F9;
+}
+.container{
+    background:#323640;
+}
+.left-nav{
+    background:#fff;
+}
+
+.left-nav a{
+    color:#686a76;
+}
+.left-nav a.active{
+    background: rgba(57, 61, 73, 1) !important;
+    color: #fff;
+}
+.left-nav a:hover{
+    background: rgba(57, 61, 73, 1) !important;
+    color: #fff;
+}
+
+.x-admin-backlog-body label{
+    color:#CC99CC;
+    font-size: 18px;
+}

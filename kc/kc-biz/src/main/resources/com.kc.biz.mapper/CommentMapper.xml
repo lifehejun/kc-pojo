@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kc.biz.mapper.CommentMapper">
+  <resultMap id="BaseResultMap" type="com.kc.biz.bean.Comment">
+    <id column="id" property="id" jdbcType="BIGINT"  />
+    <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+    <result column="biz_id" property="bizId" jdbcType="BIGINT"/>
+    <result column="type" property="type" jdbcType="BIGINT"/>
+    <result column="content" property="content" jdbcType="VARCHAR"/>
+    <result column="create_time" property="createTime" jdbcType="BIGINT"/>
+  </resultMap>
+
+    <resultMap id="CommentVoResultMap" type="com.kc.biz.vo.CommentVo">
+        <id column="id" property="id" jdbcType="BIGINT"  />
+        <result column="user_name" property="userName" jdbcType="VARCHAR"/>
+        <result column="head_url" property="headUrl" jdbcType="BIGINT"/>
+        <result column="content" property="content" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="BIGINT"/>
+    </resultMap>
+
+
+
+
+    <sql id="select_condition_sql">
+        <where>
+            <trim prefix="(" suffix=")" prefixOverrides="and">
+                <if test="id != null ">
+                    and tc.id = #{id}
+                </if>
+                <if test="bizId != null">
+                    and tc.biz_id  = #{bizId}
+                </if>
+                <if test="type != null">
+                    and tc.type  = #{type}
+                </if>
+            </trim>
+        </where>
+    </sql>
+
+    <insert id="insert" parameterType="com.kc.biz.bean.Comment" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_comment
+        (user_id,type,biz_id, content,create_time)
+        VALUES
+        (#{userId}, #{type},#{bizId},unix_timestamp())
+    </insert>
+
+
+    <select id="queryByPage" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+        SELECT tc.id,
+        tc.type,
+        tc.biz_id,
+        tc.user_id,
+        tc.create_time
+        FROM tb_comment tc
+        <include refid="select_condition_sql"/>
+        ORDER BY tc.create_time DESC
+        LIMIT #{startRow}, #{pageSize}
+    </select>
+
+    <select id="findList" parameterType="java.util.HashMap" resultMap="CommentVoResultMap">
+        SELECT tc.id,
+        tc.type,
+        tc.biz_id,
+        tc.user_id,
+        tc.create_time,
+        tu.user_name,
+        tu.head_url
+        FROM tb_comment tc
+        join tb_user tu on tc.user_id = tu.user_id
+        where tc.biz_id = #{bizId}
+        ORDER BY tc.create_time DESC
+        LIMIT #{startRow}, #{pageSize}
+    </select>
+    <select id="getTotal" parameterType="java.util.HashMap" resultType="int">
+        SELECT count(1)
+        FROM tb_comment tc
+        join tb_user tu on tc.user_id = tu.user_id
+        where tc.biz_id = #{bizId}
+        ORDER BY tc.create_time DESC
+    </select>
+
+</mapper>

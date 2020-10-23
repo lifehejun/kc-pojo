@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kc.biz.mapper.VideoLabelMapper">
+  <resultMap id="BaseResultMap" type="com.kc.biz.bean.VideoLabel">
+    <id column="id" property="id" jdbcType="BIGINT"  />
+    <result column="vod_type" property="vodType" jdbcType="VARCHAR"/>
+    <result column="label_name" property="labelName" jdbcType="VARCHAR"/>
+      <result column="label_desc" property="labelDesc" jdbcType="VARCHAR"/>
+    <result column="label_code" property="labelCode" jdbcType="VARCHAR"/>
+    <result column="img_url" property="imgUrl" jdbcType="VARCHAR"/>
+    <result column="create_time" property="createTime" jdbcType="BIGINT"/>
+  </resultMap>
+
+    <sql id="select_condition_sql">
+        <where>
+            <trim prefix="(" suffix=")" prefixOverrides="and">
+                <if test="id != null ">
+                    and tvl.id = #{id}
+                </if>
+                <if test="vodType != null">
+                    and tvl.vod_type = #{vodType}
+                </if>
+                <if test="labelName != null and labelName != ''">
+                    and tvl.label_name like concat('%',#{labelName},'%')
+                </if>
+            </trim>
+        </where>
+    </sql>
+
+    <insert id="insert" parameterType="com.kc.biz.bean.VideoLabel" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_video_label
+        (vod_type, label_code,label_name,label_desc,img_url,create_time)
+        VALUES
+        (#{vodType},#{labelCode},#{labelName},#{labelDesc},#{imgUrl},unix_timestamp())
+    </insert>
+
+
+    <select id="queryByPage" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+        SELECT tvl.id,
+        tvl.vod_type,
+        tvl.label_code,
+        tvl.label_name,
+        tvl.label_desc,
+        tvl.img_url,
+        tvl.create_time
+        FROM tb_video_label tvl
+        <include refid="select_condition_sql"/>
+        ORDER BY tvl.create_time DESC
+        LIMIT #{startRow}, #{pageSize}
+    </select>
+
+    <select id="findAll" resultMap="BaseResultMap">
+        SELECT tvl.id,
+        tvl.vod_type,
+        tvl.label_code,
+        tvl.label_name,
+        tvl.label_desc,
+        tvl.img_url,
+        tvl.create_time
+        FROM tb_video_label tvl
+        ORDER BY tvl.vod_type DESC,tvl.create_time DESC
+    </select>
+    <select id="getTotal" parameterType="com.kc.biz.bean.VideoLabel" resultType="int">
+        SELECT count(1)
+        FROM tb_video_label tvl
+        <include refid="select_condition_sql"/>
+        ORDER BY tvl.create_time DESC
+    </select>
+
+    <select id="findByVodType" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+        SELECT tvl.id,
+        tvl.vod_type,
+        tvl.label_code,
+        tvl.label_name,
+        tvl.label_desc,
+        tvl.img_url,
+        tvl.create_time
+        FROM tb_video_label tvl
+        where vod_type = #{vodType}
+        ORDER BY tvl.create_time DESC
+    </select>
+
+    <select id="queryById" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+        SELECT tvl.id,
+        tvl.vod_type,
+        tvl.label_code,
+        tvl.label_name,
+        tvl.label_desc,
+        tvl.img_url,
+        tvl.create_time
+        FROM tb_video_label tvl
+        where tvl.id = #{id}
+        ORDER BY tvl.create_time DESC
+    </select>
+    <update id="updateById" parameterType="com.kc.biz.bean.VideoLabel">
+        UPDATE tb_video_label tvl
+        <trim prefix="set" suffixOverrides=",">
+            <if test="vodType !=null and vodType != ''">tvl.vod_type = #{vodType},</if>
+            <if test="labelCode !=null and labelCode != ''">tvl.label_code = #{labelCode},</if>
+            <if test="labelName !=null and labelName != ''" >tvl.label_name = #{labelName},</if>
+            <if test="labelDesc !=null and labelDesc != ''" >tvl.label_desc = #{labelDesc},</if>
+            <if test="imgUrl !=null and imgUrl != ''" >tvl.img_url = #{imgUrl},</if>
+        </trim>
+        WHERE id=#{id}
+    </update>
+
+    <delete id="deleteById" parameterType="com.kc.biz.bean.VideoLabel">
+       DELETE FROM tb_video_label where id = #{id}
+    </delete>
+
+</mapper>

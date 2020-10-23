@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kc.biz.mapper.DomainMapper">
+  <resultMap id="BaseResultMap" type="com.kc.biz.bean.Domain">
+    <id column="id" property="id" jdbcType="BIGINT"  />
+      <result column="domain_name" property="domainName" jdbcType="VARCHAR"/>
+    <result column="domain_type" property="domainType" jdbcType="BIGINT"/>
+    <result column="status" property="status" jdbcType="BIGINT"/>
+    <result column="sort_no" property="sortNo" jdbcType="BIGINT"/>
+    <result column="create_time" property="createTime" jdbcType="BIGINT"/>
+  </resultMap>
+
+    <sql id="select_condition_sql">
+        <where>
+            <trim prefix="(" suffix=")" prefixOverrides="and">
+                <if test="id != null ">
+                    and td.id = #{id}
+                </if>
+                <if test="domainType != null">
+                    and td.domain_type = #{domainType}
+                </if>
+                <if test="status != null">
+                    and td.status = #{status}
+                </if>
+                <if test="domainName != null and domainName != ''">
+                    and td.domain_name like concat('%',#{domainName},'%')
+                </if>
+            </trim>
+        </where>
+    </sql>
+
+    <insert id="insert" parameterType="com.kc.biz.bean.Domain" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_domain
+        (domain_name,domain_type , status, sort_no,create_time)
+        VALUES
+        (#{domainName}, #{domainType},#{status}, #{sortNo},unix_timestamp())
+    </insert>
+
+
+    <select id="queryByPage" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+        SELECT td.id,
+        td.domain_name,
+        td.domain_type,
+        td.status,
+        td.sort_no,
+        td.create_time
+        FROM tb_domain td
+        <include refid="select_condition_sql"/>
+        ORDER BY td.sort_no
+        LIMIT #{startRow}, #{pageSize}
+    </select>
+
+    <select id="getTotal" parameterType="com.kc.biz.bean.Domain" resultType="int">
+        SELECT count(1)
+        FROM tb_domain td
+        <include refid="select_condition_sql"/>
+        ORDER BY td.sort_no
+    </select>
+
+    <select id="findList" resultMap="BaseResultMap">
+         SELECT td.id,
+        td.domain_name,
+        td.domain_type,
+        td.status,
+        td.sort_no,
+        td.create_time
+        FROM tb_domain td
+        ORDER BY td.sort_no
+    </select>
+
+    <select id="findListByType" parameterType="java.lang.String" resultMap="BaseResultMap">
+          SELECT td.id,
+        td.domain_name,
+        td.domain_type,
+        td.status,
+        td.sort_no,
+        td.create_time
+        FROM tb_domain td
+        WHERE td.domain_type = #{domainType}
+        ORDER BY td.sort_no
+    </select>
+
+    <select id="queryById" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+       SELECT td.id,
+        td.domain_name,
+        td.domain_type,
+        td.status,
+        td.sort_no,
+        td.create_time
+        FROM tb_domain td
+        WHERE td.id = #{id}
+        ORDER BY td.sort_no
+    </select>
+    <update id="updateById" parameterType="com.kc.biz.bean.Domain">
+        UPDATE tb_domain td
+        <trim prefix="set" suffixOverrides=",">
+            <if test="domainName !=null and domainName != ''">td.domain_name = #{domainName},</if>
+            <if test="domainType !=null ">td.domain_type= #{domainType},</if>
+            <if test="status !=null ">td.status = #{status},</if>
+            <if test="sortNo !=null ">td.sort_no = #{sortNo},</if>
+        </trim>
+        WHERE id=#{id}
+    </update>
+
+    <delete id="deleteById" parameterType="com.kc.biz.bean.Domain">
+       DELETE FROM tb_domain where id = #{id}
+    </delete>
+</mapper>

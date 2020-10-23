@@ -1,0 +1,6 @@
+tb_user缺少唯一索引
+user_id,phone
+
+
+---密码：
+QQm6zKYXZYcKIGom+conhQ==

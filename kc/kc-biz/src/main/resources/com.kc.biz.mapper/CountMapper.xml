@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kc.biz.mapper.CountMapper">
+  <resultMap id="BaseResultMap" type="com.kc.biz.bean.Count">
+    <id column="id" property="id" jdbcType="BIGINT"  />
+    <result column="count_date" property="countDate" jdbcType="VARCHAR"/>
+    <result column="count_type" property="countType" jdbcType="BIGINT"/>
+    <result column="value" property="value" jdbcType="VARCHAR"/>
+    <result column="create_time" property="createTime" jdbcType="BIGINT"/>
+  </resultMap>
+
+
+
+    <sql id="select_condition_sql">
+        <where>
+            <trim prefix="(" suffix=")" prefixOverrides="and">
+                <if test="id != null ">
+                    and tc.id = #{id}
+                </if>
+                <if test="countType != null ">
+                    and tc.count_type = #{countType}
+                </if>
+                <if test="countDate != null and countDate != ''">
+                    and tc.count_date  = #{countDate}
+                </if>
+
+            </trim>
+        </where>
+    </sql>
+
+    <insert id="insert" parameterType="com.kc.biz.bean.Count" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_count
+        (count_date,count_type, value,create_time)
+        VALUES
+        (#{countDate}, #{countType},#{value},unix_timestamp())
+    </insert>
+
+
+    <select id="findByList" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+        SELECT tc.id,
+        tc.count_date,
+        tc.count_type,
+        tc.value,
+        tc.create_time
+        FROM tb_count tc
+        WHERE tc.count_type = #{countType}
+        AND tc.count_date =#{countDate}
+        ORDER BY tc.count_date
+    </select>
+
+
+    <update id="updateById" parameterType="com.kc.biz.bean.Count">
+        UPDATE tb_count tc
+        <trim prefix="set" suffixOverrides=",">
+            <if test="countType !=null">tc.count_type = #{countType},</if>
+            <if test="value !=null and value !=''">tc.value = #{value},</if>
+            <if test="countDate !=null and countDate !=''">tc.count_date = #{countDate},</if>
+        </trim>
+        WHERE id=#{id}
+    </update>
+
+    <!--根据类型查询当月统计数据-->
+    <select id="findCurrMonthByType" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+        SELECT tc.id,
+        tc.count_date,
+        tc.count_type,
+        tc.value,
+        tc.create_time
+        FROM tb_count tc
+        <include refid="select_condition_sql"/>
+        AND DATE_FORMAT(tc.count_date,'%Y-%m')=DATE_FORMAT(NOW(),'%Y-%m')
+        ORDER BY tc.count_date
+    </select>
+
+
+</mapper>

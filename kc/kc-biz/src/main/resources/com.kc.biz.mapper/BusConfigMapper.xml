@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kc.biz.mapper.BusConfigMapper">
+  <resultMap id="BaseResultMap" type="com.kc.biz.bean.BusConfig">
+    <id column="id" property="id" jdbcType="BIGINT"  />
+      <result column="bus_type" property="busType" jdbcType="VARCHAR"/>
+    <result column="name" property="name" jdbcType="VARCHAR"/>
+    <result column="val" property="val" jdbcType="VARCHAR"/>
+    <result column="remark" property="remark" jdbcType="DECIMAL"/>
+      <result column="create_time" property="createTime" jdbcType="BIGINT"/>
+  </resultMap>
+
+    <sql id="select_condition_sql">
+        <where>
+            <trim prefix="(" suffix=")" prefixOverrides="and">
+                <if test="id != null ">
+                    and tbc.id = #{id}
+                </if>
+                <if test="busType != null and busType != ''">
+                    and tbc.bus_type = #{busType}
+                </if>
+                <if test="name != null and name != ''">
+                    and tbc.name = #{name}
+                </if>
+
+
+            </trim>
+        </where>
+    </sql>
+
+    <insert id="insert" parameterType="com.kc.biz.bean.BusConfig" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_bus_config
+        (bus_type,name , val, remark,create_time)
+        VALUES
+        (#{busType}, #{name},#{val}, #{remark},unix_timestamp())
+    </insert>
+
+
+    <select id="queryByPage" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+        SELECT tbc.id,
+        tbc.bus_type,
+        tbc.name,
+        tbc.val,
+        tbc.remark,
+        tbc.create_time
+        FROM tb_bus_config tbc
+        <include refid="select_condition_sql"/>
+        ORDER BY tbc.bus_type
+        LIMIT #{startRow}, #{pageSize}
+    </select>
+
+    <select id="getTotal" parameterType="com.kc.biz.bean.BusConfig" resultType="int">
+        SELECT count(1)
+        FROM tb_bus_config tbc
+        <include refid="select_condition_sql"/>
+        ORDER BY tbc.bus_type
+    </select>
+
+    <select id="findList" resultMap="BaseResultMap">
+        SELECT tbc.id,
+        tbc.bus_type,
+        tbc.name,
+        tbc.val,
+        tbc.remark,
+        tbc.create_time
+        FROM tb_bus_config tbc
+        ORDER BY tbc.bus_type
+    </select>
+
+    <select id="findListByType" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT tbc.id,
+        tbc.bus_type,
+        tbc.name,
+        tbc.val,
+        tbc.remark,
+        tbc.create_time
+        FROM tb_bus_config tbc
+        WHERE tbc.bus_type = #{busType}
+        ORDER BY tbc.remark
+    </select>
+
+    <update id="updateById" parameterType="com.kc.biz.bean.BusConfig">
+        UPDATE tb_bus_config tbc
+        <trim prefix="set" suffixOverrides=",">
+            <if test="busType !=null and busType != ''">tbc.bus_type = #{busType},</if>
+            <if test="name !=null and name != ''">tbc.name = #{name},</if>
+            <if test="val !=null and val != ''">tbc.val = #{val},</if>
+            <if test="remark !=null and remark != ''">tbc.remark = #{remark},</if>
+        </trim>
+        WHERE id=#{id}
+    </update>
+
+</mapper>

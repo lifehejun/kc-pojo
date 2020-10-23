@@ -1,0 +1,22 @@
+/* 公共属性 */
+ *{margin:0;padding:0;list-style:none;}
+body{background:#fff;font:normal 12px/22px "Microsoft Yahei";}
+img{border:0;}
+a{text-decoration:none;color:#333;}
+a:hover{color:#1974A1;}
+.clearfix:after,.clearfix:before{display:table;line-height:0;content:""}
+.clearfix:after{clear:both}
+
+/*  主要样式 */
+.yyui_menu1 { height:35px; line-height:35px; font-size:15px; background-color:#f2f2f2; }
+
+.yyui_menu1 li { float:left; position:relative;} /*这一级是导航*/
+.yyui_menu1 li a { display:block; line-height:35px; text-decoration:none; padding:0px 20px; color:#333333;   }
+.yyui_menu1 li a:hover {  background:#EFEFEF; }
+.yyui_menu1 li a.more:after{content:" »";}
+
+.yyui_menu1 li ul { position:absolute; float:left; width:150px; border:1px solid #D2D2D2; display:none; background-color:#FFFfff; z-index:9999;} /*这是第二级菜单*/
+.yyui_menu1 li ul a { width:110px;text-decoration:none; color:#333333;}
+.yyui_menu1 li ul a:hover { background:#f2f2f2;}
+
+.yyui_menu1 li ul ul{ top:0;left:150px;} /*从第三级菜单开始,所有的子级菜单都相对偏移*/

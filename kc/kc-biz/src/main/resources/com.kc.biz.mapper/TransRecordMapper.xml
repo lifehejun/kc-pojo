@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kc.biz.mapper.TransRecordMapper">
+  <resultMap id="BaseResultMap" type="com.kc.biz.bean.TransRecord">
+    <id column="id" property="id" jdbcType="BIGINT"  />
+    <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+    <result column="trans_no" property="transNo" jdbcType="VARCHAR"/>
+    <result column="trans_type" property="transType" jdbcType="BIGINT"/>
+    <result column="money" property="money" jdbcType="DECIMAL"/>
+      <result column="add_or_sub" property="addOrSub" jdbcType="BIGINT"/>
+      <result column="before_balance" property="beforeBalance" jdbcType="DECIMAL"/>
+      <result column="after_balance" property="afterBalance" jdbcType="DECIMAL"/>
+      <result column="status" property="status" jdbcType="BIGINT"/>
+      <result column="remark" property="remark" jdbcType="VARCHAR"/>
+      <result column="trans_time" property="transTime" jdbcType="BIGINT"/>
+      <result column="create_time" property="createTime" jdbcType="BIGINT"/>
+      <result column="user_name" property="userName" jdbcType="VARCHAR"/>
+      <result column="phone" property="phone" jdbcType="VARCHAR"/>
+  </resultMap>
+
+    <sql id="select_condition_sql">
+        <where>
+            <trim prefix="(" suffix=")" prefixOverrides="and">
+                <if test="id != null ">
+                    and ttr.id = #{id}
+                </if>
+                <if test="userId != null and userId != ''">
+                    and ttr.user_id = #{userId}
+                </if>
+                <if test="transNo != null and transNo != ''" >
+                    and ttr.trans_no = #{transNo}
+                </if>
+                <if test="transType != null" >
+                    and ttr.trans_type = #{transType}
+                </if>
+                <if test="status != null" >
+                    and ttr.status = #{status}
+                </if>
+                <if test="phone != null and phone != ''" >
+                    and tu.phone = #{phone}
+                </if>
+                <if test="userName != null and userName != ''" >
+                    and tu.user_name = #{userName}
+                </if>
+                <if test="startDate != null" >
+                    and ttr.trans_time >= #{startDate}
+                </if>
+                <if test="endDate != null" >
+                    and ttr.trans_time &lt;= #{endDate}
+                </if>
+
+            </trim>
+        </where>
+    </sql>
+
+    <insert id="insert" parameterType="com.kc.biz.bean.UserBean" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_trans_record
+        (user_id,trans_no, trans_type, money, add_or_sub, before_balance,after_balance,status,remark,trans_time,create_time)
+        VALUES
+        (#{userId}, #{transNo},#{transType}, #{money}, #{addOrSub},#{beforeBalance},#{afterBalance}, #{status},#{remark},#{transTime},unix_timestamp())
+    </insert>
+
+
+    <select id="getTotal" parameterType="java.util.HashMap" resultType="int">
+        SELECT count(1)
+        FROM tb_trans_record ttr left join
+        tb_user tu on ttr.user_id = tu.user_id
+        <include refid="select_condition_sql"/>
+        ORDER BY ttr.create_time DESC
+    </select>
+
+
+    <select id="queryByPage" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+        SELECT ttr.id,
+        ttr.user_id,
+        ttr.trans_no,
+        ttr.trans_type,
+        ttr.money,
+        ttr.add_or_sub,
+        ttr.before_balance,
+        ttr.after_balance,
+        ttr.status,
+        ttr.remark,
+        ttr.trans_time,
+        ttr.create_time,
+        tu.user_name,
+        tu.phone
+        FROM tb_trans_record ttr left join
+        tb_user tu on ttr.user_id = tu.user_id
+        <include refid="select_condition_sql"/>
+        ORDER BY ttr.create_time DESC
+        LIMIT #{startRow}, #{pageSize}
+
+    </select>
+
+
+    <select id="queryByTransNo" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+        SELECT ttr.id,
+        ttr.user_id,
+        ttr.trans_no,
+        ttr.trans_type,
+        ttr.money,
+        ttr.add_or_sub,
+        ttr.before_balance,
+        ttr.after_balance,
+        ttr.status,
+        ttr.remark,
+        ttr.trans_time,
+        ttr.create_time
+        FROM tb_trans_record ttr
+        where  ttr.trans_no = #{transNo}
+    </select>
+
+    <update id="updateById" parameterType="com.kc.biz.bean.TransRecord">
+        UPDATE tb_trans_record ttr
+        <trim prefix="set" suffixOverrides=",">
+            <if test="userId !=null and userId !='' ">ttr.user_id = #{userId},</if>
+            <if test="transNo !=null   and transNo != ''" >ttr.trans_no = #{transNo},</if>
+            <if test="transType !=null   and transType != ''" >ttr.trans_type = #{transType},</if>
+            <if test="money !=null">ttr.money = #{money},</if>
+            <if test="addOrSub !=null">ttr.add_or_sub = #{addOrSub},</if>
+            <if test="beforeBalance !=null" >ttr.before_balance = #{beforeBalance},</if>
+            <if test="afterBalance !=null" >ttr.after_balance = #{afterBalance},</if>
+            <if test="status !=null" >ttr.status = #{status},</if>
+            <if test="remark !=null and remark !=''">ttr.remark = #{remark},</if>
+            <if test="transTime !=null ">ttr.trans_time = #{transTime},</if>
+        </trim>
+        WHERE id=#{id}
+    </update>
+
+
+    <select id="findSumByTransType" parameterType="java.util.HashMap" resultType="java.math.BigDecimal">
+        SELECT
+        IFNULL(sum(ttr.money),0.00) as money
+        FROM tb_trans_record ttr
+        <include refid="select_condition_sql"/>
+    </select>
+</mapper>

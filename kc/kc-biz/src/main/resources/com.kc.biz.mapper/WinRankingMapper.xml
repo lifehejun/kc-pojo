@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kc.biz.mapper.WinRankingMapper">
+  <resultMap id="BaseResultMap" type="com.kc.biz.bean.WinRankingBean">
+    <id column="id" property="id" jdbcType="BIGINT"  />
+    <result column="user_name" property="userName" jdbcType="VARCHAR"/>
+    <result column="win_content" property="winContent" jdbcType="VARCHAR"/>
+    <result column="money" property="money" jdbcType="DECIMAL"/>
+  </resultMap>
+  
+
+    <select id="queryTop10" parameterType="com.kc.biz.bean.WinRankingBean" resultMap="BaseResultMap">
+        SELECT twr.id,
+        twr.user_name,
+        twr.win_content,
+        twr.money,
+        twr.no
+        FROM tb_win_ranking twr
+        ORDER BY twr.no
+        LIMIT 0, 10
+    </select>
+
+
+</mapper>

@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kc.biz.mapper.UserMapper">
+  <resultMap id="BaseResultMap" type="com.kc.biz.bean.UserBean">
+    <id column="id" property="id" jdbcType="BIGINT"  />
+    <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+    <result column="user_name" property="userName" jdbcType="VARCHAR"/>
+    <result column="user_type" property="userType" jdbcType="VARCHAR"/>
+    <result column="user_pwd" property="userPwd" jdbcType="VARCHAR"/>
+    <result column="bonus_ratio" property="bonusRatio" jdbcType="DECIMAL"/>
+    <result column="parent_user_id" property="parentUserId" jdbcType="VARCHAR"/>
+    <result column="phone" property="phone" jdbcType="VARCHAR"/>
+    <result column="address" property="address" jdbcType="VARCHAR"/>
+    <result column="real_name" property="realName" jdbcType="VARCHAR"/>
+    <result column="qq" property="qq" jdbcType="VARCHAR"/>
+    <result column="wechat" property="wechat" jdbcType="VARCHAR"/>
+    <result column="reg_ip" property="regIp" jdbcType="VARCHAR"/>
+    <result column="head_url" property="headUrl" jdbcType="VARCHAR"/>
+    <result column="grade" property="grade" jdbcType="BIGINT"/>
+    <result column="agent_code" property="agentCode" jdbcType="VARCHAR"/>
+    <result column="core_balance" property="coreBalance" jdbcType="DECIMAL"/>
+    <result column="remark" property="remark" jdbcType="VARCHAR"  />
+    <result column="create_time" property="createTime" jdbcType="BIGINT"  />
+    <result column="status" property="status" jdbcType="BIGINT"  />
+  </resultMap>
+
+    <resultMap id="FollowUserResultMap" type="com.kc.biz.vo.FollowUserVo">
+        <id column="id" property="id" jdbcType="BIGINT"  />
+        <result column="user_id" property="followedUserId" jdbcType="VARCHAR"/>
+        <result column="user_name" property="followedUserName" jdbcType="VARCHAR"/>
+        <result column="head_url" property="headUrl" jdbcType="VARCHAR"/>
+        <result column="grade" property="grade" jdbcType="BIGINT"/>
+        <result column="address" property="address" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap id="RegIpPhoneVoResultMap" type="com.kc.biz.vo.RegIpPhoneVo">
+        <result column="phone_list" property="phoneList" jdbcType="VARCHAR"/>
+        <result column="reg_ip" property="regIp" jdbcType="VARCHAR"/>
+    </resultMap>
+
+
+  
+    <sql id="select_condition_sql">
+        <where>
+            <trim prefix="(" suffix=")" prefixOverrides="and">
+                <if test="id != null ">
+                    and tu.id = #{id}
+                </if>
+                <if test="userId != null and userId != ''">
+                    and tu.user_id = #{userId}
+                </if>
+                <if test="userName != null and userName != ''" >
+                    and tu.user_name = #{userName}
+                </if>
+                <if test="userPwd != null and userPwd != ''" >
+                    and tu.user_pwd = #{pwd}
+                </if>
+                <if test="userType != null" >
+                    and tu.user_type = #{userType}
+                </if>
+                <if test="status != null" >
+                    and tu.status = #{status}
+                </if>
+                <if test="grade != null" >
+                    and tu.grade = #{grade}
+                </if>
+                <if test="phone != null and phone != ''" >
+                    and tu.phone = #{phone}
+                </if>
+                <if test="realName != null and realName != ''" >
+                    and tu.real_name = #{realName}
+                </if>
+                <if test="agentCode != null and agentCode != ''" >
+                    and tu.agent_code = #{agentCode}
+                </if>
+                <if test="qq != null and qq != ''" >
+                    and tu.qq = #{qq}
+                </if>
+                <if test="wechat != null and wechat != ''" >
+                    and tu.wechat = #{wechat}
+                </if>
+                <if test="regIp != null and regIp != ''" >
+                    and tu.reg_ip = #{regIp}
+                </if>
+                <if test="startCreateTime != null" >
+                    and tu.create_time &gt;= #{startCreateTime}
+                </if>
+                <if test="endCreateTime != null" >
+                    and tu.create_time &lt;= #{endCreateTime}
+                </if>
+            </trim>
+        </where>
+    </sql>
+
+
+    <select id="queryByUserName" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT tu.id,
+        tu.user_id,
+        tu.user_name,
+        tu.user_type,
+        tu.user_pwd,
+        tu.bonus_ratio,
+        tu.parent_user_id,
+        tu.phone,
+        tu.real_name,
+        tu.qq,
+        tu.wechat,
+        tu.address,
+        tu.head_url,
+        tu.reg_ip,
+        tu.grade,
+        tu.agent_code,
+        tu.core_balance,
+        tu.remark,
+        tu.status,
+        tu.create_time
+        FROM tb_user tu
+        WHERE tu.user_name = #{userName}
+    </select>
+
+    <select id="findByPhone" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT tu.id,
+        tu.user_id,
+        tu.core_balance,
+        tu.phone
+        FROM tb_user tu
+        WHERE tu.phone = #{phone}
+    </select>
+    <select id="queryByPhone" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT tu.id,
+               tu.user_id,
+               tu.user_name,
+               tu.user_type,
+               tu.user_pwd,
+               tu.bonus_ratio,
+               tu.parent_user_id,
+               tu.phone,
+               tu.real_name,
+               tu.qq,
+               tu.wechat,
+               tu.address,
+               tu.head_url,
+               tu.reg_ip,
+               tu.grade,
+               tu.agent_code,
+               tu.core_balance,
+               tu.remark,
+               tu.status,
+               tu.create_time
+        FROM tb_user tu
+        WHERE tu.phone = #{phone}
+    </select>
+
+    <select id="queryById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT tu.id,
+               tu.user_id,
+               tu.user_name,
+               tu.user_type,
+               tu.user_pwd,
+               tu.bonus_ratio,
+               tu.parent_user_id,
+               tu.phone,
+               tu.real_name,
+               tu.qq,
+               tu.wechat,
+               tu.address,
+               tu.head_url,
+               tu.reg_ip,
+               tu.grade,
+               tu.agent_code,
+               tu.core_balance,
+               tu.remark,
+               tu.status,
+               tu.create_time
+        FROM tb_user tu
+        WHERE tu.id = #{id}
+    </select>
+
+    <insert id="insert" parameterType="com.kc.biz.bean.UserBean" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_user
+        (user_id,user_name, user_type,user_pwd,cash_pwd,bonus_ratio, parent_user_id, phone,real_name,qq,wechat,head_url,grade,reg_ip,agent_code,remark,status,create_time)
+        VALUES
+        (#{userId}, #{userName},#{userType},#{userPwd},#{cashPwd}, #{bonusRatio}, #{parentUserId},#{phone},#{realName},#{qq},#{wechat},#{headUrl},#{grade},#{regIp},#{agentCode},#{remark}, #{status}, unix_timestamp())
+    </insert>
+
+    <!--加关注-->
+    <insert id="insertFollow" parameterType="com.kc.biz.bean.Follow" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_follow
+        (user_id,followed_user_id, create_time)
+        VALUES
+        (#{userId}, #{followedUserId},unix_timestamp())
+    </insert>
+
+
+    <update id="updateById" parameterType="com.kc.biz.bean.UserBean">
+        UPDATE tb_user tu
+        <trim prefix="set" suffixOverrides=",">
+            <if test="userId != null and userId !=''">tu.user_id = #{userId},</if>
+            <if test="userName !=null and userName !='' ">tu.user_name = #{userName},</if>
+            <if test="userPwd !=null   and userPwd != ''" >tu.user_pwd = #{userPwd},</if>
+            <if test="userType !=null">tu.user_type = #{userType},</if>
+            <if test="bonusRatio !=null">tu.bonus_ratio = #{bonusRatio},</if>
+            <if test="parentUserId !=null and parentUserId !=''">tu.parent_user_id = #{parentUserId},</if>
+            <if test="phone !=null and phone !=''">tu.phone = #{phone},</if>
+            <if test="address !=null and address !=''">tu.address = #{address},</if>
+            <if test="remark !=null and remark !=''">tu.remark = #{remark},</if>
+            <if test="status !=null ">tu.status = #{status},</if>
+            <if test="createTime !=null ">tu.create_time = #{createTime},</if>
+        </trim>
+        WHERE id=#{id}
+    </update>
+
+    <update id="updateByUserId" parameterType="com.kc.biz.bean.UserBean">
+        UPDATE tb_user tu
+        <trim prefix="set" suffixOverrides=",">
+          <if test="userName !=null and userName !='' ">tu.user_name = #{userName},</if>
+          <if test="userPwd !=null   and userPwd != ''" >tu.user_pwd = #{userPwd},</if>
+          <if test="userType !=null">tu.user_type = #{userType},</if>
+          <if test="bonusRatio !=null">tu.bonus_ratio = #{bonusRatio},</if>
+          <if test="parentUserId !=null and parentUserId !=''">tu.parent_user_id = #{parentUserId},</if>
+          <if test="phone !=null and phone !=''">tu.phone = #{phone},</if>
+          <if test="address !=null and address !=''">tu.address = #{address},</if>
+          <if test="regIp !=null and regIp !=''">tu.reg_ip = #{regIp},</if>
+          <if test="remark !=null and remark !=''">tu.remark = #{remark},</if>
+          <if test="status !=null ">tu.status = #{status},</if>
+          <if test="coreBalance !=null ">tu.core_balance = #{coreBalance},</if>
+          <if test="createTime !=null ">tu.create_time = #{createTime},</if>
+        </trim>
+        WHERE user_id = #{userId}
+    </update>
+
+    <select id="queryByAgentCode" parameterType="com.kc.biz.bean.UserBean" resultMap="BaseResultMap">
+        SELECT
+        tu.user_id
+        FROM tb_user tu
+        WHERE tu.agent_code = #{agentCode}
+    </select>
+
+    <select id="queryByUserId" parameterType="com.kc.biz.bean.UserBean" resultMap="BaseResultMap">
+        SELECT tu.id,
+        tu.user_id,
+        tu.user_name,
+        tu.user_type,
+        tu.user_pwd,
+        tu.bonus_ratio,
+        tu.parent_user_id,
+        tu.phone,
+        tu.real_name,
+        tu.qq,
+        tu.wechat,
+        tu.address,
+        tu.head_url,
+        tu.reg_ip,
+        tu.grade,
+        tu.agent_code,
+        tu.core_balance,
+        tu.remark,
+        tu.status,
+        tu.create_time
+        FROM tb_user tu
+        WHERE tu.user_id = #{userId}
+    </select>
+
+
+    <select id="getTotal" parameterType="com.kc.biz.bean.UserBean" resultType="int">
+        SELECT count(1)
+        FROM tb_user tu
+        <include refid="select_condition_sql"/>
+        ORDER BY tu.create_time DESC
+    </select>
+
+    <select id="queryByPage" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+        SELECT tu.id,
+        tu.user_id,
+        tu.user_name,
+        tu.user_pwd,
+        tu.user_type,
+        tu.bonus_ratio,
+        tu.parent_user_id,
+        tu.phone,
+        tu.real_name,
+        tu.qq,
+        tu.wechat,
+        tu.address,
+        tu.head_url,
+        tu.reg_ip,
+        tu.grade,
+        tu.agent_code,
+        tu.core_balance,
+        tu.remark,
+        tu.status,
+        tu.create_time
+        FROM tb_user tu
+        <include refid="select_condition_sql"/>
+        ORDER BY tu.status,tu.create_time DESC
+        LIMIT #{startRow}, #{pageSize}
+    </select>
+
+    <select id="findByList" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+        SELECT tu.id,
+        tu.user_id,
+        tu.user_name,
+        tu.user_pwd,
+        tu.user_type,
+        tu.bonus_ratio,
+        tu.parent_user_id,
+        tu.phone,
+        tu.real_name,
+        tu.qq,
+        tu.wechat,
+        tu.address,
+        tu.head_url,
+        tu.reg_ip,
+        tu.grade,
+        tu.agent_code,
+        tu.core_balance,
+        tu.remark,
+        tu.status,
+        tu.create_time
+        FROM tb_user tu
+        <include refid="select_condition_sql"/>
+        ORDER BY tu.status,tu.create_time DESC
+    </select>
+    <delete id="deleteById" parameterType="com.kc.biz.bean.UserBean">
+        DELETE  FROM tb_user WHERE id =#{id}
+    </delete>
+
+    <select id="isFollowed" parameterType="com.kc.biz.bean.Follow" resultType="int">
+        SELECT count(1)
+        FROM tb_follow tf
+        WHERE tf.user_id = #{userId}
+        and tf.followed_user_id = #{followedUserId}
+        ORDER BY tf.create_time DESC
+    </select>
+
+    <delete id="deleteFollowById" parameterType="com.kc.biz.bean.Follow">
+        DELETE  FROM tb_follow
+        WHERE user_id = #{userId}
+        AND followed_user_id = #{followedUserId}
+    </delete>
+
+
+    <!--查询关注的用户列表-->
+    <select id="findFollowUserByPage" parameterType="java.util.HashMap" resultMap="FollowUserResultMap">
+        SELECT tf.id,
+               tu2.user_id,
+               tu2.user_name,
+               tu2.grade,
+               tu2.head_url,
+               tu2.address
+        FROM tb_follow tf
+            JOIN  tb_user tu1 ON tf.user_id = tu1.user_id
+            JOIN tb_user tu2 ON tf.followed_user_id = tu2.user_id
+        WHERE tf.user_id = #{userId}
+        ORDER BY tf.create_time DESC
+        LIMIT #{startRow}, #{pageSize}
+    </select>
+
+    <select id="getFollowUserTotal" parameterType="java.util.HashMap" resultType="int">
+        SELECT count(1)
+        FROM tb_follow tf
+                 JOIN  tb_user tu1 ON tf.user_id = tu1.user_id
+                 JOIN tb_user tu2 ON tf.followed_user_id = tu2.user_id
+        WHERE tf.user_id = #{userId}
+        ORDER BY tf.create_time DESC
+    </select>
+
+    <!--查询ip段下面注册的手机号-->
+    <select id="findPhoneGroupByIp" parameterType="java.util.HashMap" resultMap="RegIpPhoneVoResultMap">
+        SELECT * FROM (SELECT group_concat(tu.phone SEPARATOR ',') as phone_list,
+        tu.reg_ip
+        FROM tb_user tu
+        <include refid="select_condition_sql"/>
+        group by tu.reg_ip
+        ORDER BY tu.create_time DESC) AS a
+        LIMIT #{startRow}, #{pageSize}
+    </select>
+
+    <select id="findPhoneGroupByIpTotal" parameterType="java.util.HashMap" resultType="int">
+        SELECT COUNT(1) FROM (SELECT group_concat(tu.phone SEPARATOR ',') as phone_list,
+        tu.reg_ip
+        FROM tb_user tu
+        <include refid="select_condition_sql"/>
+        group by tu.reg_ip
+        ORDER BY tu.create_time DESC) AS a
+    </select>
+</mapper>

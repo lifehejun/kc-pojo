@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="kc-common" />
+        <module name="kc-manage" />
+        <module name="kc-api" />
+        <module name="kc-pay" />
+        <module name="kc-biz" />
+      </profile>
+    </annotationProcessing>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="kc-api" options="-Xlint:all" />
+      <module name="kc-biz" options="-Xlint:all" />
+      <module name="kc-common" options="-Xlint:all" />
+      <module name="kc-manage" options="-Xlint:all" />
+      <module name="kc-pay" options="-Xlint:all" />
+    </option>
+  </component>
+</project>

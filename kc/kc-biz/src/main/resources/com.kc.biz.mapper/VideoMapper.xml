@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kc.biz.mapper.VideoMapper">
+  <resultMap id="BaseResultMap" type="com.kc.biz.bean.Video">
+    <id column="id" property="id" jdbcType="BIGINT"  />
+    <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+    <result column="vod_name" property="vodName" jdbcType="VARCHAR"/>
+    <result column="vod_desc" property="vodDesc" jdbcType="VARCHAR"/>
+    <result column="vod_type" property="vodType" jdbcType="VARCHAR"/>
+    <result column="vod_img_url" property="vodImgUrl" jdbcType="VARCHAR"/>
+    <result column="vod_play_url" property="vodPlayUrl" jdbcType="VARCHAR"/>
+    <result column="label_code_list" property="labelCodeList" jdbcType="VARCHAR"/>
+    <result column="like_num" property="likeNum" jdbcType="BIGINT"/>
+    <result column="comment_num" property="commentNum" jdbcType="BIGINT"/>
+    <result column="status" property="status" jdbcType="BIGINT"/>
+    <result column="create_time" property="createTime" jdbcType="BIGINT"/>
+  </resultMap>
+
+
+    <sql id="select_condition_sql">
+        <where>
+            <trim prefix="(" suffix=")" prefixOverrides="and">
+                <if test="id != null ">
+                    and tv.id = #{id}
+                </if>
+                <if test="userId != null and userId != ''">
+                    and tv.user_id = #{userId}
+                </if>
+                <if test="vodType != null">
+                    and tv.vod_type = #{vodType}
+                </if>
+                <if test="advFlag != null">
+                    and tv.adv_flag = #{advFlag}
+                </if>
+                <if test="vodName != null and vodName != ''">
+                    and tv.vod_name like concat('%',#{vodName},'%')
+                </if>
+                <if test="labelCode != null and labelCode != ''">
+                    and tv.label_code_list like concat('%',#{labelCode},'%')
+                </if>
+                <if test="status != null">
+                    and tv.status = #{status}
+                </if>
+            </trim>
+        </where>
+    </sql>
+
+    <insert id="insert" parameterType="com.kc.biz.bean.Video" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_video
+        (user_id,vod_name,vod_desc,vod_type, vod_img_url, vod_play_url,adv_flag,label_code_list,status,create_time)
+        VALUES
+        (#{userId},#{vodName},#{vodDesc}, #{vodType},#{vodImgUrl}, #{vodPlayUrl},#{advFlag}, #{labelCodeList},#{status},unix_timestamp())
+    </insert>
+
+
+    <select id="queryByPage" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+        SELECT tv.id,
+        tv.user_id,
+        tv.vod_name,
+        tv.vod_desc,
+        tv.vod_type,
+        tv.vod_img_url,
+        tv.vod_play_url,
+        tv.adv_flag,
+        tv.label_code_list,
+        tv.like_num,
+        tv.comment_num,
+        tv.status,
+        tv.create_time
+        FROM tb_video tv
+        <include refid="select_condition_sql"/>
+        ORDER BY tv.create_time DESC
+        LIMIT #{startRow}, #{pageSize}
+    </select>
+
+    <select id="queryById" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+        SELECT tv.id,
+        tv.user_id,
+        tv.vod_name,
+        tv.vod_desc,
+        tv.vod_type,
+        tv.vod_img_url,
+        tv.vod_play_url,
+        tv.adv_flag,
+        tv.label_code_list,
+        tv.like_num,
+        tv.comment_num,
+        tv.status,
+        tv.create_time
+        FROM tb_video tv
+        where tv.id = #{id}
+        ORDER BY tv.create_time DESC
+    </select>
+
+    <select id="getTotal" parameterType="com.kc.biz.bean.Video" resultType="int">
+        SELECT count(1)
+        FROM tb_video tv
+        <include refid="select_condition_sql"/>
+        ORDER BY tv.create_time DESC
+    </select>
+
+
+    <update id="updateById" parameterType="com.kc.biz.bean.Video">
+        UPDATE tb_video tv
+        <trim prefix="set" suffixOverrides=",">
+            <if test="vodType !=null">tv.vod_type = #{vodType},</if>
+            <if test="vodName !=null   and vodName != ''" >tv.vod_name = #{vodName},</if>
+            <if test="vodDesc !=null   and vodDesc != ''" >tv.vod_desc = #{vodDesc},</if>
+            <if test="vodImgUrl !=null   and vodImgUrl != ''" >tv.vod_img_url = #{vodImgUrl},</if>
+            <if test="vodPlayUrl !=null   and vodPlayUrl != ''" >tv.vod_play_url = #{vodPlayUrl},</if>
+            <if test="advFlag !=null">tv.adv_flag = #{advFlag},</if>
+            <if test="likeNum !=null">tv.like_num = #{likeNum},</if>
+            <if test="commentNum !=null">tv.comment_num = #{commentNum},</if>
+            <if test="status !=null">tv.status = #{status},</if>
+        </trim>
+        WHERE id=#{id}
+    </update>
+
+    <!--视频喜欢点赞-->
+    <insert id="insertVideoLike" parameterType="com.kc.biz.bean.VideoLike" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_video_like
+        (user_id,video_id, create_time)
+        VALUES
+        (#{userId}, #{videoId},unix_timestamp())
+    </insert>
+</mapper>

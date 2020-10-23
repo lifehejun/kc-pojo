@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kc.biz.mapper.VipGradeMapper">
+  <resultMap id="BaseResultMap" type="com.kc.biz.bean.VipGrade">
+    <id column="id" property="id" jdbcType="BIGINT"  />
+    <result column="vip_code" property="vipCode" jdbcType="VARCHAR"/>
+    <result column="grade" property="grade" jdbcType="BIGINT"/>
+      <result column="old_money" property="oldMoney" jdbcType="DECIMAL"/>
+    <result column="money" property="money" jdbcType="DECIMAL"/>
+    <result column="vip_name" property="vipName" jdbcType="VARCHAR"/>
+      <result column="vip_desc" property="vipDesc" jdbcType="VARCHAR"/>
+      <result column="tips" property="tips" jdbcType="VARCHAR"/>
+  </resultMap>
+
+    <sql id="select_condition_sql">
+        <where>
+            <trim prefix="(" suffix=")" prefixOverrides="and">
+                <if test="id != null ">
+                    and tvg.id = #{id}
+                </if>
+
+            </trim>
+        </where>
+    </sql>
+
+    <insert id="insert" parameterType="com.kc.biz.bean.VipGrade" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_vip_grade
+        (vip_code, grade,old_money,money,vip_name,vip_desc,tips)
+        VALUES
+        (#{vipCode},#{grade},#{oldMoney},#{money},#{vipDesc},#{tips})
+    </insert>
+
+
+    <select id="queryByPage" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+        SELECT tvg.id,
+        tvg.vip_code,
+        tvg.grade,
+        tvg.old_money,
+        tvg.money,
+        tvg.vip_name,
+        tvg.vip_desc,
+        tvg.tips
+        FROM tb_vip_grade tvg
+        <include refid="select_condition_sql"/>
+        LIMIT #{startRow}, #{pageSize}
+    </select>
+    <select id="getTotal" parameterType="com.kc.biz.bean.VipGrade" resultType="int">
+        SELECT count(1)
+        FROM tb_vip_grade tvg
+        <include refid="select_condition_sql"/>
+    </select>
+
+
+    <update id="updateById" parameterType="com.kc.biz.bean.VideoLabel">
+        UPDATE tb_vip_grade tvg
+        <trim prefix="set" suffixOverrides=",">
+            <if test="vipCode !=null and vipCode != ''">tvg.vip_code = #{vipCode},</if>
+            <if test="grade !=null">tvg.grade = #{grade},</if>
+            <if test="oldMoney !=null" >tvg.old_money = #{oldMoney},</if>
+            <if test="money !=null" >tvg.money = #{money},</if>
+            <if test="vipName !=null and vipName != ''" >tvg.vip_name = #{vipName},</if>
+            <if test="vipDesc !=null and vipDesc != ''" >tvg.vip_desc = #{vipDesc},</if>
+            <if test="tips !=null and tips != ''" >tvg.tips = #{tips},</if>
+        </trim>
+        WHERE id=#{id}
+    </update>
+
+</mapper>
