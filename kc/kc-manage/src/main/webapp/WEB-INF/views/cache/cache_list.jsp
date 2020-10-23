@@ -74,7 +74,7 @@
                 var val = data.val;
                 editCache(id,val);
             }
-            if(obj.event === 'refresh'){s
+            if(obj.event === 'refresh'){
                 var url = data.val;
                 _ajax_b(url,null,"缓存刷新成功",null);
             }

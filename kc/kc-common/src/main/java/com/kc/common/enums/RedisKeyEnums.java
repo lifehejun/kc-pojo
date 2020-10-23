@@ -10,6 +10,7 @@ public enum RedisKeyEnums {
     VOD_LABEL_TYPE("kc:dict:videoLabel:", "视频标签"),
     SYS_HEAD_URL("kc:dict:sysHeadUrl:", "系统头像路径url"),
     TOPIC_CODE("kc:dict:topicCode:", "帖子话题(标签)"),
+    FORBID_WORD("kc:dict:forbidWord:","违禁词"),
     CHOOSE_BANK_CARD("kc:dict:chooseBankCard:", "可选的银行列表信息"),
     CACHE_MANAGE("kc:dict:cacheManage:", "缓存管理"),
     WEB_CONFIG("kc:dict:webConfig:", "网站设置"),
@@ -23,7 +24,6 @@ public enum RedisKeyEnums {
     STATISTICS_RECHARGE("kc:statistics:recharge:", "充值数"),
     AUTH_USER_TOKEN("kc:auth:user:", "用户token"),
     LOCK_USER_REGISTER("kc:lock:userRegister:", "用户注册锁"),
-    FORBID_WORD("kc:forbidWord:","违禁词")
     ;
 
 
