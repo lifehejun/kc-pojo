@@ -2,6 +2,7 @@ package com.kc.common.base;
 
 import com.kc.common.consts.RespCode;
 import com.kc.common.exception.ApiException;
+import com.kc.common.resp.BusinessCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,9 +35,9 @@ public class BaseRest {
      * @return LinkedHashMap
      * @throws
      */
-    protected LinkedHashMap<String, Object> requestError(String msg) {
+    /*protected LinkedHashMap<String, Object> requestError(String msg) {
         return requestError(msg, null);
-    }
+    }*/
 
     /**
      * @Title: requestError
@@ -48,6 +49,11 @@ public class BaseRest {
      */
     protected LinkedHashMap<String, Object> requestError(String msg, Object data) {
         return resultLinkedHashMap(RespCode.APP_ERROR, msg, data);
+    }
+
+    protected LinkedHashMap<String,Object> requestError(String code){
+        String msg = BusinessCode.getMsg(code);
+        return resultLinkedHashMap(code,msg,null);
     }
 
 

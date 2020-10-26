@@ -56,18 +56,18 @@ public class UserRest  extends BaseRest{
             logger.info("login params : {}",params.toString());
             String phone = params.get("phone");
             if (StringUtil.isBlank(phone)) {
-                return requestError(BusinessCode.USER_RESP_2009.getCode(), BusinessCode.USER_RESP_2009.getMsg());
+                return requestError(BusinessCode.USER_RESP_2009.getCode());
             }
             String userPwd = params.get("userPwd");
             if (StringUtil.isBlank(userPwd)) {
-                return requestError(BusinessCode.USER_RESP_2003.getCode(),BusinessCode.USER_RESP_2003.getMsg());
+                return requestError(BusinessCode.USER_RESP_2003.getCode());
             }
             try {
                 //解密登陆密码
                 userPwd = AesUtil.decrypt(userPwd, ApiCommConst.API_AES_KEY,ApiCommConst.APP_AES_IV);
                 logger.info("after userPwd:{}",userPwd);
             }catch (Exception e){
-                return requestError(BusinessCode.USER_RESP_2004.getCode(),BusinessCode.USER_RESP_2004.getMsg());
+                return requestError(BusinessCode.USER_RESP_2004.getCode());
             }
 
             UserBean userBean = userService.userLogin(phone, userPwd,request);
@@ -121,7 +121,7 @@ public class UserRest  extends BaseRest{
             logger.info("reg params : {}",params.toString());
             String userPwd = params.get("userPwd");
             if (StringUtil.isBlank(userPwd)) {
-                return requestError(BusinessCode.USER_RESP_2003.getMsg());
+                return requestError(BusinessCode.USER_RESP_2003.getCode());
             }
             logger.info("before userPwd :{}"+userPwd);
             try {
@@ -129,7 +129,7 @@ public class UserRest  extends BaseRest{
                 userPwd = AesUtil.decrypt(userPwd,ApiCommConst.API_AES_KEY,ApiCommConst.APP_AES_IV);
                 logger.info("after userPwd:{}",userPwd);
             }catch (Exception e){
-                return requestError(BusinessCode.USER_RESP_2004.getMsg());
+                return requestError(BusinessCode.USER_RESP_2004.getCode());
             }
             params.put("userPwd",userPwd); //解密后的明文用户密码
             result  = userService.userReg(params,request);
@@ -202,7 +202,7 @@ public class UserRest  extends BaseRest{
                 newPwd = AesUtil.decrypt(newPwd,ApiCommConst.API_AES_KEY,ApiCommConst.APP_AES_IV);
                 logger.info("after newPwd:{}",newPwd);
             }catch (Exception e){
-                return requestError(BusinessCode.USER_RESP_2004.getMsg());
+                return requestError(BusinessCode.USER_RESP_2004.getCode());
             }
             userService.updateLoginPwd(userId,newPwd);
             return requestSuccess();
