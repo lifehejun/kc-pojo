@@ -30,10 +30,6 @@ public class ApiException extends RuntimeException{
 		this.msg = MessageFormat.format(BusinessCode.getMsg(code),args);
 	}
 
-	/*public ApiException(String msg){
-		this.msg = msg;
-	}*/
-
 	public ApiException(String code,String msg){
 		this.code = code;
 		this.msg = msg;

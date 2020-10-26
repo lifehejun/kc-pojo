@@ -67,8 +67,8 @@ public enum BusinessCode {
     USER_RESP_2032("2032", "系统检查到您有恶意注册会员的异常,注册失败"),
 
     RECEIPT_TOOL_RESP_3001("3001", "APP端签名参数不能为空"),
-    RECEIPT_TOOL_RESP_3002("3002", "用户密码错误"),
-    RECEIPT_TOOL_RESP_3003("3003", "用户密码错误"),
+    //RECEIPT_TOOL_RESP_3002("3002", "用户密码错误"),
+    //RECEIPT_TOOL_RESP_3003("3003", "用户密码错误"),
     RECEIPT_TOOL_RESP_3004("3004", "请求签名错误"),
     RECEIPT_TOOL_RESP_3005("3005", "会话token获取失败"),
     RECEIPT_TOOL_RESP_3006("3006", "token已过期或者登录超时!请重新登录"),

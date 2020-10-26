@@ -72,8 +72,6 @@ public class ChartService implements IChartService {
                 dayData.add(String.valueOf(0));//默认为0
             }
         }
-
-        //int[] data = new int[]{150, 232, 201, 154, 190, 330, 410,150, 232, 201, 154, 190, 330, 410,150, 232, 201, 154, 190, 330, 410,150, 232, 201, 154, 190, 330, 410,33,34};
         chartsRegVo.setData(dayData);
         return chartsRegVo;
     }
