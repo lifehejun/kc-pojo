@@ -71,7 +71,7 @@ public class UserRest  extends BaseRest{
             }
 
             UserBean userBean = userService.userLogin(phone, userPwd,request);
-            result.put("user",userBean);
+            result.put("user",UserCache.refreshLoginUserInfo(userBean));
             result.put("token",tokenService.getToken(userBean));
             return requestSuccess(result);
         } catch (Exception e) {

@@ -15,7 +15,6 @@ public class UserCache {
         userBean.setUserName(user.getUserName());
         userBean.setUserType(user.getUserType());
         userBean.setRealName(StringUtils.isNotBlank(user.getRealName())? StringUtil.checkNameLength(user.getRealName()):"");
-        userBean.setBonusRatio(user.getBonusRatio());
         userBean.setPhone(StringUtils.isNotBlank(user.getPhone())?StringUtil.replaceWithNumStar(user.getPhone()):"");
         userBean.setAddress(user.getAddress());
         userBean.setQq(StringUtils.isNotBlank(user.getQq())?StringUtil.replaceWithNumStar(user.getQq()):"");
@@ -23,7 +22,6 @@ public class UserCache {
         userBean.setHeadUrl(user.getHeadUrl());
         userBean.setGrade(user.getGrade());
         userBean.setAgentCode(user.getAgentCode());
-        userBean.setRegIp(user.getRegIp());
         userBean.setStatus(user.getStatus());
         userBean.setCoreBalance(user.getCoreBalance());
         return userBean;
