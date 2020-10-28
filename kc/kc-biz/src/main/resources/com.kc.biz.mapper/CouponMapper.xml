@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kc.biz.mapper.CouponMapper">
+  <resultMap id="BaseResultMap" type="com.kc.biz.bean.Coupon">
+    <id column="id" property="id" jdbcType="BIGINT"  />
+    <result column="coupon_code" property="couponCode" jdbcType="VARCHAR"/>
+    <result column="coupon_name" property="couponName" jdbcType="VARCHAR"/>
+    <result column="show_name" property="showName" jdbcType="VARCHAR"/>
+    <result column="bus_type" property="busType" jdbcType="BIGINT"/>
+    <result column="give_type" property="giveType" jdbcType="BIGINT"/>
+    <result column="coupon_type" property="couponType" jdbcType="BIGINT"/>
+    <result column="face_value" property="faceValue" jdbcType="DECIMAL"/>
+    <result column="subsidy_amount" property="subsidyAmount" jdbcType="DECIMAL"/>
+    <result column="num" property="num" jdbcType="BIGINT"/>
+    <result column="sell_start_time" property="sellStartTime" jdbcType="BIGINT"/>
+    <result column="sell_end_time" property="sellEndTime" jdbcType="BIGINT"/>
+    <result column="valid_start_time" property="validStartTime" jdbcType="BIGINT"/>
+    <result column="valid_end_time" property="validEndTime" jdbcType="BIGINT"/>
+    <result column="status" property="status" jdbcType="BIGINT"/>
+    <result column="rule_desc" property="ruleDesc" jdbcType="VARCHAR"/>
+    <result column="create_time" property="createTime" jdbcType="BIGINT"/>
+  </resultMap>
+
+    <sql id="select_condition_sql">
+        <where>
+            <trim prefix="(" suffix=")" prefixOverrides="and">
+                <if test="id != null ">
+                    and tc.id = #{id}
+                </if>
+                <if test="couponCode != null and couponCode != ''">
+                    and tc.coupon_code like concat('%',#{couponCode},'%')
+                </if>
+                <if test="couponName != null and couponName != ''">
+                    and tc.coupon_name like concat('%',#{couponName},'%')
+                </if>
+                <if test="showName != null and showName != ''">
+                    and tc.show_name like concat('%',#{showName},'%')
+                </if>
+                <if test="status != null ">
+                    and tc.status = #{status}
+                </if>
+
+            </trim>
+        </where>
+    </sql>
+
+    <insert id="insert" parameterType="com.kc.biz.bean.Coupon" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_coupon
+        (coupon_code,coupon_name,show_name,bus_type,give_type,coupon_type,
+        face_value,subsidy_amount,num,sell_start_time,sell_end_time,
+        valid_start_time, valid_end_time,rule_desc,status,create_time)
+        VALUES
+        (#{couponCode}, #{couponName},#{showName}, #{busType}, #{giveType}, #{couponType},
+         #{faceValue}, #{subsidyAmount}, #{num}, #{sellStartTime}, #{sellEndTime},
+         #{validStartTime},#{validEndTime}, #{ruleDesc}, #{status},unix_timestamp())
+    </insert>
+
+
+    <select id="queryByPage" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+        SELECT
+        tc.coupon_code,
+        tc.coupon_name,
+        tc.show_name,
+        tc.bus_type,
+        tc.give_type,
+        tc.coupon_type,
+        tc.face_value,
+        tc.subsidy_amount,
+        tc.num,
+        tc.sell_start_time,
+        tc.sell_end_time,
+        tc.valid_start_time,
+        tc.valid_end_time,
+        tc.rule_desc,
+        tc.status,
+        tc.create_time
+        FROM tb_coupon tc
+        <include refid="select_condition_sql"/>
+        ORDER BY tc.create_time DESC
+        LIMIT #{startRow}, #{pageSize}
+    </select>
+    <select id="getTotal" parameterType="com.kc.biz.bean.Coupon" resultType="int">
+        SELECT count(1)
+        FROM tb_coupon tc
+        <include refid="select_condition_sql"/>
+        ORDER BY tc.create_time DESC
+    </select>
+
+    <select id="findList" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+       SELECT
+        tc.coupon_code,
+        tc.coupon_name,
+        tc.show_name,
+        tc.bus_type,
+        tc.give_type,
+        tc.coupon_type,
+        tc.face_value,
+        tc.subsidy_amount,
+        tc.num,
+        tc.sell_start_time,
+        tc.sell_end_time,
+        tc.valid_start_time,
+        tc.valid_end_time,
+        tc.rule_desc,
+        tc.status,
+        tc.create_time
+        FROM tb_coupon tc
+        ORDER BY tc.create_time DESC
+    </select>
+    <update id="updateById" parameterType="com.kc.biz.bean.Coupon">
+        UPDATE tb_coupon tc
+        <trim prefix="set" suffixOverrides=",">
+            <if test="couponName !=null and couponName !='' ">tc.coupon_name = #{couponName},</if>
+            <if test="showName !=null and showName != ''" >tc.show_name = #{showName},</if>
+            <if test="busType !=null " >tc.bus_type = #{busType},</if>
+            <if test="giveType !=null">tc.give_type = #{giveType},</if>
+            <if test="couponType !=null">tc.coupon_type = #{couponType},</if>
+            <if test="faceValue !=null">tc.face_value = #{faceValue},</if>
+            <if test="subsidyAmount !=null">tc.subsidy_amount = #{subsidyAmount},</if>
+            <if test="num !=null">tc.num = #{num},</if>
+            <if test="sellStartTime !=null">tc.sell_start_time = #{sellStartTime},</if>
+            <if test="sellEndTime !=null">tc.sell_end_time = #{sellEndTime},</if>
+            <if test="validStartTime !=null">tc.valid_start_time = #{validStartTime},</if>
+            <if test="validEndTime !=null">tc.valid_end_time = #{validEndTime},</if>
+            <if test="status !=null">tc.status = #{status},</if>
+            <if test="ruleDesc !=null and ruleDesc != ''" >tc.rule_desc = #{ruleDesc},</if>
+        </trim>
+        WHERE id=#{id}
+    </update>
+
+    <select id="queryById" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+        SELECT
+        tc.coupon_code,
+        tc.coupon_name,
+        tc.show_name,
+        tc.bus_type,
+        tc.give_type,
+        tc.coupon_type,
+        tc.face_value,
+        tc.subsidy_amount,
+        tc.num,
+        tc.sell_start_time,
+        tc.sell_end_time,
+        tc.valid_start_time,
+        tc.valid_end_time,
+        tc.rule_desc,
+        tc.status,
+        tc.create_time
+        FROM tb_coupon tc
+        WHERE tc.id = #{id}
+        ORDER BY tc.create_time DESC
+    </select>
+
+    <select id="queryByCode" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+         SELECT
+        tc.coupon_code,
+        tc.coupon_name,
+        tc.show_name,
+        tc.bus_type,
+        tc.give_type,
+        tc.coupon_type,
+        tc.face_value,
+        tc.subsidy_amount,
+        tc.num,
+        tc.sell_start_time,
+        tc.sell_end_time,
+        tc.valid_start_time,
+        tc.valid_end_time,
+        tc.rule_desc,
+        tc.status,
+        tc.create_time
+        FROM tb_coupon tc
+        WHERE tc.coupon_code = #{couponCode}
+        ORDER BY tc.create_time DESC
+    </select>
+
+
+    <delete id="deleteById" parameterType="com.kc.biz.bean.Coupon">
+       DELETE FROM tb_coupon where id = #{id}
+    </delete>
+
+</mapper>

@@ -14,6 +14,7 @@ public enum TransTypeEnums {
     TRANS_TYPE_103(103, "推荐好友收益",1),
     TRANS_TYPE_104(104, "打赏",0),
     TRANS_TYPE_105(105, "被打赏",1),
+    TRANS_TYPE_106(106, "平台优惠",1),
     ;
 
 

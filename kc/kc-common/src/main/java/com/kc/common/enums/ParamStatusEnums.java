@@ -1,5 +1,7 @@
 package com.kc.common.enums;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -41,5 +43,19 @@ public enum ParamStatusEnums {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    /**
+     * 根据code获取name值
+     * @param status
+     * @return
+     */
+    public static String getName(int status){
+        for(ParamStatusEnums paramStatusEnums : values()){
+            if(paramStatusEnums.getStatus() == status){
+                return paramStatusEnums.getName();
+            }
+        }
+        return StringUtils.EMPTY;
     }
 }

@@ -181,6 +181,19 @@
             </li>
             <li>
                 <a href="javascript:;">
+                    <i class="iconfont left-nav-li" lay-tips="营销管理">&#xe6ce;</i>
+                    <cite>营销管理</cite>
+                    <i class="iconfont nav_right">&#xe697;</i></a>
+                <ul class="sub-menu">
+                    <li>
+                        <a onclick="xadmin.add_tab('优惠券','/coupon/list')">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>优惠券</cite></a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="javascript:;">
                     <i class="iconfont left-nav-li" lay-tips="快捷操作">&#xe6b4;</i>
                     <cite>快捷操作</cite>
                     <i class="iconfont nav_right">&#xe697;</i></a>

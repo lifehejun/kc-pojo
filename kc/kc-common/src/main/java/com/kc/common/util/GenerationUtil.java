@@ -179,6 +179,15 @@ public class GenerationUtil {
 		return "VL-"+random;
 	}
 
+	/**
+	 * 生成优惠券编号
+	 * @return
+	 */
+	public static String getCouponCode(){
+		String random = RandomStringUtils.randomNumeric(4);
+		return "YHQ-"+random;
+	}
+
 	public static void main(String[] args) {
 		System.out.println(RandomStringUtils.randomNumeric(5));
 	}
