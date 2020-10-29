@@ -47,9 +47,12 @@ public enum UserTypeEnums {
      * @param code
      * @return
      */
-    public static String getName(int code){
+    public static String getName(Integer code){
+        if(null == code){
+            return StringUtils.EMPTY;
+        }
         for(UserTypeEnums userTypeEnum : values()){
-            if(userTypeEnum.getCode() == code){
+            if(userTypeEnum.getCode() == code.intValue()){
                 return userTypeEnum.getName();
             }
         }
