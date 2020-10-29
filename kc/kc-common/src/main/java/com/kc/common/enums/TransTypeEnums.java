@@ -76,6 +76,9 @@ public enum TransTypeEnums {
      * @return
      */
     public static String getName(Integer code){
+        if(null == code){
+            return StringUtils.EMPTY;
+        }
         for(TransTypeEnums statusEnum : values()){
             if(statusEnum.getCode().equals(code)){
                 return statusEnum.getName();

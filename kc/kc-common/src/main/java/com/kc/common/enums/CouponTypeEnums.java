@@ -48,9 +48,12 @@ public enum CouponTypeEnums {
      * @param code
      * @return
      */
-    public static String getName(int code){
+    public static String getName(Integer code){
+        if(null == code){
+            return StringUtils.EMPTY;
+        }
         for(CouponTypeEnums couponTypeEnums : values()){
-            if(couponTypeEnums.getCode() == code){
+            if(couponTypeEnums.getCode() == code.intValue()){
                 return couponTypeEnums.getName();
             }
         }

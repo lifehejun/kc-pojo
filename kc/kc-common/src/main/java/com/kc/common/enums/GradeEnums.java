@@ -52,9 +52,12 @@ public enum  GradeEnums {
      * @param code
      * @return
      */
-    public static String getName(int code){
+    public static String getName(Integer code){
+        if(null == code){
+            return StringUtils.EMPTY;
+        }
         for(GradeEnums statusEnum : values()){
-            if(statusEnum.getCode() == code){
+            if(statusEnum.getCode() == code.intValue()){
                 return statusEnum.getName();
             }
         }
@@ -66,9 +69,12 @@ public enum  GradeEnums {
      * @param code
      * @return
      */
-    public static String getVipName(int code){
+    public static String getVipName(Integer code){
+        if(null == code){
+            return StringUtils.EMPTY;
+        }
         for(GradeEnums statusEnum : values()){
-            if(statusEnum.getCode() == code){
+            if(statusEnum.getCode() == code.intValue()){
                 return statusEnum.getVipName();
             }
         }

@@ -47,9 +47,12 @@ public enum DomainTypeEnums {
      * @param code
      * @return
      */
-    public static String getName(int code){
+    public static String getName(Integer code){
+        if(null == code){
+            return StringUtils.EMPTY;
+        }
         for(DomainTypeEnums domainTypeEnum : values()){
-            if(domainTypeEnum.getCode() == code){
+            if(domainTypeEnum.getCode() == code.intValue()){
                 return domainTypeEnum.getName();
             }
         }

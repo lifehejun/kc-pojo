@@ -53,9 +53,12 @@ public enum FilterRuleTypeEnums {
      * @param code
      * @return
      */
-    public static String getName(int code){
+    public static String getName(Integer code){
+        if(null == code){
+            return StringUtils.EMPTY;
+        }
         for(FilterRuleTypeEnums statusEnum : values()){
-            if(statusEnum.getCode() == code){
+            if(statusEnum.getCode() == code.intValue()){
                 return statusEnum.getName();
             }
         }

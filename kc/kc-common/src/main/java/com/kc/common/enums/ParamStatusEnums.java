@@ -50,9 +50,12 @@ public enum ParamStatusEnums {
      * @param status
      * @return
      */
-    public static String getName(int status){
+    public static String getName(Integer status){
+        if(null == status){
+            return StringUtils.EMPTY;
+        }
         for(ParamStatusEnums paramStatusEnums : values()){
-            if(paramStatusEnums.getStatus() == status){
+            if(paramStatusEnums.getStatus() == status.intValue()){
                 return paramStatusEnums.getName();
             }
         }

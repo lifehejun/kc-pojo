@@ -58,6 +58,7 @@
 
     <select id="queryByPage" parameterType="java.util.HashMap" resultMap="BaseResultMap">
         SELECT
+        tc.id,
         tc.coupon_code,
         tc.coupon_name,
         tc.show_name,
@@ -88,6 +89,7 @@
 
     <select id="findList" parameterType="java.util.HashMap" resultMap="BaseResultMap">
        SELECT
+        tc.id,
         tc.coupon_code,
         tc.coupon_name,
         tc.show_name,
@@ -130,6 +132,7 @@
 
     <select id="queryById" parameterType="java.util.HashMap" resultMap="BaseResultMap">
         SELECT
+        tc.id,
         tc.coupon_code,
         tc.coupon_name,
         tc.show_name,
@@ -153,6 +156,7 @@
 
     <select id="queryByCode" parameterType="java.util.HashMap" resultMap="BaseResultMap">
          SELECT
+         tc.id,
         tc.coupon_code,
         tc.coupon_name,
         tc.show_name,

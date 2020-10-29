@@ -1,8 +1,8 @@
 package com.kc.common.enums;
 
 public enum VerifyCodeTypeEnums {
-    VERIFY_CODE_TYPE_REG("reg", "注册验证码"),
-    VERIFY_CODE_TYPE_LOGIN("login", "登陆验证码");
+    VERIFY_CODE_TYPE_REG("reg", "注册手机验证码"),
+    VERIFY_CODE_TYPE_LOGIN("login", "登陆手机验证码");
 
 
     private String code;

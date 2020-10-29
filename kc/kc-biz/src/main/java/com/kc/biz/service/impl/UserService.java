@@ -426,20 +426,17 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public boolean getVerifyCode(String phone, String codeType) throws ApiException {
+    public void getVerifyCode(String phone, String codeType) throws ApiException {
         /** 验证用户名 ：默认为手机号**/
         ValidatorUtil.validatePhone(phone);
         if(!CommConst.VERIFY_CODE_TYPE.contains(codeType)){
             throw new ApiException(BusinessCode.USER_RESP_2024.getCode());
         }
-        boolean flag = false;
         //调用短信平台获取验证码 //TODO-H
-        String verifyCode = "12345";
+        String verifyCode = "123456";
         if(StringUtils.isNoneBlank(verifyCode)){
-            flag = true;
             cacheService.setVerifyCode(phone,codeType,verifyCode);
         }
-        return flag;
     }
 
     @Override

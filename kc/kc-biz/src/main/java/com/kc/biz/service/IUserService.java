@@ -33,7 +33,7 @@ public interface IUserService {
     int updateLoginPwd(String userId, String newPwd) throws ApiException;//修改登陆密码
     int bindPhone(String userId, String phone) throws ApiException;//绑定手机
     int bindBankCard(Map<String, String> params) throws ApiException;//绑定yh卡
-    boolean getVerifyCode(String phone,String codeType) throws ApiException;//获取验证码
+    void getVerifyCode(String phone,String codeType) throws ApiException;//获取验证码
     void follow(Map<String,Object> params)throws ApiException;//关注
     void returnFollow(Map<String,Object> params)throws ApiException; //取消关注
     Page<FollowUserVo> findFollowUserByPage(Map<String, Object> params) throws ApiException;//查询我的关注列表

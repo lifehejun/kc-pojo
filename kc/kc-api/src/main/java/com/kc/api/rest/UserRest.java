@@ -89,15 +89,14 @@ public class UserRest  extends BaseRest{
      */
     @RequestMapping(value = "/getVerifyCode", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String, Object> getRegVerifyCode(HttpServletRequest request, @RequestBody Map<String, String> params) {
+    public Map<String, Object> getVerifyCode(HttpServletRequest request, @RequestBody Map<String, String> params) {
         Map<String,Object> result= new HashMap<String,Object>();
         try {
             logger.info("getVerifyCode params : {}",params.toString());
             String phone = params.get("phone"); //用手机号作为用户名
             String codeType = params.get("codeType"); //验证码类型
-            boolean isSuccess = userService.getVerifyCode(phone, codeType);
-            result.put("isSuccess",isSuccess);
-            return requestSuccess(result);
+            userService.getVerifyCode(phone, codeType);
+            return requestSuccess("获取验证码成功");
         } catch (Exception e) {
             logger.info("ERROR:{}系统异常,getRegVerifyCode",500);
             return exceptionHandling(e);

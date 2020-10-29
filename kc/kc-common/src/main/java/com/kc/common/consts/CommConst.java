@@ -66,6 +66,7 @@ public class CommConst {
 	public final static Integer TRANS_STATUS_2 = 2; //交易失败
 
 
+	//验证码类型参数集合
 	public static List<String> VERIFY_CODE_TYPE = Arrays.asList(
 			VerifyCodeTypeEnums.VERIFY_CODE_TYPE_REG.getCode(),VerifyCodeTypeEnums.VERIFY_CODE_TYPE_LOGIN.getCode());
 

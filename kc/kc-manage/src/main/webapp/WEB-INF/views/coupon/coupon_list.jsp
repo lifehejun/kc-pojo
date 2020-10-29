@@ -114,6 +114,7 @@
             var data = obj.data;
             if(obj.event === 'edit'){
                 var id = data.id;
+                debugger;
                 editCoupon(id);
 
             }
