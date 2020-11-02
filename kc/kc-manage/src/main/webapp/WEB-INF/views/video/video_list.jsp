@@ -11,7 +11,7 @@
     <div class="layui-form-item">
         <div class="layui-inline">
             <label class="layui-form-label">视频类型：</label>
-            <div class="layui-input-inline">
+            <div class="layui-input-inline layui-input-search">
                 <select name="vodType" lay-search="">
                     <option value="">--请选择--</option>
                     <c:forEach items="${videoType}" var="type">
@@ -20,7 +20,7 @@
                 </select>
             </div>
             <label class="layui-form-label">视频标签：</label>
-            <div class="layui-input-inline">
+            <div class="layui-input-inline layui-input-search">
                 <select name="labelCode" id="labelCode" lay-search="">
                     <option value="">全部</option>
                     <c:forEach items="${videoLabelGroupMap}" var="labelGroup">
@@ -35,7 +35,7 @@
 
             <div class="layui-inline" >
                 <label class="layui-form-label">视频名称：</label>
-                <div class="layui-input-inline">
+                <div class="layui-input-inline layui-input-search">
                     <input class="layui-input" id="vodName" name="vodName" placeholder="模糊查询"/>
                 </div>
             </div>

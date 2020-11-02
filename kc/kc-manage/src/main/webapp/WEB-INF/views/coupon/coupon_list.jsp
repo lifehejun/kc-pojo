@@ -11,13 +11,13 @@
     <div class="layui-form-item">
         <div class="layui-inline" >
             <label class="layui-form-label">优惠券代码：</label>
-            <div class="layui-input-inline">
+            <div class="layui-input-inline layui-input-search">
                 <input class="layui-input" id="couponCode" placeholder="模糊查询" name="couponCode"/>
             </div>
         </div>
         <div class="layui-inline" >
             <label class="layui-form-label">状态：</label>
-            <div class="layui-input-inline">
+            <div class="layui-input-inline layui-input-search">
                 <select name="status" id="status" lay-search="">
                     <option value="">全部</option>
                     <c:forEach items="${statusEnums}" var="status">
@@ -28,7 +28,7 @@
         </div>
         <div class="layui-inline" >
             <label class="layui-form-label">优惠券类型：</label>
-            <div class="layui-input-inline">
+            <div class="layui-input-inline layui-input-search">
                 <select name="status" id="couponType" lay-search="">
                     <option value="">全部</option>
                     <c:forEach items="${couponTypeEnumsMap}" var="couponType">
@@ -135,7 +135,7 @@
         var editCoupon = function (id) {
             layer.open({
                 type: 2,
-                area: ['550','500'],
+                area: ['65%','80%'],
                 content: '/coupon/edit?id='+id //这里content是一个URL，如果你不想让iframe出现滚动条，你还可以content: ['http://sentsin.com', 'no']
             });
         }
@@ -147,7 +147,7 @@
         layer.open({
             title:'添加优惠券',
             type: 2,
-            area: ['50%','70%'],
+            area: ['65%','80%'],
             content: '/coupon/edit' //这里content是一个URL，如果你不想让iframe出现滚动条，你还可以content: ['http://sentsin.com', 'no']
         });
     }

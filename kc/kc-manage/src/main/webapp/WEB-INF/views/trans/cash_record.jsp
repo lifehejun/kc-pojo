@@ -11,26 +11,25 @@
     <div class="layui-form-item">
         <div class="layui-inline" >
             <label class="layui-form-label">手机号：</label>
-            <div class="layui-input-inline">
+            <div class="layui-input-inline layui-input-search">
                 <input class="layui-input" id="phone" name="phone"/>
             </div>
         </div>
         <div class="layui-inline" >
             <label class="layui-form-label">交易单号：</label>
-            <div class="layui-input-inline">
+            <div class="layui-input-inline layui-input-search">
                 <input class="layui-input" id="transNo" name="transNo"/>
             </div>
         </div>
 
         <div class="layui-inline">
             <label class="layui-form-label">交易状态：</label>
-            <div class="layui-input-inline">
+            <div class="layui-input-inline layui-input-search">
                 <select name="status" id="status" lay-search="">
                     <option value="">全部</option>
                     <option value="0">待交易</option>
                     <option value="1">交易成功</option>
                     <option value="2">交易失败</option>
-
                 </select>
             </div>
         </div>

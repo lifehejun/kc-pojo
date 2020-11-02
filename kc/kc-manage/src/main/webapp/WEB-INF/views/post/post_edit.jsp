@@ -37,29 +37,32 @@
     <div class="layui-form-item">
         <label class="layui-form-label">帖子内容 <span style="color:red;">*</span></label>
         <div class="layui-input-block">
-            <textarea placeholder="请输入内容" lay-verify="required"   name="postTitle" class="layui-textarea">${post.postTitle}</textarea>
+            <textarea placeholder="请输入内容" lay-verify="required"   name="postTitle" class="layui-textarea" style="width: 85%">${post.postTitle}</textarea>
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">帖子图片</label>
         <div class="layui-input-block post-img">
-            <img width="80px" height="80px" src="https://dss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=2043091788,724368588&fm=58"/>
-            <img width="80px" height="80px" src="https://dss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=2043091788,724368588&fm=58"/>
-            <img width="80px" height="80px" src="https://dss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=2043091788,724368588&fm=58"/>
-            <img width="80px" height="80px" src="https://dss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=2043091788,724368588&fm=58"/>
-            <img width="80px" height="80px" src="https://dss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=2043091788,724368588&fm=58"/>
-            <img width="80px" height="80px" src="https://dss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=2043091788,724368588&fm=58"/>
-            <img width="80px" height="80px" src="https://dss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=2043091788,724368588&fm=58"/>
-            <img width="80px" height="80px" src="https://dss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=2043091788,724368588&fm=58"/>
-            <img width="80px" height="80px" src="https://dss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=2043091788,724368588&fm=58"/>
+
+            <div class="layui-upload">
+                <button type="button" class="layui-btn layui-btn-normal" id="test2">多图片上传</button>
+                <blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;width: 80%">
+                    预览图：
+                    <div class="layui-upload-list" id="demo2">
+                        <c:forEach items="${postImageList}" var="postImage" varStatus="index">
+                            <img src="${postImage.imgUrl}" class="layui-upload-img">
+                        </c:forEach>
+                    </div>
+                </blockquote>
+            </div>
         </div>
     </div>
-    <div class="layui-form-item">
+   <%-- <div class="layui-form-item">
         <label class="layui-form-label">帖子视频</label>
         <div class="layui-input-block">
             <img width="80px" height="80px" src="https://dss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=2043091788,724368588&fm=58"/>
         </div>
-    </div>
+    </div>--%>
     <div class="layui-form-item">
         <div class="layui-input-block">
             <button class="layui-btn layui-btn-normal" lay-submit lay-filter="postSave">立即提交</button>
@@ -88,7 +91,7 @@
             }
             data.field.topicCodeList = arr.join(",");
             var jsonData = data.field;
-            parent._ajax_b("/post/publish",jsonData,"发布成功",null);
+            parent._ajax_b("/post/publish",jsonData,"保存成功",null);
             return false;
         });
     });

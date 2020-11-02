@@ -1,8 +1,10 @@
 package com.kc.biz.service.impl;
 
 import com.kc.biz.bean.BusConfig;
+import com.kc.biz.bean.ForbidWord;
 import com.kc.biz.bean.UserBean;
 import com.kc.biz.cache.RedisUtil;
+import com.kc.biz.mapper.ForbidWordMapper;
 import com.kc.biz.service.IBusConfigService;
 import com.kc.biz.service.ICacheService;
 import com.kc.biz.service.ICheckBusinessService;
@@ -33,10 +35,12 @@ public class CheckBusinessServiceImpl implements ICheckBusinessService {
     private IBusConfigService busConfigService;
     @Autowired
     private IUserService userService;
+    @Autowired
+    private ForbidWordMapper forbidWordMapper;
 
 
     @Override
-    public void checkManualCash(UserBean user, BigDecimal cashMoney) {
+    public void checkManualCash(UserBean user, BigDecimal cashMoney) throws ApiException {
         if(cashMoney.compareTo(BigDecimal.ZERO)<=0){
             throw new ApiException(BusinessCode.TRANS_RESP_4002.getCode());
         }
@@ -57,7 +61,7 @@ public class CheckBusinessServiceImpl implements ICheckBusinessService {
     }
 
     @Override
-    public void checkIpRegSize(String regIp) {
+    public void checkIpRegSize(String regIp) throws ApiException {
 
         Map<String,Object> params = new HashMap<String,Object>();
         params.put("regIp",regIp);
@@ -67,7 +71,7 @@ public class CheckBusinessServiceImpl implements ICheckBusinessService {
             res = regIpUserList.size();
         }
         //若未配置，则不限制
-        String maxRegSizeFlag = busConfigService.findName(RedisKeyEnums.WEB_CONFIG.getCode(),BusConfigConst.NAME_MAX_REG_IP_USER_SIZE);
+        String maxRegSizeFlag = busConfigService.findByName(RedisKeyEnums.WEB_CONFIG.getCode(),BusConfigConst.NAME_MAX_REG_IP_USER_SIZE);
         if(StringUtils.isNotBlank(maxRegSizeFlag)){
             int maxRegSize = Integer.valueOf(maxRegSizeFlag).intValue();
             if(res >= maxRegSize){
@@ -75,5 +79,19 @@ public class CheckBusinessServiceImpl implements ICheckBusinessService {
             }
         }
 
+    }
+
+    @Override
+    public void checkForbidWord(String postTitle) throws ApiException{
+        //判断违禁词
+        List<ForbidWord> wordList = forbidWordMapper.findList();
+        if(null != wordList && wordList.size()>0){
+            for (ForbidWord forbidWord : wordList){
+                String keyword = forbidWord.getKeyWord();
+                if(postTitle.contains(keyword)){
+                    throw new ApiException(BusinessCode.POST_TITLE_IS_FORBID_KEY_5104.getCode(),new String[]{keyword});
+                }
+            }
+        }
     }
 }

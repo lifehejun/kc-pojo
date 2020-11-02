@@ -2,6 +2,7 @@ package com.kc.biz.service;
 
 import com.kc.biz.bean.Topic;
 import com.kc.biz.bean.VideoLabel;
+import com.kc.biz.vo.TopicShowVo;
 import com.kc.common.exception.ApiException;
 import com.kc.common.page.Page;
 
@@ -20,5 +21,6 @@ public interface ITopicService {
     Page<Topic> queryByPage(Map<String, Object> params) throws ApiException;
     void refresh();
     List<Topic> findList();
+    List<TopicShowVo> findListByRedis()throws ApiException;
 
 }

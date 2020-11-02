@@ -48,9 +48,9 @@
                         </li>
                         <li class="layui-col-md2 layui-col-xs6">
                             <a href="javascript:;" class="x-admin-backlog-body">
-                                <h3>商品数</h3>
+                                <h3><i class="layui-icon">&#58890;</i> 帖子数</h3>
                                 <p>
-                                    <cite style="color: #1E9FFF">67</cite></p>
+                                    <cite style="color: #1E9FFF">${statisticsVo.todayPostNum}</cite></p>
                             </a>
                         </li>
                         <li class="layui-col-md2 layui-col-xs6">

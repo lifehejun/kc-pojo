@@ -20,5 +20,5 @@ public interface IBusConfigService{
     List<BusConfig> findListByType(String busType);
     void refresh() throws ApiException;
     List<BusConfig> findListRedisByType(String busTypeKey);
-    String findName(String busTypeKey,String name);
+    String findByName(String busTypeKey,String name);
 }

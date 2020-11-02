@@ -19,8 +19,8 @@ public interface IPostService {
     int updateById(Post post);
     void checkSuccess(Long id);
     Page<Post> queryByPage(Map<String, Object> params) throws ApiException;
-    Page<PostVo> findPostByPage(Map<String, Object> params) throws ApiException;
-    void publish(PostVo postVo);
+    Page<PostVo> findPostBySug(Map<String,Object> params) throws ApiException;
+    void manualPublish(PostVo postVo) throws ApiException;
     List<PostVideo> findVideoByPostId(Long postId);
     List<PostImage> findImgByPostId(Long postId);
 

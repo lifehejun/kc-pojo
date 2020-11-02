@@ -27,3 +27,18 @@
  background: #fff;
  margin: 2px;
 }
+
+/* 搜索框宽度设置 */
+.layui-input-search{
+ width: 115px!important;
+}
+
+.layui-form-label{
+ width: 85px!important;
+}
+
+.layui-upload-img{
+ width: 100px;
+ height: 100px;
+
+}

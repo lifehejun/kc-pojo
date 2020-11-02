@@ -1,5 +1,7 @@
 package com.kc.common.util.api;
 
+import com.kc.common.util.Md5Encrypt;
+
 import java.security.MessageDigest;
 import java.util.Base64;
 import java.util.Base64.Encoder;
@@ -99,6 +101,7 @@ public class EncryptUtils {
 	public static void main(String[] args) {
 		String password = "Hj@1zM$I$hx8F";
 		System.out.println(MD5(password + "!@#k3&^*"));
+		System.out.println(Md5Encrypt.md5("admin"));
 		//System.out.println(encryptPHP("123456", "KRUjtJoY"));
 	}
 }

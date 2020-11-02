@@ -36,8 +36,9 @@
         <id column="id" property="id" jdbcType="BIGINT"  />
         <result column="user_id" property="userId" jdbcType="VARCHAR"/>
         <result column="post_title" property="postTitle" jdbcType="VARCHAR"/>
-        <result column="likeNum" property="likeNum" jdbcType="BIGINT"/>
-        <result column="viewNum" property="viewNum" jdbcType="BIGINT"/>
+        <result column="topic_code_list" property="topicCodeList" jdbcType="VARCHAR"/>
+        <result column="like_num" property="likeNum" jdbcType="BIGINT"/>
+        <result column="view_num" property="viewNum" jdbcType="BIGINT"/>
         <result column="comment_num" property="commentNum" jdbcType="BIGINT"/>
         <result column="reward_amount" property="rewardAmount" jdbcType="DECIMAL"/>
         <result column="publish_time" property="publishTime" jdbcType="BIGINT"/>
@@ -46,6 +47,17 @@
         <result column="address" property="address" jdbcType="VARCHAR"/>
         <result column="head_url" property="headUrl" jdbcType="VARCHAR"/>
         <result column="grade" property="grade" jdbcType="VARCHAR"/>
+
+        <collection property="postImageList" ofType="PostImage" column="piId">
+            <id column="piId" property="id" jdbcType="BIGINT"  />
+            <result column="img_url" property="imgUrl" jdbcType="VARCHAR"/>
+        </collection>
+
+        <collection property="postVideo" ofType="PostVideo" column="pvId">
+            <id column="pvId" property="id" jdbcType="BIGINT"  />
+            <result column="vod_play_url" property="vodPlayUrl" jdbcType="VARCHAR"/>
+            <result column="vod_time" property="vodTime" jdbcType="BIGINT"/>
+        </collection>
     </resultMap>
 
     <sql id="select_condition_sql">
@@ -62,6 +74,15 @@
                 </if>
                 <if test="topicCode != null and topicCode != ''">
                     and tp.topic_code_list like concat('%',#{topicCode},'%')
+                </if>
+                <if test="postTitle != null and postTitle != ''">
+                    and tp.post_title like concat('%',#{postTitle},'%')
+                </if>
+                <if test="startCreateTime != null" >
+                    and tp.create_time &gt;= #{startCreateTime}
+                </if>
+                <if test="endCreateTime != null" >
+                    and tp.create_time &lt;= #{endCreateTime}
                 </if>
             </trim>
         </where>
@@ -119,48 +140,43 @@
         ORDER BY tp.create_time DESC
     </select>
 
-    <select id="findPostByPage" parameterType="java.util.HashMap" resultMap="PostVoResultMap">
-        SELECT tp.id,
-        tp.user_id,
-        tp.topic_code_list,
-        tp.post_title,
-        tp.status,
-        tp.like_num,
-        tp.view_num,
-        tp.comment_num,
-        tp.reward_amount,
-        tp.publish_time,
-        tp.create_time,
-        tu.user_name,
-        tu.address,
-        tu.head_url,
-        tu.grade
-        FROM tb_post tp join tb_user tu on tp.user_id = tu.user_id
-        <include refid="select_condition_sql"/>
-        <choose>
-            <when test="sortType != null and sortType !=''">
-                <if test='sortType == "maxNew"'>
-                    ORDER BY tp.publish_time DESC
-                </if>
-                <if test='sortType == "maxHot"'>
-                    ORDER BY tp.like_num DESC
-                </if>
-                <if test='sortType == "maxComm"'>
-                    ORDER BY tp.comment_num DESC
-                </if>
-            </when>
-            <otherwise>
-                ORDER BY tp.create_time DESC
-            </otherwise>
-        </choose>
-        LIMIT #{startRow}, #{pageSize}
+    <select id="findPostBySug" parameterType="java.util.HashMap" resultMap="PostVoResultMap">
+    SELECT tp1.*,
+           tpi.id as piId,
+           tpi.img_url,
+           tpv.id as pvId,
+           tpv.vod_play_url,
+           tpv.vod_time
+    FROM (
+             SELECT tp.id,
+             tp.user_id,
+             tp.topic_code_list,
+             tp.post_title,
+             tp.status,
+             tp.like_num,
+             tp.view_num,
+             tp.comment_num,
+             tp.reward_amount,
+             tp.publish_time,
+             tp.create_time,
+             tu.user_name,
+             tu.address,
+             tu.head_url,
+             tu.grade
+             FROM tb_post tp JOIN tb_user tu ON tp.user_id = tu.user_id
+             WHERE tp.status = 1 ORDER BY tp.create_time DESC  LIMIT #{startRow}, #{pageSize}
+      )as tp1
+          LEFT JOIN tb_post_image tpi ON tp1.id = tpi.post_id
+          LEFT JOIN tb_post_video tpv ON tp1.id = tpv.post_id
     </select>
 
-    <select id="findPostTotal" parameterType="com.kc.biz.bean.Post" resultType="int">
-        SELECT count(1)
-        FROM tb_post tp
-        <include refid="select_condition_sql"/>
-        ORDER BY tp.create_time DESC
+
+    <!--暂时用不到，直接list.size计算得出-->
+    <select id="findPostTotalBySug" parameterType="com.kc.biz.bean.Post" resultType="int">
+          SELECT count(1)
+          FROM tb_post tp JOIN tb_user tu ON tp.user_id = tu.user_id
+          WHERE tp.status = 1
+          ORDER BY tp.create_time DESC
     </select>
 
     <update id="updateById" parameterType="com.kc.biz.bean.Post">
@@ -218,6 +234,10 @@
 
     <delete id="deleteById" parameterType="com.kc.biz.bean.Post">
        DELETE FROM tb_post where id = #{id}
+    </delete>
+
+    <delete id="deletePostImage" parameterType="java.lang.Long">
+       DELETE FROM tb_post_image where post_id = #{postId}
     </delete>
 
 

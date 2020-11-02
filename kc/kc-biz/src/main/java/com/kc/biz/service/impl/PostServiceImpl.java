@@ -3,11 +3,10 @@ package com.kc.biz.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.kc.biz.bean.*;
 import com.kc.biz.cache.RedisUtil;
+import com.kc.biz.mapper.ForbidWordMapper;
 import com.kc.biz.mapper.PostMapper;
 import com.kc.biz.mapper.TopicMapper;
-import com.kc.biz.service.IAsyncService;
-import com.kc.biz.service.IPostService;
-import com.kc.biz.service.IUserService;
+import com.kc.biz.service.*;
 import com.kc.biz.vo.PostVo;
 import com.kc.common.enums.PostStatusEnums;
 import com.kc.common.enums.RedisKeyEnums;
@@ -42,6 +41,10 @@ public class PostServiceImpl implements IPostService {
     private IUserService userService;
     @Autowired
     private IAsyncService asyncService;
+    @Autowired
+    private ICacheService cacheService;
+    @Autowired
+    private ICheckBusinessService checkBusinessService;
 
 
     @Override
@@ -51,7 +54,11 @@ public class PostServiceImpl implements IPostService {
 
     @Override
     public int deleteById(Long id) {
-        return postMapper.deleteById(id);
+        int res = postMapper.deleteById(id);
+        if(res>0){
+             postMapper.deletePostImage(id);
+        }
+        return res;
     }
 
     @Override
@@ -80,24 +87,8 @@ public class PostServiceImpl implements IPostService {
             List<Post> list = postMapper.queryByPage(params);
             list.forEach(post -> {
                 String topicCodeList = post.getTopicCodeList();
-                List<String> topicTitleList = new ArrayList<String>();
-                if(StringUtils.isNotBlank(topicCodeList)){
-                    String[] topicCodeArr = topicCodeList.split(",");
-                    for (String topicCode: topicCodeArr){
-                        String redisTopicKey = RedisKeyEnums.TOPIC_CODE.getCode()+topicCode;
-                        String topicJson = redisUtil.getValueByKey(redisTopicKey);
-                        Topic topic = null;
-                        if(StringUtils.isNotBlank(topicJson)){
-                            topic = JSON.parseObject(topicJson,Topic.class);
-                        }else{
-                            topic = topicMapper.queryByCode(topicCode);
-                        }
-                        if(null != topic){
-                            topicTitleList.add(topic.getTopicTitle());
-                        }
-                    }
-                    post.setTopicTitleList(String.join(",",topicTitleList));
-                }
+                List<String> topicTitleList = cacheService.getTopicTitleList(topicCodeList);
+                post.setTopicTitleList(String.join(",",topicTitleList));
             });
             return new Page<Post>(list, total);
         }else{
@@ -106,17 +97,15 @@ public class PostServiceImpl implements IPostService {
     }
 
     @Override
-    public Page<PostVo> findPostByPage(Map<String, Object> params) throws ApiException {
-        int total = postMapper.findPostTotal(params);
+    public Page<PostVo> findPostBySug(Map<String,Object> params) throws ApiException {
+        int total = postMapper.findPostTotalBySug(params);
+        List<PostVo> list = postMapper.findPostBySug(params);
         if (total > 0) {
-            List<PostVo> list = postMapper.findPostByPage(params);
             //日期格式
             list.forEach(postVo -> {
                 String publishTimeStr = postVo.getPublishTime();
                 postVo.setPublishTime(TimeCountUtil.timeCount(publishTimeStr));
-                //视频
-
-                //图片
+                postVo.setTopicTitleList(cacheService.getTopicTitleList(postVo.getTopicCodeList()));
             });
             return new Page<PostVo>(list, total);
         }else{
@@ -125,11 +114,17 @@ public class PostServiceImpl implements IPostService {
     }
 
     @Override
-    public void publish(PostVo postVo) {
+    public void manualPublish(PostVo postVo) throws ApiException{
         if(null == postVo.getId()){ //新增帖子发布
             Post post = new Post();
             String topicCodeStr = postVo.getTopicCodeList();
             String postTitle = postVo.getPostTitle();
+            if(StringUtils.isBlank(postTitle)){
+                throw new ApiException(BusinessCode.POST_TITLE_NULL_5103.getCode());
+            }
+            //判断违禁词
+            checkBusinessService.checkForbidWord(postTitle);
+
             if(StringUtils.isBlank(topicCodeStr)){
                 throw new ApiException(BusinessCode.POST_TOPIC_CODE_MIN_1_5101.getCode());
             }
@@ -137,9 +132,6 @@ public class PostServiceImpl implements IPostService {
             List<String> topicCodeList =  Arrays.asList(topicCodeStr.split(","));
             if(topicCodeList.size()>3){
                 throw new ApiException(BusinessCode.POST_TOPIC_CODE_MAX_3_5102.getCode());
-            }
-            if(StringUtils.isBlank(postTitle)){
-                throw new ApiException(BusinessCode.POST_TITLE_NULL_5103.getCode());
             }
 
             post.setTopicCodeList(topicCodeStr);
@@ -149,19 +141,16 @@ public class PostServiceImpl implements IPostService {
             post.setStatus(PostStatusEnums.POST_STATUS_1.getStatus());
             int res = postMapper.insert(post);
             if(res>0){
-                List<PostImage> postImageList = postVo.getPostImageList();
-                if(null != postImageList && postImageList.size()>0){
-                    for (PostImage postImage :postImageList){
+                String postImagesList = postVo.getPostImages(); //前端用逗号","号隔开
+                if(StringUtils.isNotBlank(postImagesList)){
+                    List<String> postImages =  Arrays.asList(postImagesList.split(","));
+                    for (String imgUrl :postImages){
+                        PostImage postImage = new PostImage();
+                        postImage.setPostId(post.getId());
+                        postImage.setImgUrl(imgUrl);
                         postMapper.insertPostImage(postImage);
                     }
                 }
-                List<PostVideo> postVideoList = postVo.getPostVideoList();
-                if(null != postVideoList && postVideoList.size()>0){
-                    for (PostVideo postVideo :postVideoList){
-                        postMapper.insertPostVideo(postVideo);
-                    }
-                }
-
                 //更新帖子主题发帖量
                 if(StringUtils.isNotBlank(topicCodeStr)){
                     asyncService.addTopicPostNum(topicCodeList);

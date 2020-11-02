@@ -167,7 +167,7 @@ public class GenerationUtil {
 	 */
 	public static String getTopicCode(){
 		String random = RandomStringUtils.randomNumeric(4);
-		return "TC-"+random;
+		return "TC_"+random;
 	}
 
 	/**
@@ -176,7 +176,7 @@ public class GenerationUtil {
 	 */
 	public static String getVideoLabelCode(){
 		String random = RandomStringUtils.randomNumeric(4);
-		return "VL-"+random;
+		return "VL_"+random;
 	}
 
 	/**
@@ -185,9 +185,13 @@ public class GenerationUtil {
 	 */
 	public static String getCouponCode(){
 		String random = RandomStringUtils.randomNumeric(4);
-		return "YHQ-"+random;
+		return "YHQ_"+random;
 	}
 
+	public static String getAgentCode(){
+		String random = RandomStringUtils.randomNumeric(4);
+		return random;
+	}
 	public static void main(String[] args) {
 		System.out.println(RandomStringUtils.randomNumeric(5));
 	}

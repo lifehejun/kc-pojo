@@ -9,7 +9,7 @@
     <div class="layui-form-item">
         <label class="layui-form-label">标题 <span style="color:red;">*</span></label>
         <div class="layui-input-inline">
-            <input type="text" name="topicTitle"  lay-verify="required" value="${topic.topicTitle}" autocomplete="off" class="layui-input">
+            <input type="text" name="topicTitle"  maxlength="10" lay-verify="required" value="${topic.topicTitle}" autocomplete="off" class="layui-input">
         </div>
     </div>
     <div class="layui-form-item">

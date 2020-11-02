@@ -2,17 +2,23 @@ package com.kc.api.rest;
 
 import com.kc.api.annotation.UserLoginToken;
 import com.kc.biz.service.IBusConfigService;
+import com.kc.biz.service.ICosTencentService;
 import com.kc.biz.service.IPostService;
 import com.kc.biz.service.IVideoService;
 import com.kc.biz.vo.PostVo;
 import com.kc.common.base.BaseRest;
+import com.kc.common.exception.ApiException;
 import com.kc.common.page.Page;
+import com.kc.common.util.api.ReqParamsUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.io.File;
 import java.util.Map;
 
 @RestController
@@ -25,6 +31,8 @@ public class PostRest extends BaseRest {
     private IPostService postService;
     @Autowired
     private IBusConfigService busConfigService;
+    @Autowired
+    private ICosTencentService cosTencentService;
 
     /**
      * 发布贴子
@@ -47,23 +55,39 @@ public class PostRest extends BaseRest {
 
 
     /**
-     * 查询帖子，最新，最热，评论最多
+     * 查询帖子，推荐
      * @param request
-     * @param topicCode
-     * @param sortType: maxNew maxHot maxComm
+     * @param page
+     * @param limit
      * @return
      */
-    @RequestMapping(value = "/findPost", method = RequestMethod.POST)
+    @RequestMapping(value = "/findPostBySug", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> findPost(HttpServletRequest request, @RequestBody Map<String, Object> params) {
         try {
-            logger.info("findPost params: {}",params.toString());
-            Page<PostVo> list =  postService.findPostByPage(params);
+            logger.info("findPostBySug request :{}",params);
+            Map<String,Object> pageParams = ReqParamsUtils.getApiPageParams(params);
+            pageParams.putAll(params);
+            Page<PostVo> list =  postService.findPostBySug(pageParams);
             return requestSuccess(list);
         } catch (Exception e) {
             logger.info("ERROR:{}系统异常,findPost()",500);
             return exceptionHandling(e);
         }
     }
+
+
+   /* @RequestMapping("/cos/uploadFile")
+    @ResponseBody
+    public Map<String,Object> uploadFileToCOS(HttpSession session) {
+        try {
+            File file1 = new File("http://localhost:8085/kc-api/static/images/man_1.png");
+            Map<String,Object> result = cosTencentService.uploadFileToCOS(file1);
+            return requestSuccess(result);
+        }catch (ApiException e){
+            logger.error("上传文件到腾讯cos失败:{}",e.getMessage());
+            return exceptionHandling(e);
+        }
+    }*/
 
 }

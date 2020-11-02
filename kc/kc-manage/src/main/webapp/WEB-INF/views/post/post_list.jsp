@@ -11,13 +11,29 @@
     <div class="layui-form-item">
         <div class="layui-inline" >
             <label class="layui-form-label">帖子主题：</label>
-            <div class="layui-input-inline">
+            <div class="layui-input-inline layui-input-search">
+                <select name="topicCode"   lay-search="">
+                    <option value="">--请选择--</option>
+                    <c:forEach items="${topicList}" var="topic">
+                        <option value="${topic.topicCode}">${topic.topicTitle}</option>
+                    </c:forEach>
+                </select>
+            </div>
+
+            <%--<div class="layui-input-inline layui-input-search">
+
                 <input class="layui-input" id="topicCode" name="topicCode"/>
+            </div>--%>
+        </div>
+        <div class="layui-inline" >
+            <label class="layui-form-label">帖子内容：</label>
+            <div class="layui-input-inline layui-input-search">
+                <input class="layui-input" id="postTitle" name="postTitle" placeholder="模糊查询"/>
             </div>
         </div>
         <div class="layui-inline" >
             <label class="layui-form-label">审核状态：</label>
-            <div class="layui-input-inline">
+            <div class="layui-input-inline layui-input-search">
                 <select name="status" id="status" lay-search="">
                     <option value="">全部</option>
                     <option value="0">未审核</option>
@@ -159,7 +175,7 @@
         var editPost = function (id) {
             layer.open({
                 type: 2,
-                area: ['80%','80%'],
+                area: ['80%','85%'],
                 content: '/post/edit?id='+id //这里content是一个URL，如果你不想让iframe出现滚动条，你还可以content: ['http://sentsin.com', 'no']
             });
         }
@@ -170,7 +186,7 @@
         layer.open({
             title:'发布帖子',
             type: 2,
-            area: ['80%','80%'],
+            area: ['80%','85%'],
             content: '/post/openPublishPost' //这里content是一个URL，如果你不想让iframe出现滚动条，你还可以content: ['http://sentsin.com', 'no']
         });
     }

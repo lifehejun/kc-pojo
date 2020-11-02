@@ -42,5 +42,25 @@ public class ReqParamsUtils {
         }
       return  map;
     }
-    
+
+    /**
+     * 获取requst参数列表
+     * @param map
+     * @return
+     */
+    public static Map<String,Object> getApiPageParams(Map<String, Object> map) {
+        //如果有传入分页参数,依照layui分页参数设置
+        if(null != map.get("page") && null != map.get("limit")){
+            int curPage = null == map.get("page")? CommConst.DEFAULT_START_PAGE_NUM:Integer.valueOf(String.valueOf(map.get("page")));
+            int pageSize = null == map.get("limit")?CommConst.DEFAULT_PAGE_SIZE:Integer.valueOf(String.valueOf(map.get("limit")));
+            int startRow = (curPage - 1) * pageSize;
+            map.put("startRow",startRow);
+            map.put("pageSize",pageSize);
+        }else{
+            map.put("startRow",CommConst.DEFAULT_START_PAGE_NUM);
+            map.put("pageSize",CommConst.DEFAULT_PAGE_SIZE);
+        }
+        return  map;
+    }
+
 }

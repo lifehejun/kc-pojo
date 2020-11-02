@@ -11,12 +11,10 @@
         <div class="layui-input-inline">
             <input type="text" name="couponName"  lay-verify="required" value="${coupon.couponName}" autocomplete="off" class="layui-input">
         </div>
-    </div>
 
-    <div class="layui-form-item">
-        <label class="layui-form-label">前端显示名称 <span style="color:red;">*</span></label>
+        <label class="layui-form-label">显示名称 <span style="color:red;">*</span></label>
         <div class="layui-input-inline">
-            <input type="text" name="showName"  lay-verify="required" value="${coupon.showName}" autocomplete="off" class="layui-input">
+            <input type="text" name="showName"  lay-verify="required" value="${coupon.showName}" autocomplete="off" class="layui-input" placeholder="前端显示名称">
         </div>
     </div>
     <div class="layui-form-item">
@@ -29,8 +27,7 @@
                 </c:forEach>
             </select>
         </div>
-    </div>
-    <div class="layui-form-item">
+
         <label class="layui-form-label">业务类型 <span style="color:red;">*</span></label>
         <div class="layui-input-inline">
             <select name="busType" id="busType" lay-verify="required"  lay-search="">
@@ -51,30 +48,20 @@
                 </c:forEach>
             </select>
         </div>
-    </div>
-
-    <div class="layui-form-item">
-        <label class="layui-form-label">前端显示名称 <span style="color:red;">*</span></label>
+        <label class="layui-form-label">发放数量 <span style="color:red;">*</span></label>
         <div class="layui-input-inline">
-            <input type="text" name="showName"  lay-verify="required" value="${coupon.showName}" autocomplete="off" class="layui-input">
+            <input type="text" name="num" lay-verify="required" value="${coupon.num}" autocomplete="off" class="layui-input">
         </div>
     </div>
+
     <div class="layui-form-item">
         <label class="layui-form-label">面值金额 <span style="color:red;">*</span></label>
         <div class="layui-input-inline">
             <input type="text" name="faceValue" lay-verify="required" value="${coupon.faceValue}" autocomplete="off" class="layui-input">
         </div>
-    </div>
-    <div class="layui-form-item">
         <label class="layui-form-label">补贴金额 <span style="color:red;">*</span></label>
         <div class="layui-input-inline">
             <input type="text" name="subsidyAmount" lay-verify="required" value="${coupon.subsidyAmount}" autocomplete="off" class="layui-input">
-        </div>
-    </div>
-    <div class="layui-form-item">
-        <label class="layui-form-label">发放数量 <span style="color:red;">*</span></label>
-        <div class="layui-input-inline">
-            <input type="text" name="num" lay-verify="required" value="${coupon.num}" autocomplete="off" class="layui-input">
         </div>
     </div>
     <div class="layui-form-item">

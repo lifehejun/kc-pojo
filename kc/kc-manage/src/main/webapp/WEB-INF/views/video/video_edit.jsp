@@ -26,7 +26,7 @@
 
     <div class="layui-form-item">
         <label class="layui-form-label">视频封面 <span style="color:red;">*</span></label>
-        <div class="layui-input-block">
+        <div class="layui-input-inline">
             <input type="text" name="vodImgUrl" lay-verify="required" value="${video.vodImgUrl}" autocomplete="off" class="layui-input">
         </div>
     </div>

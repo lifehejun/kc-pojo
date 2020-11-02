@@ -6,6 +6,7 @@ import com.kc.biz.bean.UserBean;
 import com.kc.biz.cache.RedisUtil;
 import com.kc.biz.cache.UserCache;
 import com.kc.biz.mapper.BankCardMapper;
+import com.kc.biz.mapper.PostMapper;
 import com.kc.biz.mapper.TransRecordMapper;
 import com.kc.biz.mapper.UserMapper;
 import com.kc.biz.service.*;
@@ -47,6 +48,8 @@ public class UserService implements IUserService {
     private TransRecordMapper transRecordMapper;
     @Autowired
     private BankCardMapper bankCardMapper;
+    @Autowired
+    private PostMapper postMapper;
     @Autowired
     private ICacheService cacheService;
     @Autowired
@@ -113,13 +116,13 @@ public class UserService implements IUserService {
             throw new ApiException(BusinessCode.USER_RESP_2007.getCode());
         }
         //CHECK:判断是否开启：校验手机登录黑名单
-        String phoneLoginFlag = busConfigService.findName(RedisKeyEnums.WEB_SWITCH.getCode(),BusConfigConst.NAME_CHECK_PHONE_BLACK_LOGIN);
+        String phoneLoginFlag = busConfigService.findByName(RedisKeyEnums.WEB_SWITCH.getCode(),BusConfigConst.NAME_CHECK_PHONE_BLACK_LOGIN);
         if(StringUtils.isNotBlank(phoneLoginFlag) && Boolean.valueOf(phoneLoginFlag)){
             filterRuleService.checkLoginBlackByPhone(phone);
         }
 
         //CHECK:判断是否开启：校验IP登录黑名单
-        String ipLoginFlag = busConfigService.findName(RedisKeyEnums.WEB_SWITCH.getCode(),BusConfigConst.NAME_CHECK_IP_BLACK_LOGIN);
+        String ipLoginFlag = busConfigService.findByName(RedisKeyEnums.WEB_SWITCH.getCode(),BusConfigConst.NAME_CHECK_IP_BLACK_LOGIN);
         if(StringUtils.isNotBlank(ipLoginFlag) && Boolean.valueOf(ipLoginFlag)){
             filterRuleService.checkLoginBlackByIP(phone);
         }
@@ -170,13 +173,13 @@ public class UserService implements IUserService {
         }
 
         //CHECK:判断是否开启：校验IP注册黑名单
-        String ipRegFlag = busConfigService.findName(RedisKeyEnums.WEB_SWITCH.getCode(),BusConfigConst.NAME_CHECK_IP_BLACK_REG);
+        String ipRegFlag = busConfigService.findByName(RedisKeyEnums.WEB_SWITCH.getCode(),BusConfigConst.NAME_CHECK_IP_BLACK_REG);
         if(StringUtils.isNotBlank(ipRegFlag) && Boolean.valueOf(ipRegFlag)){
             filterRuleService.checkRegBlackByIP(regIp);
         }
 
         //CHECK:判断是否校验同ip注册个数的限制
-        String ipRegSize = busConfigService.findName(RedisKeyEnums.WEB_SWITCH.getCode(),BusConfigConst.NAME_CHECK_REG_SIZE);
+        String ipRegSize = busConfigService.findByName(RedisKeyEnums.WEB_SWITCH.getCode(),BusConfigConst.NAME_CHECK_REG_SIZE);
         if(StringUtils.isNotBlank(ipRegSize) && Boolean.valueOf(ipRegSize)){
             checkBusinessService.checkIpRegSize(regIp);
         }
@@ -219,9 +222,9 @@ public class UserService implements IUserService {
                 }
                 userBean.setStatus(UserStatusEnums.USER_STATUS_1.getStatus()); //正常用户
                 userBean.setGrade(CommConst.USER_GRADE_0); //默认普通会员
-                userBean.setAgentCode(String.valueOf(GenerationUtil.getSixDig()));
+                userBean.setAgentCode(GenerationUtil.getAgentCode());
                 userBean.setRegIp(regIp);
-                userBean.setHeadUrl(busConfigService.findName(RedisKeyEnums.SYS_HEAD_URL.getCode(),String.valueOf(GenerationUtil.getDig(1))));//随机分配一个系统头像
+                userBean.setHeadUrl(busConfigService.findByName(RedisKeyEnums.SYS_HEAD_URL.getCode(),String.valueOf(GenerationUtil.getDig(1))));//随机分配一个系统头像
                 userMapper.insert(userBean);
 
                 UserBean userLoginInfo = userLogin(phone,userPwd,request);
@@ -306,9 +309,9 @@ public class UserService implements IUserService {
         userBean.setBonusRatio(BigDecimal.ZERO);
         userBean.setStatus(UserStatusEnums.USER_STATUS_1.getStatus()); //正常用户
         userBean.setGrade(CommConst.USER_GRADE_0); //默认普通会员
-        userBean.setAgentCode(String.valueOf(GenerationUtil.getSixDig()));
+        userBean.setAgentCode(GenerationUtil.getAgentCode());
         userBean.setRegIp("");
-        userBean.setHeadUrl(busConfigService.findName(RedisKeyEnums.SYS_HEAD_URL.getCode(),String.valueOf(GenerationUtil.getDig(1))));//随机分配一个系统头像
+        userBean.setHeadUrl(busConfigService.findByName(RedisKeyEnums.SYS_HEAD_URL.getCode(),String.valueOf(GenerationUtil.getDig(1))));//随机分配一个系统头像
         userMapper.insert(userBean);
 
         //推送用户注册统计信息
@@ -331,7 +334,7 @@ public class UserService implements IUserService {
             todayParams.put("endCreateTime",endDate);
             int todayUserReg = userMapper.getTotal(todayParams);
             statisticsVo.setTodayReg(todayUserReg);
-            redisUtil.setKeyAndValueTimeout(todayRegKey,String.valueOf(todayUserReg),60*30); //缓存一小时
+            redisUtil.setKeyAndValueTimeout(todayRegKey,String.valueOf(todayUserReg),60*30); //缓存30分钟
         }
 
         //今日充值
@@ -350,8 +353,27 @@ public class UserService implements IUserService {
             BigDecimal transMoney = transRecordMapper.findSumByTransType(transParams);
 
             statisticsVo.setTodayRecharge(transMoney);
-            redisUtil.setKeyAndValueTimeout(todayRechargeKey,String.valueOf(transMoney),60*30); //缓存30小时
+            redisUtil.setKeyAndValueTimeout(todayRechargeKey,String.valueOf(transMoney),60*30); //缓存30分钟
         }
+
+
+
+        //今日发帖数
+        String todayPostNumKey = RedisKeyEnums.STATISTICS_POST_NUM.getCode()+"today";
+        String redisTodayPostNum = redisUtil.getValueByKey(todayPostNumKey);
+        if(StringUtils.isNoneBlank(redisTodayPostNum)){
+            statisticsVo.setTodayPostNum(Integer.valueOf(redisTodayPostNum));
+        }else{
+            Map<String,Object> todayParams = new HashMap<String,Object>();
+            long startDate = DateTools.getCurrDayUnixTime(); //今日凌晨时间戳
+            long endDate = DateTools.getUnixTimestampTime(DateTools.getEndTime(new Date()));//今日最后一秒
+            todayParams.put("startCreateTime",startDate);
+            todayParams.put("endCreateTime",endDate);
+            int todayPostNum = postMapper.getTotal(todayParams);
+            statisticsVo.setTodayPostNum(todayPostNum);
+            redisUtil.setKeyAndValueTimeout(todayPostNumKey,String.valueOf(todayPostNum),60*30); //缓存30分钟
+        }
+
         return statisticsVo;
     }
 

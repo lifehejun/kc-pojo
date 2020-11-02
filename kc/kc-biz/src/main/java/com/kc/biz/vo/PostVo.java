@@ -3,6 +3,7 @@ package com.kc.biz.vo;
 import com.kc.biz.bean.PostImage;
 import com.kc.biz.bean.PostVideo;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class PostVo {
@@ -13,12 +14,14 @@ public class PostVo {
     private Integer likeNum;
     private Integer viewNum;
     private Integer commentNum;
-    private Integer rewardAmount;
+    private BigDecimal rewardAmount;
     private String publishTime;
 
     private String topicCodeList; //标签集合
-    List<PostImage> postImageList; //图片集合，最多9张
-    List<PostVideo> postVideoList;
+    private List<String> topicTitleList; //标签名称集合
+    private List<PostImage> postImageList; //图片集合，最多9张
+    private String postImages; //图片集合，最多9张,用逗号隔开
+    PostVideo postVideo;
     private String address;
     private String headUrl;
     private String userName;
@@ -72,11 +75,11 @@ public class PostVo {
         this.commentNum = commentNum;
     }
 
-    public Integer getRewardAmount() {
+    public BigDecimal getRewardAmount() {
         return rewardAmount;
     }
 
-    public void setRewardAmount(Integer rewardAmount) {
+    public void setRewardAmount(BigDecimal rewardAmount) {
         this.rewardAmount = rewardAmount;
     }
 
@@ -136,11 +139,27 @@ public class PostVo {
         this.postImageList = postImageList;
     }
 
-    public List<PostVideo> getPostVideoList() {
-        return postVideoList;
+    public PostVideo getPostVideo() {
+        return postVideo;
     }
 
-    public void setPostVideoList(List<PostVideo> postVideoList) {
-        this.postVideoList = postVideoList;
+    public void setPostVideo(PostVideo postVideo) {
+        this.postVideo = postVideo;
+    }
+
+    public List<String> getTopicTitleList() {
+        return topicTitleList;
+    }
+
+    public void setTopicTitleList(List<String> topicTitleList) {
+        this.topicTitleList = topicTitleList;
+    }
+
+    public String getPostImages() {
+        return postImages;
+    }
+
+    public void setPostImages(String postImages) {
+        this.postImages = postImages;
     }
 }

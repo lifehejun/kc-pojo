@@ -5,6 +5,7 @@ import com.kc.biz.service.IPostService;
 import com.kc.biz.service.ITopicService;
 import com.kc.biz.service.IUserService;
 import com.kc.biz.vo.PostVo;
+import com.kc.biz.vo.TopicShowVo;
 import com.kc.common.enums.PostStatusEnums;
 import com.kc.common.enums.UserTypeEnums;
 import com.kc.common.exception.ApiException;
@@ -36,6 +37,8 @@ public class PostController extends BaseController{
 
     @RequestMapping("/list")
     public String list(HttpServletRequest request, HttpSession session) {
+        List<TopicShowVo> topicList = topicService.findListByRedis();
+        request.setAttribute("topicList",topicList);
         return "post/post_list";
     }
 
@@ -78,6 +81,9 @@ public class PostController extends BaseController{
             request.setAttribute("postVideoList",postVideoList);
             request.setAttribute("postImageList",postImageList);
         }
+        //帖子主题标签
+        List<Topic> topicList = topicService.findList();
+        request.setAttribute("topicList",topicList);
         request.setAttribute("statusEnums", PostStatusEnums.postStatusEnumsMap);
         return "post/post_edit";
     }
@@ -103,7 +109,7 @@ public class PostController extends BaseController{
     @ResponseBody
     public Map<String,Object> publish(HttpServletRequest request, PostVo postVo) {
         try {
-            postService.publish(postVo);
+            postService.manualPublish(postVo);
             return requestSuccess("发布成功");
         }catch (ApiException e){
             logger.error("保存帖子异常:{}",e.getMessage());

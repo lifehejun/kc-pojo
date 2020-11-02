@@ -86,7 +86,8 @@ public enum BusinessCode {
 
     POST_TOPIC_CODE_MIN_1_5101("5101","至少选择1个主题标签"),
     POST_TOPIC_CODE_MAX_3_5102("5102","最多选择3个主题标签"),
-    POST_TITLE_NULL_5103("5103SS","请输入帖子内容"),
+    POST_TITLE_NULL_5103("5103","请输入帖子内容"),
+    POST_TITLE_IS_FORBID_KEY_5104("5104","内部存在违规,违规词:{0}"),
 
     FOLLOW_YES_6001("6001","主人,您已关注过该用户了"),
 
@@ -97,6 +98,8 @@ public enum BusinessCode {
     FILTER_BLACK_REG_IP_8003("8003","该区域禁止非法登录"),
     FILTER_TEMPLATE_IMPORT_FAIL_8004("8004","过滤规则模板导入失败"),
 
+    FILE_UPLOAD_NULL_8101("8101","上传的文件不能为空"),
+    FILE_UPLOAD_TO_COS_FAIL_8102("8102","上传文件至腾讯COS失败"),
 
     GAME_RESP_9001("9001","游戏类型不存在"),
     GAME_RESP_9002("9002","游戏ID不存在");

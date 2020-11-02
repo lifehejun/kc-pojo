@@ -16,7 +16,7 @@
     <div class="layui-form-item">
         <div class="layui-inline" >
             <label class="layui-form-label">规则类型：</label>
-            <div class="layui-input-inline">
+            <div class="layui-input-inline layui-input-search">
                 <select name="ruleType" id="ruleType" lay-search="">
                     <option value="">全部</option>
                     <c:forEach items="${filterRuleTypeMap}" var="ruleType">
@@ -25,9 +25,9 @@
                 </select>
             </div>
         </div>
-        <%--<div class="layui-inline" >
+        <div class="layui-inline" >
             <label class="layui-form-label">业务类型：</label>
-            <div class="layui-input-inline">
+            <div class="layui-input-inline layui-input-search">
                 <select name="bizType" id="bizType" lay-search="">
                     <option value="">全部</option>
                     <c:forEach items="${filterBizTypeMap}" var="bizType">
@@ -35,10 +35,10 @@
                     </c:forEach>
                 </select>
             </div>
-        </div>--%>
+        </div>
         <%--<div class="layui-inline" >
             <label class="layui-form-label">过滤属性：</label>
-            <div class="layui-input-inline">
+            <div class="layui-input-inline layui-input-search">
                 <select name="filterItem" id="filterItem" lay-search="">
                     <option value="">全部</option>
                     <c:forEach items="${filterItemEnumsMap}" var="filterItem">
@@ -49,7 +49,7 @@
         </div>--%>
         <div class="layui-inline" >
             <label class="layui-form-label">过滤值：</label>
-            <div class="layui-input-inline">
+            <div class="layui-input-inline layui-input-search">
                 <input class="layui-input" id="filterValue" name="filterValue"/>
             </div>
         </div>

@@ -11,13 +11,13 @@
     <div class="layui-form-item">
         <div class="layui-inline" >
             <label class="layui-form-label">标签名称：</label>
-            <div class="layui-input-inline">
+            <div class="layui-input-inline layui-input-search">
                 <input class="layui-input" id="labelName" placeholder="模糊查询" name="labelName"/>
             </div>
         </div>
         <div class="layui-inline" >
             <label class="layui-form-label">视频类型：</label>
-            <div class="layui-input-inline">
+            <div class="layui-input-inline layui-input-search">
                 <select name="vodType" id="vodType" lay-search="">
                     <option value="">--请选择--</option>
                     <c:forEach items="${videoType}" var="type">

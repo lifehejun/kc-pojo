@@ -1,10 +1,12 @@
 package com.kc.biz.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.kc.biz.bean.Topic;
 import com.kc.biz.cache.RedisUtil;
 import com.kc.biz.mapper.TopicMapper;
 import com.kc.biz.service.ITopicService;
+import com.kc.biz.vo.TopicShowVo;
 import com.kc.common.enums.RedisKeyEnums;
 import com.kc.common.exception.ApiException;
 import com.kc.common.page.Page;
@@ -15,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -98,11 +101,36 @@ public class TopicServiceImpl implements ITopicService {
         for (String topicCode :topicMap.keySet()){
             redisUtil.setKeyAndValue(RedisKeyEnums.TOPIC_CODE.getCode()+topicCode, JSON.toJSONString(topicMap.get(topicCode)));
         }
+        //存topic list
+        if(null != topicList && topicList.size()>0){
+            List<TopicShowVo> topicShowVos = new ArrayList<TopicShowVo>();
+            for (Topic topic:topicList){
+                TopicShowVo topicShowVo = new TopicShowVo();
+                topicShowVo.setId(topic.getId());
+                topicShowVo.setTopicCode(topic.getTopicCode());
+                topicShowVo.setTopicDesc(topic.getTopicDesc());
+                topicShowVo.setTopicTitle(topic.getTopicTitle());
+                topicShowVo.setTopicImgUrl(topic.getTopicImgUrl());
+                topicShowVos.add(topicShowVo);
+            }
+            redisUtil.setKeyAndValue(RedisKeyEnums.TOPIC_CODE_LIST.getCode(), JSONArray.toJSONString(topicShowVos));
+        }
+
     }
 
     @Override
     public List<Topic> findList() {
         return topicMapper.findList();
+    }
+
+    @Override
+    public List<TopicShowVo> findListByRedis() throws ApiException {
+        String topicListRedis = redisUtil.getValueByKey(RedisKeyEnums.TOPIC_CODE_LIST.getCode());
+        if(StringUtils.isNotBlank(topicListRedis)){
+            List<TopicShowVo> list = JSONArray.parseArray(topicListRedis,TopicShowVo.class);
+            return list;
+        }
+        return null;
     }
 
 

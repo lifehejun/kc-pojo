@@ -111,7 +111,7 @@ public class BusConfigService implements IBusConfigService {
 
 
     @Override
-    public String findName(String busTypeKey, String name) {
+    public String findByName(String busTypeKey, String name) {
         String busConfigVal = redisUtil.getValueByKey(busTypeKey + name);
         BusConfig busConfig = JSON.parseObject(busConfigVal,BusConfig.class);
         if(null == busConfig){

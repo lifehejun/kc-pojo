@@ -11,13 +11,13 @@
     <div class="layui-form-item">
         <div class="layui-inline" >
             <label class="layui-form-label">话题名称：</label>
-            <div class="layui-input-inline">
+            <div class="layui-input-inline layui-input-search">
                 <input class="layui-input" id="topicTitle" placeholder="模糊查询" name="topicTitle"/>
             </div>
         </div>
         <div class="layui-inline" >
             <label class="layui-form-label">状态：</label>
-            <div class="layui-input-inline">
+            <div class="layui-input-inline layui-input-search">
                 <select name="status" id="status" lay-search="">
                     <option value="">全部</option>
                     <c:forEach items="${statusEnums}" var="status">

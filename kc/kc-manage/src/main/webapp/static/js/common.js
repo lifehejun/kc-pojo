@@ -23,13 +23,13 @@ var _ajax_b = function(url,data,msg,index){
         if(data.code == "00"){
             layer.msg(msg, {
                 icon: 1
-                ,time: 2000
+                ,time: 3000
             }, function(){
                 location.reload();
                 layer.closeAll();
             });
         }else{
-            layer.msg(data.msg, {icon:3,time:1000});
+            layer.msg(data.msg, {icon:3,time:3000});
         }
     });
 }

@@ -47,6 +47,8 @@ public class AsyncServiceImpl implements IAsyncService {
     private IBusConfigService busConfigService;
     @Autowired
     private ICountService countService;
+    @Autowired
+    private ITopicService topicService;
 
 
     @Async("taskExecutor")
@@ -85,7 +87,7 @@ public class AsyncServiceImpl implements IAsyncService {
             Topic topic = topicMapper.queryByCode(topicCode);
             if(null != topic){
                 topic.setPostNum(topic.getPostNum()+1);
-                topicMapper.updateById(topic);
+                topicService.updateById(topic);
             }
 
         }

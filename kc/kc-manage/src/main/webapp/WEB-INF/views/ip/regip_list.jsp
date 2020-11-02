@@ -11,13 +11,13 @@
     <div class="layui-form-item">
         <div class="layui-inline" >
             <label class="layui-form-label">手机号：</label>
-            <div class="layui-input-inline">
+            <div class="layui-input-inline layui-input-search">
                 <input class="layui-input" id="phone" name="phone"/>
             </div>
         </div>
         <div class="layui-inline" >
             <label class="layui-form-label">IP地址：</label>
-            <div class="layui-input-inline">
+            <div class="layui-input-inline layui-input-search">
                 <input class="layui-input" id="regIp" name="regIp"/>
             </div>
         </div>

@@ -76,7 +76,7 @@
         tt.status,
         tt.create_time
         FROM tb_topic tt
-        ORDER BY tt.create_time DESC
+        ORDER BY tt.like_num DESC
     </select>
     <update id="updateById" parameterType="com.kc.biz.bean.Topic">
         UPDATE tb_topic tt
