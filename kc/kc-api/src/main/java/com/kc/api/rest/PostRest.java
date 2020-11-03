@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.File;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -42,10 +43,11 @@ public class PostRest extends BaseRest {
     @UserLoginToken
     @RequestMapping(value = "/publish", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String, Object> like(HttpServletRequest request, @RequestBody Map<String, Object> params) {
+    public Map<String, Object> publish(HttpServletRequest request,@RequestParam(value = "file") List<MultipartFile> files, @RequestBody Map<String, String> params) {
         try {
             String userId = (String)request.getAttribute("userId");
             params.put("userId",userId);
+            postService.postPublish(files,params);
             return requestSuccess();
         } catch (Exception e) {
             logger.info("ERROR:{}系统异常,publish()",500);
@@ -77,17 +79,7 @@ public class PostRest extends BaseRest {
     }
 
 
-   /* @RequestMapping("/cos/uploadFile")
-    @ResponseBody
-    public Map<String,Object> uploadFileToCOS(HttpSession session) {
-        try {
-            File file1 = new File("http://localhost:8085/kc-api/static/images/man_1.png");
-            Map<String,Object> result = cosTencentService.uploadFileToCOS(file1);
-            return requestSuccess(result);
-        }catch (ApiException e){
-            logger.error("上传文件到腾讯cos失败:{}",e.getMessage());
-            return exceptionHandling(e);
-        }
-    }*/
+
+
 
 }

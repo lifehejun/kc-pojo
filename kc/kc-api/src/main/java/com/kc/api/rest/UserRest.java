@@ -281,4 +281,25 @@ public class UserRest  extends BaseRest{
             return exceptionHandling(e);
         }
     }
+
+    /**
+     * 修改昵称
+     * @param request
+     * @param newNickName
+     * @return
+     */
+    @RequestMapping(value = "/updateNickName", method = RequestMethod.GET)
+    @ResponseBody
+    public Map<String, Object> updateNickName(HttpServletRequest request,String newNickName) {
+        Map<String,Object> result = new HashMap<String,Object>();
+        try {
+            String userId = (String)request.getAttribute("userId");
+            UserBean userBean = userService.updateNickName(userId,newNickName);
+            result.put("newNickName",userBean.getUserName());
+            return requestSuccess(result);
+        } catch (Exception e) {
+            logger.info("ERROR:{}系统异常,updateNickName()",500);
+            return exceptionHandling(e);
+        }
+    }
 }

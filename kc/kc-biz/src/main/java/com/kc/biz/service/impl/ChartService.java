@@ -8,6 +8,7 @@ import com.kc.biz.mapper.VipGradeMapper;
 import com.kc.biz.service.IChartService;
 import com.kc.biz.vo.charts.ChartsRegVo;
 import com.kc.common.enums.CountTypeEnum;
+import com.kc.common.exception.ApiException;
 import com.kc.common.util.ChartsUtil;
 import com.kc.common.util.DateTools;
 import net.sf.jasperreports.charts.util.ChartUtil;
@@ -41,7 +42,7 @@ public class ChartService implements IChartService {
 
 
     @Override
-    public ChartsRegVo getChartsReg() {
+    public ChartsRegVo getChartsReg() throws ApiException {
         ChartsRegVo chartsRegVo = new ChartsRegVo();
         chartsRegVo.setDays(ChartsUtil.getMonthDaysStr());
 

@@ -10,11 +10,6 @@ public class BusConfigConst {
 
     public final static String WEB_CONFIG_BACK_TITLE = "backTitle";
 
-    public final static String TENCENT_COULD_COS_FILE_DOMAIN = "fileDomain";
-    public final static String TENCENT_COULD_COS_ACCESS_KEY = "accessKey";
-    public final static String TENCENT_COULD_COS_SECRET_KEY = "secretKey";
-    public final static String TENCENT_COULD_COS_BUCKET = "bucket";
-    public final static String TENCENT_COULD_COS_BUCKET_NAME = "bucketName";
 
 
 }

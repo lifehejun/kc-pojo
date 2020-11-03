@@ -393,6 +393,18 @@ public class UserService implements IUserService {
         return userBean.getUserId();
     }
 
+    @Override
+    public UserBean updateNickName(String userId, String newNickName) throws ApiException {
+        ValidatorUtil.validateNotEmpty(newNickName,BusinessCode.USER_RESP_2033);
+        UserBean userBean = userMapper.queryByUserId(userId);
+        userBean.setUserName(newNickName);
+        int res = userMapper.updateByUserId(userBean);
+        if(res <=0){
+            throw new ApiException(BusinessCode.USER_RESP_2034.getCode());
+        }
+        return userBean;
+    }
+
 
     @Override
     public int updateLoginPwd(String userId,String newPwd) throws ApiException {

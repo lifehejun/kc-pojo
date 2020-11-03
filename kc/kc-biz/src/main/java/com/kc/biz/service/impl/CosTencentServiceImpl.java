@@ -8,6 +8,7 @@ import com.kc.common.consts.RedisConst;
 import com.kc.common.enums.RedisKeyEnums;
 import com.kc.common.exception.ApiException;
 import com.kc.common.resp.BusinessCode;
+import com.kc.common.util.PropertiesUtil;
 import com.qcloud.cos.COSClient;
 import com.qcloud.cos.ClientConfig;
 import com.qcloud.cos.auth.BasicCOSCredentials;
@@ -18,6 +19,7 @@ import com.qcloud.cos.region.Region;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,10 +35,25 @@ public class CosTencentServiceImpl implements ICosTencentService {
 
     @Autowired
     private RedisUtil redisUtil;
-
     @Autowired
     private IBusConfigService busConfigService;
 
+    private static final String fileDomain = PropertiesUtil.getProperty("tencent.could.cos.fileDomain");
+    private static final String accessKey = PropertiesUtil.getProperty("tencent.could.cos.accessKey");
+    private static final String secretKey = PropertiesUtil.getProperty("tencent.could.cos.secretKey");
+    private static final String bucket = PropertiesUtil.getProperty("tencent.could.cos.bucket");
+    private static final String bucketName = PropertiesUtil.getProperty("tencent.could.cos.bucketName");
+
+
+    /**
+     * * 初始化CosClient相关配置， appid、accessKey、secretKey、region * @return
+     */
+    public static COSClient getCosClient() {
+        COSCredentials cred = new BasicCOSCredentials(accessKey, secretKey); // 不传APPID也可以，APPID和ACCESSKE已经关联过
+        ClientConfig clientConfig = new ClientConfig(new Region(bucket));
+        COSClient cosclient = new COSClient(cred, clientConfig);
+        return cosclient;
+    }
     @Override
     public Map<String, Object> uploadFileToCOS(MultipartFile file,String moduleName) throws ApiException {
         if(file == null){
@@ -46,17 +63,8 @@ public class CosTencentServiceImpl implements ICosTencentService {
         String eName = oldFileName.substring(oldFileName.lastIndexOf("."));
         String newFileName = UUID.randomUUID()+eName;
         // 1 初始化用户身份信息(fileDomain,secretId, secretKey,bucket,bucketName)
-        String fileDomain = busConfigService.findByName(RedisKeyEnums.TENCENT_COULD_COS.getCode(),BusConfigConst.TENCENT_COULD_COS_FILE_DOMAIN);
-        String accessKey = busConfigService.findByName(RedisKeyEnums.TENCENT_COULD_COS.getCode(),BusConfigConst.TENCENT_COULD_COS_ACCESS_KEY);
-        String secretKey = busConfigService.findByName(RedisKeyEnums.TENCENT_COULD_COS.getCode(),BusConfigConst.TENCENT_COULD_COS_SECRET_KEY);
-        String bucket = busConfigService.findByName(RedisKeyEnums.TENCENT_COULD_COS.getCode(),BusConfigConst.TENCENT_COULD_COS_BUCKET);
-        String bucketName = busConfigService.findByName(RedisKeyEnums.TENCENT_COULD_COS.getCode(),BusConfigConst.TENCENT_COULD_COS_BUCKET_NAME);
-
-        COSCredentials cred = new BasicCOSCredentials(accessKey, secretKey);
-        // 2 设置bucket的区域, COS地域的简称请参照 https://cloud.tencent.com/document/product/436/6224
-        ClientConfig clientConfig = new ClientConfig(new Region(bucket));
         // 3 生成cos客户端
-        COSClient cosclient = new COSClient(cred, clientConfig);
+        COSClient cosclient = getCosClient();
         // bucket的命名规则为{name}-{appid} ，此处填写的存储桶名称必须为此格式
 
         // 简单文件上传, 最大支持 5 GB, 适用于小文件上传, 建议 20 M 以下的文件使用该接口

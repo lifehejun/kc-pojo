@@ -65,7 +65,8 @@ public enum BusinessCode {
     USER_RESP_2030("2030", "您到账户因输错密码超过5次,系统暂时冻结账户,请您次日再次重试或者联系客服"),
     USER_RESP_2031("2031", "内部测试用户未配置,请先添加一个内部测试用户"),
     USER_RESP_2032("2032", "系统检查到您有恶意注册会员的异常,注册失败"),
-
+    USER_RESP_2033("2033", "昵称不能为空"),
+    USER_RESP_2034("2034", "昵称修改失败"),
     RECEIPT_TOOL_RESP_3001("3001", "APP端签名参数不能为空"),
     //RECEIPT_TOOL_RESP_3002("3002", "用户密码错误"),
     //RECEIPT_TOOL_RESP_3003("3003", "用户密码错误"),
@@ -100,6 +101,7 @@ public enum BusinessCode {
 
     FILE_UPLOAD_NULL_8101("8101","上传的文件不能为空"),
     FILE_UPLOAD_TO_COS_FAIL_8102("8102","上传文件至腾讯COS失败"),
+    FILE_UPLOAD_8103("8103","最少选择一个图片"),
 
     GAME_RESP_9001("9001","游戏类型不存在"),
     GAME_RESP_9002("9002","游戏ID不存在");

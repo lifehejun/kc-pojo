@@ -15,10 +15,12 @@ import com.kc.common.page.Page;
 import com.kc.common.resp.BusinessCode;
 import com.kc.common.util.StringUtil;
 import com.kc.common.util.TimeCountUtil;
+import com.kc.common.util.ValidatorUtil;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,6 +47,8 @@ public class PostServiceImpl implements IPostService {
     private ICacheService cacheService;
     @Autowired
     private ICheckBusinessService checkBusinessService;
+    @Autowired
+    private ICosTencentService cosTencentService;
 
 
     @Override
@@ -158,6 +162,57 @@ public class PostServiceImpl implements IPostService {
             }
 
         }
+    }
+
+    @Override
+    public void postPublish(List<MultipartFile> files, Map<String, String> params) throws ApiException {
+        String moduleName = "post";
+        String topicCodeStr = params.get("topicCodeList");
+        String postTitle = params.get("postTitle");
+        String userId = params.get("userId");
+        ValidatorUtil.validateNotEmpty(topicCodeStr,BusinessCode.POST_TOPIC_CODE_MIN_1_5101);
+        ValidatorUtil.validateNotEmpty(postTitle,BusinessCode.POST_TITLE_NULL_5103);
+        //转换为list
+        List<String> topicCodeList =  Arrays.asList(topicCodeStr.split(","));
+        if(topicCodeList.size()>3){
+            throw new ApiException(BusinessCode.POST_TOPIC_CODE_MAX_3_5102.getCode());
+        }
+
+        //判断违禁词
+        checkBusinessService.checkForbidWord(postTitle);
+
+        if(null == files || files.size()<= 0){
+            throw new ApiException(BusinessCode.FILE_UPLOAD_8103.getCode());
+        }
+
+        List<String> postImages = new ArrayList<String>();
+        //上传图片
+        for (int i=0;i<files.size();i++){
+            Map<String, Object> uploadResult = cosTencentService.uploadFileToCOS(files.get(i),moduleName);
+            String fileUrl = (String)uploadResult.get("fileUrl");
+            postImages.add(fileUrl);
+        }
+
+        //入库post
+        Post post = new Post();
+        post.setTopicCodeList(topicCodeStr);
+        post.setUserId(userId);
+        post.setPostTitle(postTitle);
+        post.setStatus(PostStatusEnums.POST_STATUS_1.getStatus());
+        int res = postMapper.insert(post);
+        if(res>0){
+            for (String imgUrl :postImages){
+                PostImage postImage = new PostImage();
+                postImage.setPostId(post.getId());
+                postImage.setImgUrl(imgUrl);
+                postMapper.insertPostImage(postImage);
+            }
+            //更新帖子主题发帖量
+            if(StringUtils.isNotBlank(topicCodeStr)){
+                asyncService.addTopicPostNum(topicCodeList);
+            }
+        }
+
     }
 
     @Override
