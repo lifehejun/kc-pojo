@@ -23,7 +23,7 @@ public class BaseRest {
             return resultLinkedHashMap(apiExc.getCode(), apiExc.getMessage(), null);
         } else {
             logger.error("系统异常！", ex);
-            return requestError("系统异常，请联系管理员!"+ex.getMessage());
+            return requestError("系统异常，请联系管理员!"+ex.getMessage(),null);
         }
     }
 

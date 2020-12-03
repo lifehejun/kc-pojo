@@ -1,8 +1,9 @@
 package com.kc.biz.service;
 
 
-import com.kc.biz.bean.BusConfig;
 import com.kc.biz.bean.VideoLabel;
+import com.kc.biz.vo.TopicShowVo;
+import com.kc.biz.vo.VideoLabelVo;
 import com.kc.common.exception.ApiException;
 import com.kc.common.page.Page;
 
@@ -19,6 +20,8 @@ public interface IVideoLabelService{
     List<VideoLabel> findAll();
     VideoLabel queryById(Long id);
     Page<VideoLabel> queryByPage(Map<String, Object> params) throws ApiException;
+    void refresh();
     List<VideoLabel> findLabelByType(Map<String, Object> params) throws ApiException;
-    VideoLabel findByCode(String vodType,String labelCode) throws ApiException;
+    VideoLabel findByCode(String labelCode) throws ApiException;
+    List<VideoLabelVo> findListByRedis()throws ApiException;
 }

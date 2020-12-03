@@ -43,7 +43,7 @@ public class PostRest extends BaseRest {
     @UserLoginToken
     @RequestMapping(value = "/publish", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String, Object> publish(HttpServletRequest request,@RequestParam(value = "file") List<MultipartFile> files, @RequestBody Map<String, String> params) {
+    public Map<String, Object> publish(HttpServletRequest request,@RequestParam(value = "files") List<MultipartFile> files, @RequestBody Map<String, String> params) {
         try {
             String userId = (String)request.getAttribute("userId");
             params.put("userId",userId);

@@ -7,14 +7,23 @@
 <body>
 <jsp:include page="../common/comm_css_js.jsp"/>
 
-<div class="layui-form" action="" lay-filter="label-form-element" style="margin-top: 10px;">
+<div class="layui-form" action="" lay-filter="vipGrade-form-element" style="margin-top: 10px;">
     <div class="layui-form-item">
-        <%--<div class="layui-inline" >--%>
-            <%--<label class="layui-form-label">类型：</label>--%>
-            <%--<div class="layui-input-inline">--%>
-                <%--<input class="layui-input" id="userName" name="userName"/>--%>
-            <%--</div>--%>
-        <%--</div>--%>
+        <div class="layui-inline" >
+            <label class="layui-form-label">VIP等级：</label>
+            <div class="layui-input-inline layui-input-search">
+                <select name="grade" id="grade" lay-search="">
+                    <option value="">--请选择--</option>
+                    <c:forEach items="${vipGradeEnumsMap}" var="type">
+                        <option value="${type.key}" > ${type.value}</option>
+                    </c:forEach>
+                </select>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <button class="layui-btn layui-btn-normal"  lay-filter="vipGrade-form-btn-sub" lay-submit="">搜索</button>
+            <button class="layui-btn layui-btn-normal"  onclick="addVipGrade()">添加VIP等级</button>
+        </div>
     </div>
 </div>
 
@@ -56,42 +65,51 @@
                 } //开启分页
                 ,cols: [[
                     {field:'vipCode', title: '编号'}
-                    ,{field:'vipName', title: 'VIP名称'}
-                    ,{field:'vipDesc', title: 'VIP描述'}
-                    ,{field:'tips', title: '提示信息'}
+                    ,{field:'vipName', title: '会员卡名称'}
+                    ,{field:'vipDesc', title: '会员卡描述'}
                     ,{field:'oldMoney', title: '会员原价(金币)'}
                     ,{field:'money', title: '折扣价(金币)'}
+                    ,{field:'tips', title: '提示信息'}
                     ,{fixed: 'right', title:'操作', toolbar: '#barVipGrade', width:180}
 
                 ]]
             });
 
+        form.on('submit(vipGrade-form-btn-sub)', function(data) {
+            table.reload('vipGradeList', {
+                where: data.field,
+                method:'POST',
+                pageNum: {curr:1},
+            });
+            return false;
+        });
         //监听行工具事件
         table.on('tool(vipGradeList)', function(obj){
             var data = obj.data;
             debugger;
             //console.log(obj)
             if(obj.event === 'edit'){
-
-                debugger;
                 var id = obj.data.id;
                 editVipGrade(id);
-
             }
         });
 
         var editVipGrade = function (id) {
-
             layer.open({
                 type: 2,
-                content: 'http://sentsin.com' //这里content是一个URL，如果你不想让iframe出现滚动条，你还可以content: ['http://sentsin.com', 'no']
+                area: ['60%','50%'],
+                content: '/vipGrade/edit?id='+id //这里content是一个URL，如果你不想让iframe出现滚动条，你还可以content: ['http://sentsin.com', 'no']
             });
 
         }
-
-
-
     });
+    var addVipGrade = function () {
+        layer.open({
+            type: 2,
+            area: ['60%','50%'],
+            content: '/vipGrade/edit' //这里content是一个URL，如果你不想让iframe出现滚动条，你还可以content: ['http://sentsin.com', 'no']
+        });
+    }
 </script>
 </body>
 </html>

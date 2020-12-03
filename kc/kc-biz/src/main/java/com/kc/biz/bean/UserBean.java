@@ -27,6 +27,8 @@ public class UserBean implements Serializable {
     private Integer grade;
     private String agentCode;
     private BigDecimal coreBalance;
+    private Integer goldCoin;
+    private Long videoVipEndTime;
     private String regIp;
     private Long createTime;
     //增加字段
@@ -219,5 +221,21 @@ public class UserBean implements Serializable {
 
     public void setUserType(Integer userType) {
         this.userType = userType;
+    }
+
+    public Integer getGoldCoin() {
+        return goldCoin;
+    }
+
+    public void setGoldCoin(Integer goldCoin) {
+        this.goldCoin = goldCoin;
+    }
+
+    public Long getVideoVipEndTime() {
+        return videoVipEndTime;
+    }
+
+    public void setVideoVipEndTime(Long videoVipEndTime) {
+        this.videoVipEndTime = videoVipEndTime;
     }
 }

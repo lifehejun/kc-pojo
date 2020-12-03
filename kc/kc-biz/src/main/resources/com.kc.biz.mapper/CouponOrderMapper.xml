@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kc.biz.mapper.CouponOrderMapper">
+  <resultMap id="BaseResultMap" type="com.kc.biz.bean.CouponOrder">
+    <id column="id" property="id" jdbcType="BIGINT"  />
+    <result column="coupon_code" property="couponCode" jdbcType="VARCHAR"/>
+    <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+    <result column="receive_time" property="receiveTime" jdbcType="BIGINT"/>
+    <result column="order_status" property="orderStatus" jdbcType="BIGINT"/>
+    <result column="create_time" property="createTime" jdbcType="BIGINT"/>
+  </resultMap>
+
+  <resultMap id="CouponOrderVoBaseResultMap" type="com.kc.biz.vo.CouponOrderVo">
+        <id column="id" property="id" jdbcType="BIGINT"  />
+        <result column="coupon_code" property="couponCode" jdbcType="VARCHAR"/>
+        <result column="coupon_name" property="couponName" jdbcType="VARCHAR"/>
+        <result column="show_name" property="showName" jdbcType="VARCHAR"/>
+        <result column="bus_type" property="busType" jdbcType="BIGINT"/>
+        <result column="coupon_amount" property="couponAmount" jdbcType="DECIMAL"/>
+        <result column="order_status" property="orderStatus" jdbcType="BIGINT"/>
+        <result column="valid_start_time" property="validStartTime" jdbcType="BIGINT"/>
+        <result column="valid_end_time" property="validEndTime" jdbcType="BIGINT"/>
+        <result column="receive_time" property="receiveTime" jdbcType="BIGINT"/>
+        <result column="rule_desc" property="ruleDesc" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="select_condition_sql">
+        <where>
+            <trim prefix="(" suffix=")" prefixOverrides="and">
+                <if test="id != null ">
+                    and tco.id = #{id}
+                </if>
+                <if test="couponCode != null and couponCode != ''">
+                    and tco.coupon_code = #{couponCode}
+                </if>
+                <if test="orderStatus != null ">
+                    and tco.order_status = #{orderStatus}
+                </if>
+            </trim>
+        </where>
+    </sql>
+
+    <insert id="insert" parameterType="com.kc.biz.bean.CouponOrder" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_coupon_order
+        (coupon_code,user_id,receive_time,order_status,create_time)
+        VALUES
+        (#{couponCode}, #{userId},#{receiveTime}, #{orderStatus},unix_timestamp())
+    </insert>
+
+
+    <update id="updateById" parameterType="com.kc.biz.bean.CouponOrder">
+        UPDATE tb_coupon_order tco
+        <trim prefix="set" suffixOverrides=",">
+            <if test="couponCode !=null and couponCode !='' ">tco.coupon_code = #{couponCode},</if>
+            <if test="userId !=null and userId != ''" >tco.user_id = #{userId},</if>
+            <if test="receiveTime !=null " >tco.receive_time = #{receiveTime},</if>
+            <if test="orderStatus !=null">tco.order_status = #{orderStatus},</if>
+        </trim>
+        WHERE id=#{id}
+    </update>
+
+    <select id="queryById" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+        SELECT
+        tco.id,
+        tco.coupon_code,
+        tco.user_id,
+        tco.receive_time,
+        tco.order_status,
+        tc.create_time
+        FROM tb_coupon_order tco
+        WHERE tco.id = #{id}
+        ORDER BY tco.create_time DESC
+    </select>
+
+    <select id="queryByCode" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+        SELECT
+        tco.id,
+        tco.coupon_code,
+        tco.user_id,
+        tco.receive_time,
+        tco.order_status,
+        tc.create_time
+        FROM tb_coupon_order tco
+        WHERE tco.coupon_code = #{couponCode}
+        ORDER BY tco.create_time DESC
+    </select>
+
+
+    <delete id="deleteById" parameterType="com.kc.biz.bean.CouponOrder">
+       DELETE FROM tb_coupon_order where id = #{id}
+    </delete>
+
+
+    <select id="findMyCouponList" parameterType="java.util.HashMap" resultMap="CouponOrderVoBaseResultMap">
+        select tco.id,tco.receive_time,tc.coupon_code,tc.coupon_name,tc.show_name,
+        tc.coupon_amount,tc.rule_desc,
+        tc.bus_type,tc.valid_start_time,tc.valid_end_time,tco.order_status
+        from tb_coupon_order tco
+        left join tb_coupon tc on tco.coupon_code = tc.coupon_code and tc.status = 1
+        <where>
+            <trim prefix="(" suffix=")" prefixOverrides="and">
+
+                <if test="userId != null and userId != ''">
+                    and tco.user_id = #{userId}
+                </if>
+                <if test="orderStatus != null ">
+                    and tco.order_status = #{orderStatus}
+                </if>
+                <if test="busType != null ">
+                    and tc.bus_type = #{busType}
+                </if>
+            </trim>
+        </where>
+        order by tco.receive_time desc
+    </select>
+
+
+
+    <select id="findReceivedCount" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+        select count(1) from tb_coupon_order tco
+        <where>
+            <trim prefix="(" suffix=")" prefixOverrides="and">
+                <if test="userId != null and userId != ''">
+                    and tco.user_id = #{userId}
+                </if>
+                <if test="couponCode != null and couponCode != ''">
+                    and tco.coupon_code = #{couponCode}
+                </if>
+            </trim>
+        </where>
+    </select>
+
+
+
+
+
+
+
+</mapper>

@@ -190,6 +190,12 @@
                             <i class="iconfont">&#xe6a7;</i>
                             <cite>优惠券</cite></a>
                     </li>
+
+                    <li>
+                        <a onclick="xadmin.add_tab('广告主','/adv/list')">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>广告主</cite></a>
+                    </li>
                 </ul>
             </li>
             <li>

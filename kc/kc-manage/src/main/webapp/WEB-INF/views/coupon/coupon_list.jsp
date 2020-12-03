@@ -3,6 +3,14 @@
 <html>
 <head>
     <title>优惠券数据</title>
+    <style>
+        .layui-table-main .layui-table-cell{
+            height:35px!important;
+        }
+        .layui-table-fixed-r > .layui-table-body .layui-table-cell{
+            height:35px!important;
+        }
+    </style>
 </head>
 <body>
 <jsp:include page="../common/comm_css_js.jsp"/>
@@ -74,27 +82,30 @@
                 elem: '#couponList'
                 ,url:'/coupon/list/page'
                 ,title: '优惠券列表'
-                ,limit:20
+                ,limit:15
                 ,loading:true
                 ,size:'sm'
                 ,page: {
-                    limits:[20, 30, 40, 50,100,200,500,1000],
+                    limits:[15, 30, 40, 50,100,200,500,1000],
                     theme: '#1E9FFF'
                 } //开启分页
                 ,cols: [[
-                    {field:'couponCode', title: '优惠券代码', }
-                    ,{field:'couponName', title: '名称'}
-                    ,{field:'showName', title: '前端显示名称'}
-                    ,{field:'couponTypeDesc', title: '优惠券类型'}
-                    ,{field:'giveTypeDesc', title: '发放方式'}
-                    ,{field:'busTypeDesc', title: '业务类型'}
-                    ,{field:'faceValue', title: '面值金额'}
-                    ,{field:'subsidyAmount', title: '平台补贴金额'}
-                    ,{field:'num', title: '发放数量'}
+                    {field:'couponCode', title: '优惠券代码',width:90 }
+                    ,{field:'couponName', title: '名称',width:120}
+                    ,{field:'couponTypeDesc', title: '优惠券类型',width:90}
+                    ,{field:'couponAmount', title: '面值金额',width:80}
+                    ,{field:'fullAmount', title: '满减金额',width:100}
+                    ,{field:'provideNum', title: '发放数量',width:80}
+                    ,{field:'receiveNum', title: '领取数量/人',width:100}
                     ,{field:'statusDesc', title: '状态'}
-                    ,{field:'createTime', title: '创建时间', templet :function (row){
-                            return createTime(row.createTime);
-                        },width: 150 }
+                    ,{field:'sellStatus', title: '销售状态',width:90}
+                    ,{field:'validStatus', title: '有效期状态',width:90}
+                    ,{field:'sellStartTime', title: '销售时间', templet :function (row){
+                            return "开始："+createTime(row.sellStartTime)+"<br/> 结束："+createTime(row.sellEndTime);
+                        },width: 180 }
+                    ,{field:'validStartTime', title: '有效时间', templet :function (row){
+                            return "开始："+createTime(row.validStartTime)+"<br/> 结束："+createTime(row.validEndTime);
+                        },width: 180 }
                     ,{fixed: 'right', title:'操作', toolbar: '#barCoupon', width:180}
 
                 ]]

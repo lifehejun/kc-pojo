@@ -224,5 +224,10 @@ public class PostServiceImpl implements IPostService {
     public List<PostImage> findImgByPostId(Long postId) {
         return postMapper.findImgByPostId(postId);
     }
+
+    @Override
+    public int insertPostImage(PostImage postImage) {
+        return postMapper.insertPostImage(postImage);
+    }
 }
 

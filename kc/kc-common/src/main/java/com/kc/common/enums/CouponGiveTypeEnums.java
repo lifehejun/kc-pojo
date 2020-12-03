@@ -7,10 +7,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum CouponGiveTypeEnums {
-    //发放方式：1:活动赠送，2，直接领取，3 售卖
+    //发放方式：1:活动赠送，2，售卖
     COUPON_GIVE_TYPE_1(1, "活动赠送"),
-    COUPON_GIVE_TYPE_2(2, "直接领取"),
-    COUPON_GIVE_TYPE_3(3, "售卖");
+    COUPON_GIVE_TYPE_2(2, "售卖");
 
     public static final Map<Integer, String> couponGiveTypeEnumsMap = new HashMap<>();
 

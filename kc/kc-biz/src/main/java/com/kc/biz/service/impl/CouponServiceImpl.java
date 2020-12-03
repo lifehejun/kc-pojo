@@ -3,12 +3,15 @@ package com.kc.biz.service.impl;
 import com.kc.biz.bean.Coupon;
 import com.kc.biz.mapper.CouponMapper;
 import com.kc.biz.service.ICouponService;
+import com.kc.biz.vo.CouponVo;
+import com.kc.common.consts.CommConst;
 import com.kc.common.enums.CouponBusTypeEnums;
 import com.kc.common.enums.CouponGiveTypeEnums;
 import com.kc.common.enums.CouponTypeEnums;
 import com.kc.common.enums.ParamStatusEnums;
 import com.kc.common.exception.ApiException;
 import com.kc.common.page.Page;
+import com.kc.common.util.DateTools;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -56,6 +59,9 @@ public class CouponServiceImpl implements ICouponService {
                 coupon.setGiveTypeDesc(CouponGiveTypeEnums.getName(coupon.getGiveType()));
                 coupon.setBusTypeDesc(CouponBusTypeEnums.getName(coupon.getBusType()));
                 coupon.setStatusDesc(ParamStatusEnums.getName(coupon.getStatus()));
+
+                coupon.setSellStatus(this.getSellStatusDesc(coupon.getSellStartTime(),coupon.getSellEndTime()));
+                coupon.setValidStatus(this.getValidStatusDesc(coupon.getValidStartTime(),coupon.getValidEndTime()));
             });
             return new Page<Coupon>(list, total);
         }else{
@@ -68,6 +74,39 @@ public class CouponServiceImpl implements ICouponService {
     @Override
     public List<Coupon> findList() {
         return couponMapper.findList();
+    }
+
+    @Override
+    public String getSellStatusDesc(Long sellStartTime, Long sellEndTime) {
+        Long currentTime = DateTools.getLongCurrTime();
+        if(currentTime < sellStartTime ){
+            return CommConst.COUPON_SELL_STATUS_NO_SELL;
+        }else if(currentTime >= sellStartTime && currentTime <= sellEndTime){
+            return CommConst.COUPON_SELL_STATUS_SELLING;
+        }else if(currentTime > sellEndTime){
+            return CommConst.COUPON_SELL_STATUS_PASS_SELL;
+        }else {
+            return "未知状态";
+        }
+    }
+
+    @Override
+    public String getValidStatusDesc(Long validStartTime, Long validEndTime) {
+        Long currentTime = DateTools.getLongCurrTime();
+        if(currentTime < validStartTime ){
+            return CommConst.COUPON_VALID_STATUS_NO_VALID;
+        }else if(currentTime >= validStartTime && currentTime <= validEndTime){
+            return CommConst.COUPON_VALID_STATUS_VALIDING;
+        }else if(currentTime > validEndTime){
+            return CommConst.COUPON_VALID_STATUS_PASS_VALID;
+        }else {
+            return "未知状态";
+        }
+    }
+
+    @Override
+    public List<CouponVo> findAvailableCouponList(Map<String, Object> params) throws ApiException {
+        return couponMapper.findAvailableCouponList(params);
     }
 
 

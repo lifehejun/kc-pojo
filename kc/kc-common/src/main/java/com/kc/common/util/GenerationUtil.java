@@ -188,10 +188,33 @@ public class GenerationUtil {
 		return "YHQ_"+random;
 	}
 
+	/**
+	 * 生成广告编号
+	 * @return
+	 */
+	public static String getAdvCode(){
+		String random = RandomStringUtils.randomNumeric(4);
+		return "ADV_"+random;
+	}
+
+	/**
+	 * 生成VIP等级编号
+	 * @return
+	 */
+	public static String getVipGradeCode(){
+		String random = RandomStringUtils.randomNumeric(4);
+		return "VIP_"+random;
+	}
+	/**
+	 * 生成代理code
+	 * @return
+	 */
 	public static String getAgentCode(){
 		String random = RandomStringUtils.randomNumeric(4);
 		return random;
 	}
+
+
 	public static void main(String[] args) {
 		System.out.println(RandomStringUtils.randomNumeric(5));
 	}

@@ -1,5 +1,7 @@
 package com.kc.biz.service;
 
+import com.kc.biz.bean.Coupon;
+import com.kc.biz.bean.CouponOrder;
 import com.kc.common.exception.ApiException;
 
 import java.util.List;
@@ -11,9 +13,8 @@ import java.util.List;
 public interface IAsyncService {
     void frozenUser(Long id) throws ApiException; //冻结用户
     void unFrozenUser(Long id) throws ApiException; //解冻用户
-
     void addTopicPostNum(List<String> topicCodeList) throws ApiException; //同步增加主题发帖量
-
+    void addCouponOrder(CouponOrder couponOrder) throws ApiException; //添加优惠券入库订单
 
 
 }

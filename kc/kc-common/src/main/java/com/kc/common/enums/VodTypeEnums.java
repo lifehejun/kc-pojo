@@ -7,8 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum  VodTypeEnums {
-    ORDINARY("erect", "小视频(竖屏)"),
-    MATCH("sidelong", "普通视频(横屏)");
+    MATCH("sidelong", "普通视频(横屏)"),
+    ORDINARY("erect", "小视频(竖屏)");
 
 
     private String code;

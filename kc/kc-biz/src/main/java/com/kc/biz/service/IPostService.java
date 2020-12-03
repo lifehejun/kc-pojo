@@ -25,6 +25,7 @@ public interface IPostService {
     void postPublish(List<MultipartFile> files,Map<String, String> params) throws ApiException;
     List<PostVideo> findVideoByPostId(Long postId);
     List<PostImage> findImgByPostId(Long postId);
+    int insertPostImage(PostImage postImage);
 
 
 

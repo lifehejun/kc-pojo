@@ -19,9 +19,16 @@
         </div>
     </div>
     <div class="layui-form-item">
-        <label class="layui-form-label">话题图片路径 <span style="color:red;">*</span></label>
+        <label class="layui-form-label">话题图片 <span style="color:red;">*</span></label>
         <div class="layui-input-block">
-            <input type="text" name="topicImgUrl" lay-verify="required" value="${topic.topicImgUrl}" autocomplete="off" class="layui-input">
+            <div class="layui-upload">
+                <button type="button" class="layui-btn layui-btn-normal" id="uploadImg">上传图片</button>
+                <div class="layui-upload-list" id="imgUrlView">
+                    <%--<img class="layui-upload-img" id="imgUrlView">--%>
+                    <p id="reUpload"></p>
+                </div>
+            </div>
+            <input type="hidden" name="topicImgUrl" id="topicImgUrl" >
         </div>
     </div>
 
@@ -34,9 +41,45 @@
 </form>
 
 <script>
-    layui.use('form', function(){
-        var form = layui.form;
+    layui.use(['form','upload'], function(){
+        var form = layui.form
+        ,upload = layui.upload;
 
+        //普通图片上传
+        var uploadInst = upload.render({
+            elem: '#uploadImg'
+            ,url: '/common/cos/uploadFile' //改成您自己的上传接口
+            ,accept:'images'
+            ,size: 1024*10
+            ,number:1
+            ,data: {moduleName: 'post'}
+            ,before: function(obj){
+                layer.load(); //上传loading
+                //预读本地文件示例，不支持ie8
+                /*obj.preview(function(index, file, result){
+                    $('#demo1').attr('src', result); //图片链接（base64）
+                });*/
+            }
+            ,done: function(res){
+                layer.closeAll('loading'); //关闭loading
+                var data = res.data;
+                if(res.code == "00"){
+                    $("#topicImgUrl").val(data.fileUrl);
+                    $('#imgUrlView').append('<img src="'+ data.fileUrl +'" class="layui-upload-img">')
+                }else{
+                    layer.msg(res.msg, {icon:2,time:3000});
+                }
+            }
+            ,error: function(){
+                layer.closeAll('loading'); //关闭loading
+                //演示失败状态，并实现重传
+                var reUpload = $('#reUpload');
+                reUpload.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+                reUpload.find('.demo-reload').on('click', function(){
+                    uploadInst.upload();
+                });
+            }
+        });
         //监听提交
         form.on('submit(topicSave)', function(data){
             //var jsonData = JSON.stringify(data.field);
@@ -44,5 +87,6 @@
             parent._ajax_b("/topic/save",jsonData,"保存成功",null);
             return false;
         });
+
     });
 </script>

@@ -90,4 +90,16 @@ public class VideoLabelController extends BaseController{
         }
     }
 
+    @RequestMapping("/cache/refresh")
+    @ResponseBody
+    public Map<String,Object> refresh(HttpServletRequest request) {
+        try {
+            videoLabelService.refresh();
+            return requestSuccess();
+        }catch (ApiException e){
+            logger.error("刷新视频标签缓存:{}",e.getMessage());
+            return exceptionHandling(e);
+        }
+    }
+
 }

@@ -19,6 +19,8 @@
     <result column="grade" property="grade" jdbcType="BIGINT"/>
     <result column="agent_code" property="agentCode" jdbcType="VARCHAR"/>
     <result column="core_balance" property="coreBalance" jdbcType="DECIMAL"/>
+    <result column="gold_coin" property="goldCoin" jdbcType="BIGINT"/>
+    <result column="video_vip_end_time" property="videoVipEndTime" jdbcType="BIGINT"/>
     <result column="remark" property="remark" jdbcType="VARCHAR"  />
     <result column="create_time" property="createTime" jdbcType="BIGINT"  />
     <result column="status" property="status" jdbcType="BIGINT"  />
@@ -111,6 +113,8 @@
         tu.grade,
         tu.agent_code,
         tu.core_balance,
+        tu.gold_coin,
+        tu.video_vip_end_time,
         tu.remark,
         tu.status,
         tu.create_time
@@ -144,6 +148,8 @@
                tu.grade,
                tu.agent_code,
                tu.core_balance,
+               tu.gold_coin,
+               tu.video_vip_end_time,
                tu.remark,
                tu.status,
                tu.create_time
@@ -169,6 +175,8 @@
                tu.grade,
                tu.agent_code,
                tu.core_balance,
+               tu.gold_coin,
+               tu.video_vip_end_time,
                tu.remark,
                tu.status,
                tu.create_time
@@ -224,6 +232,8 @@
           <if test="remark !=null and remark !=''">tu.remark = #{remark},</if>
           <if test="status !=null ">tu.status = #{status},</if>
           <if test="coreBalance !=null ">tu.core_balance = #{coreBalance},</if>
+          <if test="goldCoin !=null ">tu.gold_coin = #{goldCoin},</if>
+          <if test="videoVipEndTime !=null ">tu.video_vip_end_time = #{videoVipEndTime},</if>
           <if test="createTime !=null ">tu.create_time = #{createTime},</if>
         </trim>
         WHERE user_id = #{userId}
@@ -254,6 +264,8 @@
         tu.grade,
         tu.agent_code,
         tu.core_balance,
+        tu.gold_coin,
+        tu.video_vip_end_time,
         tu.remark,
         tu.status,
         tu.create_time
@@ -287,6 +299,8 @@
         tu.grade,
         tu.agent_code,
         tu.core_balance,
+        tu.gold_coin,
+        tu.video_vip_end_time,
         tu.remark,
         tu.status,
         tu.create_time
@@ -314,6 +328,8 @@
         tu.grade,
         tu.agent_code,
         tu.core_balance,
+        tu.gold_coin,
+        tu.video_vip_end_time,
         tu.remark,
         tu.status,
         tu.create_time

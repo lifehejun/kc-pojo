@@ -11,9 +11,13 @@ public class TransRecord implements Serializable {
     private Integer transType;
     private BigDecimal money;
     private Integer addOrSub;
-    private BigDecimal beforeBalance;
-    private BigDecimal afterBalance;
+    private BigDecimal beforeMoney;
+    private BigDecimal afterMoney;
+    private Integer beforeGoldCoin;
+    private Integer afterGoldCoin;
     private Integer status;
+    private String subServiceId;
+    private Integer goldCoin;
     private String remark;
     private Long transTime;
     private Long createTime;
@@ -22,6 +26,7 @@ public class TransRecord implements Serializable {
     private String userName;
     private String phone;
     private String transTypeDesc;
+    private String transValue; //交易值：包括金币，金额值，定义为字符串类型
 
     public Long getId() {
         return id;
@@ -59,25 +64,6 @@ public class TransRecord implements Serializable {
         return addOrSub;
     }
 
-    public void setAddOrSub(Integer addOrSub) {
-        this.addOrSub = addOrSub;
-    }
-
-    public BigDecimal getBeforeBalance() {
-        return beforeBalance;
-    }
-
-    public void setBeforeBalance(BigDecimal beforeBalance) {
-        this.beforeBalance = beforeBalance;
-    }
-
-    public BigDecimal getAfterBalance() {
-        return afterBalance;
-    }
-
-    public void setAfterBalance(BigDecimal afterBalance) {
-        this.afterBalance = afterBalance;
-    }
 
     public Integer getStatus() {
         return status;
@@ -85,6 +71,14 @@ public class TransRecord implements Serializable {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public String getSubServiceId() {
+        return subServiceId;
+    }
+
+    public void setSubServiceId(String subServiceId) {
+        this.subServiceId = subServiceId;
     }
 
     public String getRemark() {
@@ -141,5 +135,61 @@ public class TransRecord implements Serializable {
 
     public void setTransTypeDesc(String transTypeDesc) {
         this.transTypeDesc = transTypeDesc;
+    }
+
+    public Integer getGoldCoin() {
+        return goldCoin;
+    }
+
+    public void setGoldCoin(Integer goldCoin) {
+        this.goldCoin = goldCoin;
+    }
+
+    public void setAddOrSub(Integer addOrSub) {
+        this.addOrSub = addOrSub;
+    }
+
+    public BigDecimal getBeforeMoney() {
+        return beforeMoney;
+    }
+
+    public void setBeforeMoney(BigDecimal beforeMoney) {
+        this.beforeMoney = beforeMoney;
+    }
+
+    public BigDecimal getAfterMoney() {
+        return afterMoney;
+    }
+
+    public void setAfterMoney(BigDecimal afterMoney) {
+        this.afterMoney = afterMoney;
+    }
+
+    public Integer getBeforeGoldCoin() {
+        return beforeGoldCoin;
+    }
+
+    public void setBeforeGoldCoin(Integer beforeGoldCoin) {
+        this.beforeGoldCoin = beforeGoldCoin;
+    }
+
+    public Integer getAfterGoldCoin() {
+        return afterGoldCoin;
+    }
+
+    public void setAfterGoldCoin(Integer afterGoldCoin) {
+        this.afterGoldCoin = afterGoldCoin;
+    }
+
+    public String getTransValue() {
+        return transValue;
+    }
+
+    public void setTransValue(String transValue) {
+        this.transValue = transValue;
+    }
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
     }
 }

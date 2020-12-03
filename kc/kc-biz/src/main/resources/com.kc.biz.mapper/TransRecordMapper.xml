@@ -7,10 +7,14 @@
     <result column="trans_no" property="transNo" jdbcType="VARCHAR"/>
     <result column="trans_type" property="transType" jdbcType="BIGINT"/>
     <result column="money" property="money" jdbcType="DECIMAL"/>
+      <result column="gold_coin" property="goldCoin" jdbcType="DECIMAL"/>
       <result column="add_or_sub" property="addOrSub" jdbcType="BIGINT"/>
-      <result column="before_balance" property="beforeBalance" jdbcType="DECIMAL"/>
-      <result column="after_balance" property="afterBalance" jdbcType="DECIMAL"/>
+      <result column="before_money" property="beforeMoney" jdbcType="DECIMAL"/>
+      <result column="after_money" property="afterMoney" jdbcType="DECIMAL"/>
+      <result column="before_gold_coin" property="beforeGoldCoin" jdbcType="BIGINT"/>
+      <result column="after_gold_coin" property="afterGoldCoin" jdbcType="BIGINT"/>
       <result column="status" property="status" jdbcType="BIGINT"/>
+      <result column="sub_service_id" property="subServiceId" jdbcType="BIGINT"/>
       <result column="remark" property="remark" jdbcType="VARCHAR"/>
       <result column="trans_time" property="transTime" jdbcType="BIGINT"/>
       <result column="create_time" property="createTime" jdbcType="BIGINT"/>
@@ -42,6 +46,10 @@
                 <if test="userName != null and userName != ''" >
                     and tu.user_name = #{userName}
                 </if>
+                <if test="subServiceId != null and subServiceId != ''" >
+                    and tu.sub_service_id = #{subServiceId}
+                </if>
+
                 <if test="startDate != null" >
                     and ttr.trans_time >= #{startDate}
                 </if>
@@ -55,9 +63,9 @@
 
     <insert id="insert" parameterType="com.kc.biz.bean.UserBean" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_trans_record
-        (user_id,trans_no, trans_type, money, add_or_sub, before_balance,after_balance,status,remark,trans_time,create_time)
+        (user_id,trans_no, trans_type, money,gold_coin, add_or_sub, before_money,after_money,before_gold_coin,after_gold_coin,status,sub_service_id,remark,trans_time,create_time)
         VALUES
-        (#{userId}, #{transNo},#{transType}, #{money}, #{addOrSub},#{beforeBalance},#{afterBalance}, #{status},#{remark},#{transTime},unix_timestamp())
+        (#{userId}, #{transNo},#{transType}, #{money},#{goldCoin}, #{addOrSub},#{beforeMoney},#{afterMoney},#{beforeGoldCoin},#{afterGoldCoin}, #{status}, #{subServiceId},#{remark},#{transTime},unix_timestamp())
     </insert>
 
 
@@ -76,10 +84,14 @@
         ttr.trans_no,
         ttr.trans_type,
         ttr.money,
+        ttr.gold_coin,
         ttr.add_or_sub,
-        ttr.before_balance,
-        ttr.after_balance,
+        ttr.before_money,
+        ttr.after_money,
+        ttr.before_gold_coin,
+        ttr.after_gold_coin,
         ttr.status,
+        ttr.sub_service_id,
         ttr.remark,
         ttr.trans_time,
         ttr.create_time,
@@ -100,10 +112,14 @@
         ttr.trans_no,
         ttr.trans_type,
         ttr.money,
+        ttr.gold_coin,
         ttr.add_or_sub,
-        ttr.before_balance,
-        ttr.after_balance,
+        ttr.before_money,
+        ttr.after_money,
+        ttr.before_gold_coin,
+        ttr.after_gold_coin,
         ttr.status,
+        ttr.sub_service_id,
         ttr.remark,
         ttr.trans_time,
         ttr.create_time
@@ -118,9 +134,12 @@
             <if test="transNo !=null   and transNo != ''" >ttr.trans_no = #{transNo},</if>
             <if test="transType !=null   and transType != ''" >ttr.trans_type = #{transType},</if>
             <if test="money !=null">ttr.money = #{money},</if>
+            <if test="goldCoin !=null">ttr.gold_coin = #{goldCoin},</if>
             <if test="addOrSub !=null">ttr.add_or_sub = #{addOrSub},</if>
-            <if test="beforeBalance !=null" >ttr.before_balance = #{beforeBalance},</if>
-            <if test="afterBalance !=null" >ttr.after_balance = #{afterBalance},</if>
+            <if test="beforeMoney !=null" >ttr.before_money = #{beforeMoney},</if>
+            <if test="afterMoney !=null" >ttr.after_money = #{afterMoney},</if>
+            <if test="beforeGoldCoin !=null" >ttr.before_gold_coin = #{beforeGoldCoin},</if>
+            <if test="afterGoldCoin !=null" >ttr.after_gold_coin = #{afterGoldCoin},</if>
             <if test="status !=null" >ttr.status = #{status},</if>
             <if test="remark !=null and remark !=''">ttr.remark = #{remark},</if>
             <if test="transTime !=null ">ttr.trans_time = #{transTime},</if>

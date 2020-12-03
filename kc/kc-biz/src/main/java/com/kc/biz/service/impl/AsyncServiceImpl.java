@@ -1,12 +1,10 @@
 package com.kc.biz.service.impl;
 
+import com.kc.biz.bean.CouponOrder;
 import com.kc.biz.bean.Topic;
 import com.kc.biz.bean.UserBean;
 import com.kc.biz.cache.RedisUtil;
-import com.kc.biz.mapper.BankCardMapper;
-import com.kc.biz.mapper.TopicMapper;
-import com.kc.biz.mapper.TransRecordMapper;
-import com.kc.biz.mapper.UserMapper;
+import com.kc.biz.mapper.*;
 import com.kc.biz.service.*;
 import com.kc.common.enums.UserStatusEnums;
 import com.kc.common.exception.ApiException;
@@ -49,6 +47,8 @@ public class AsyncServiceImpl implements IAsyncService {
     private ICountService countService;
     @Autowired
     private ITopicService topicService;
+    @Autowired
+    private CouponOrderMapper couponOrderMapper;
 
 
     @Async("taskExecutor")
@@ -91,6 +91,11 @@ public class AsyncServiceImpl implements IAsyncService {
             }
 
         }
+    }
+
+    @Override
+    public void addCouponOrder(CouponOrder couponOrder) throws ApiException {
+        couponOrderMapper.insert(couponOrder);
     }
 
 

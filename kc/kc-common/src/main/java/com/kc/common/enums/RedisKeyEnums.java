@@ -7,7 +7,8 @@ public enum RedisKeyEnums {
      */
     KC("kc:", "KC"),
     KC_DICT("kc:dict:", "KC_DICT"),
-    VOD_LABEL_TYPE("kc:dict:videoLabel:", "视频标签"),
+    VOD_LABEL_CODE("kc:dict:videoLabel:", "视频标签"),
+    VOD_LABEL_CODE_LIST("kc:dict:videoLabelCodeList:", "视频(标签)集合"),
     SYS_HEAD_URL("kc:dict:sysHeadUrl:", "系统头像路径url"),
     TOPIC_CODE("kc:dict:topicCode:", "帖子话题(标签)"),
     TOPIC_CODE_LIST("kc:dict:topicCodeList:", "帖子话题(标签)集合"),
@@ -28,6 +29,7 @@ public enum RedisKeyEnums {
     STATISTICS_POST_NUM("kc:statistics:postNum:", "发帖数"),
     AUTH_USER_TOKEN("kc:auth:user:", "用户token"),
     LOCK_USER_REGISTER("kc:lock:userRegister:", "用户注册锁"),
+    LOCK_USER_RECEIVE_COUPON("kc:lock:userReceiveCoupon:", "用户领取优惠券锁"),
     ;
 
 

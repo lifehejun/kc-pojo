@@ -16,6 +16,20 @@
     <result column="create_time" property="createTime" jdbcType="BIGINT"/>
   </resultMap>
 
+    <resultMap id="VideoVoResultMap" type="com.kc.biz.vo.VideoVo">
+        <id column="id" property="id" jdbcType="BIGINT"  />
+        <result column="vod_name" property="vodName" jdbcType="VARCHAR"/>
+        <result column="vod_img_url" property="vodImgUrl" jdbcType="VARCHAR"/>
+        <result column="vod_play_url" property="vodPlayUrl" jdbcType="VARCHAR"/>
+        <result column="like_num" property="likeNum" jdbcType="BIGINT"/>
+        <result column="comment_num" property="commentNum" jdbcType="BIGINT"/>
+        <result column="label_code_list" property="labelCodeList" jdbcType="VARCHAR"/>
+
+        <result column="status" property="status" jdbcType="BIGINT"/>
+        <result column="create_time_str" property="createTimeStr" jdbcType="VARCHAR"/>
+    </resultMap>
+
+
 
     <sql id="select_condition_sql">
         <where>
@@ -123,4 +137,34 @@
         VALUES
         (#{userId}, #{videoId},unix_timestamp())
     </insert>
+
+
+
+
+    <select id="findVideoPageByLabelCode" parameterType="java.util.HashMap" resultMap="VideoVoResultMap">
+        SELECT tv.id,
+        tv.vod_name,
+        tv.vod_img_url,
+        tv.vod_play_url,
+        tv.like_num,
+        tv.comment_num,
+        tv.label_code_list,
+        tv.status,
+        FROM_UNIXTIME(tv.create_time,'%Y-%m-%d') as create_time_str
+        FROM tb_video tv
+        LEFT JOIN tb_user tu ON tv.user_id = tu.user_id
+        <include refid="select_condition_sql"/>
+        ORDER BY tv.create_time DESC
+        LIMIT #{startRow}, #{pageSize}
+    </select>
+
+    <select id="getVideoPageTotal" parameterType="com.kc.biz.vo.VideoVo" resultType="int">
+        SELECT count(1)
+        FROM tb_video tv
+        LEFT JOIN tb_user tu ON tv.user_id = tu.user_id
+        <include refid="select_condition_sql"/>
+        ORDER BY tv.create_time DESC
+    </select>
+
+
 </mapper>

@@ -2,7 +2,8 @@ package com.kc.common.enums;
 
 public enum AddOrSubEnums {
 
-    SUB(0, "负数"),
+    SUB(-1, "负数"),
+    ZERO(0, "零"),
     ADD(1, "正数");
 
 

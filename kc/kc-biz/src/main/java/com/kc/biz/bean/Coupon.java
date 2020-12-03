@@ -12,9 +12,10 @@ public class Coupon implements Serializable {
     private Integer busType;
     private Integer giveType;
     private Integer couponType;
-    private BigDecimal faceValue;
-    private BigDecimal subsidyAmount;
-    private Integer num;
+    private BigDecimal couponAmount;
+    private BigDecimal fullAmount;
+    private Integer provideNum; //发放数量
+    private Integer receiveNum; //同账号领取数量
     private Long sellStartTime;
     private Long sellEndTime;
     private Long validStartTime;
@@ -28,6 +29,9 @@ public class Coupon implements Serializable {
     private String giveTypeDesc;
     private String couponTypeDesc;
     private String statusDesc;
+
+    private String sellStatus; //销售状态
+    private String validStatus; //有效状态
 
     public Long getId() {
         return id;
@@ -85,28 +89,28 @@ public class Coupon implements Serializable {
         this.couponType = couponType;
     }
 
-    public BigDecimal getFaceValue() {
-        return faceValue;
+    public BigDecimal getCouponAmount() {
+        return couponAmount;
     }
 
-    public void setFaceValue(BigDecimal faceValue) {
-        this.faceValue = faceValue;
+    public void setCouponAmount(BigDecimal couponAmount) {
+        this.couponAmount = couponAmount;
     }
 
-    public BigDecimal getSubsidyAmount() {
-        return subsidyAmount;
+    public Integer getProvideNum() {
+        return provideNum;
     }
 
-    public void setSubsidyAmount(BigDecimal subsidyAmount) {
-        this.subsidyAmount = subsidyAmount;
+    public void setProvideNum(Integer provideNum) {
+        this.provideNum = provideNum;
     }
 
-    public Integer getNum() {
-        return num;
+    public Integer getReceiveNum() {
+        return receiveNum;
     }
 
-    public void setNum(Integer num) {
-        this.num = num;
+    public void setReceiveNum(Integer receiveNum) {
+        this.receiveNum = receiveNum;
     }
 
     public Long getSellStartTime() {
@@ -195,5 +199,29 @@ public class Coupon implements Serializable {
 
     public void setStatusDesc(String statusDesc) {
         this.statusDesc = statusDesc;
+    }
+
+    public BigDecimal getFullAmount() {
+        return fullAmount;
+    }
+
+    public void setFullAmount(BigDecimal fullAmount) {
+        this.fullAmount = fullAmount;
+    }
+
+    public String getSellStatus() {
+        return sellStatus;
+    }
+
+    public void setSellStatus(String sellStatus) {
+        this.sellStatus = sellStatus;
+    }
+
+    public String getValidStatus() {
+        return validStatus;
+    }
+
+    public void setValidStatus(String validStatus) {
+        this.validStatus = validStatus;
     }
 }

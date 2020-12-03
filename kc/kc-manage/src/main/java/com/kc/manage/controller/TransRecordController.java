@@ -202,7 +202,7 @@ public class TransRecordController extends BaseController{
         try {
             Map<String,Object> params = ReqParamsUtils.getParamsData(request);
             transRecordService.rechargeReturn(params);
-            return requestSuccess("充值失败操作成功");
+            return requestSuccess("充值rechargeReturn失败操作成功");
         }catch (ApiException e){
             logger.error("充值失败操作异常:{}",e.getMessage());
             return exceptionHandling(e);

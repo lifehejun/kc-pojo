@@ -43,5 +43,25 @@ public class RedisUtil extends BaseRedis {
         removeValueByKey(RedisKeyEnums.LOCK_USER_REGISTER.getCode() + phone);
     }
 
+    /**
+     * 用户领取优惠券锁
+     * @param userId
+     * @param couponCode
+     * @return
+     */
+    public boolean lockForReceiveCoupon(String userId,String couponCode) {
+        // 过期时间5分钟
+        return setKeyAndValueTimeountIfAbsent(RedisKeyEnums.LOCK_USER_RECEIVE_COUPON.getCode() + userId +":"+couponCode,DateTools.getSysCurrTime(), 300);
+    }
+
+    /**
+     * 删除用户领取优惠券锁
+     * @param userId
+     * @param couponCode
+     */
+    public void removeLockReceiveCoupon(String userId,String couponCode) {
+        removeValueByKey(RedisKeyEnums.LOCK_USER_RECEIVE_COUPON.getCode() + userId+":"+couponCode);
+    }
+
 
 }

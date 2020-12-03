@@ -158,7 +158,7 @@
             }
             var topicTitleHtml = "";
             var strs = topicTitleList.split(","); //字符分割
-            var btnSty = ["layui-bg-orange","layui-bg-green","layui-bg-cyan","layui-bg-blue","layui-bg-black","layui-bg-gray"]
+            var btnSty = ["layui-bg-orange","layui-bg-cyan","layui-bg-blue","layui-bg-black","layui-bg-gray"]
             for (var i=0; i<strs.length; i++ ){
                 topicTitleHtml += '<span class="layui-badge '+btnSty[i]+'">'+strs[i]+'</span>&nbsp;&nbsp;&nbsp;';
             }

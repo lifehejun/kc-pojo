@@ -9,9 +9,10 @@
     <result column="bus_type" property="busType" jdbcType="BIGINT"/>
     <result column="give_type" property="giveType" jdbcType="BIGINT"/>
     <result column="coupon_type" property="couponType" jdbcType="BIGINT"/>
-    <result column="face_value" property="faceValue" jdbcType="DECIMAL"/>
-    <result column="subsidy_amount" property="subsidyAmount" jdbcType="DECIMAL"/>
-    <result column="num" property="num" jdbcType="BIGINT"/>
+    <result column="coupon_amount" property="couponAmount" jdbcType="DECIMAL"/>
+    <result column="full_amount" property="fullAmount" jdbcType="DECIMAL"/>
+    <result column="provide_num" property="provideNum" jdbcType="BIGINT"/>
+    <result column="receive_num" property="receiveNum" jdbcType="BIGINT"/>
     <result column="sell_start_time" property="sellStartTime" jdbcType="BIGINT"/>
     <result column="sell_end_time" property="sellEndTime" jdbcType="BIGINT"/>
     <result column="valid_start_time" property="validStartTime" jdbcType="BIGINT"/>
@@ -20,6 +21,21 @@
     <result column="rule_desc" property="ruleDesc" jdbcType="VARCHAR"/>
     <result column="create_time" property="createTime" jdbcType="BIGINT"/>
   </resultMap>
+
+    <resultMap id="CouponVoBaseResultMap" type="com.kc.biz.vo.CouponVo">
+        <id column="id" property="id" jdbcType="BIGINT"  />
+        <result column="coupon_code" property="couponCode" jdbcType="VARCHAR"/>
+        <result column="coupon_name" property="couponName" jdbcType="VARCHAR"/>
+        <result column="show_name" property="showName" jdbcType="VARCHAR"/>
+        <result column="bus_type" property="busType" jdbcType="BIGINT"/>
+        <result column="coupon_amount" property="couponAmount" jdbcType="DECIMAL"/>
+        <result column="provide_num" property="provideNum" jdbcType="BIGINT"/>
+        <result column="status" property="status" jdbcType="BIGINT"/>
+        <result column="rule_desc" property="ruleDesc" jdbcType="VARCHAR"/>
+        <result column="buy_ratio" property="buyRatio" jdbcType="DECIMAL"/>
+        <result column="sell_start_time_str" property="sellStartTimeStr" jdbcType="VARCHAR"/>
+        <result column="sell_end_time_str" property="sellEndTimeStr" jdbcType="VARCHAR"/>
+    </resultMap>
 
     <sql id="select_condition_sql">
         <where>
@@ -39,7 +55,6 @@
                 <if test="status != null ">
                     and tc.status = #{status}
                 </if>
-
             </trim>
         </where>
     </sql>
@@ -47,11 +62,11 @@
     <insert id="insert" parameterType="com.kc.biz.bean.Coupon" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_coupon
         (coupon_code,coupon_name,show_name,bus_type,give_type,coupon_type,
-        face_value,subsidy_amount,num,sell_start_time,sell_end_time,
+        coupon_amount,full_amount,provide_num,receive_num,sell_start_time,sell_end_time,
         valid_start_time, valid_end_time,rule_desc,status,create_time)
         VALUES
         (#{couponCode}, #{couponName},#{showName}, #{busType}, #{giveType}, #{couponType},
-         #{faceValue}, #{subsidyAmount}, #{num}, #{sellStartTime}, #{sellEndTime},
+         #{couponAmount}, #{fullAmount}, #{provideNum},#{receiveNum}, #{sellStartTime}, #{sellEndTime},
          #{validStartTime},#{validEndTime}, #{ruleDesc}, #{status},unix_timestamp())
     </insert>
 
@@ -65,9 +80,10 @@
         tc.bus_type,
         tc.give_type,
         tc.coupon_type,
-        tc.face_value,
-        tc.subsidy_amount,
-        tc.num,
+        tc.coupon_amount,
+        tc.full_amount,
+        tc.provide_num,
+        tc.receive_num,
         tc.sell_start_time,
         tc.sell_end_time,
         tc.valid_start_time,
@@ -96,9 +112,10 @@
         tc.bus_type,
         tc.give_type,
         tc.coupon_type,
-        tc.face_value,
-        tc.subsidy_amount,
-        tc.num,
+        tc.coupon_amount,
+        tc.full_amount,
+        tc.provide_num,
+        tc.receive_num,
         tc.sell_start_time,
         tc.sell_end_time,
         tc.valid_start_time,
@@ -117,9 +134,10 @@
             <if test="busType !=null " >tc.bus_type = #{busType},</if>
             <if test="giveType !=null">tc.give_type = #{giveType},</if>
             <if test="couponType !=null">tc.coupon_type = #{couponType},</if>
-            <if test="faceValue !=null">tc.face_value = #{faceValue},</if>
-            <if test="subsidyAmount !=null">tc.subsidy_amount = #{subsidyAmount},</if>
-            <if test="num !=null">tc.num = #{num},</if>
+            <if test="couponAmount !=null">tc.coupon_amount = #{couponAmount},</if>
+            <if test="fullAmount !=null">tc.full_amount = #{fullAmount},</if>
+            <if test="provideNum !=null">tc.provide_num = #{provideNum},</if>
+            <if test="receiveNum !=null">tc.receive_num = #{receiveNum},</if>
             <if test="sellStartTime !=null">tc.sell_start_time = #{sellStartTime},</if>
             <if test="sellEndTime !=null">tc.sell_end_time = #{sellEndTime},</if>
             <if test="validStartTime !=null">tc.valid_start_time = #{validStartTime},</if>
@@ -139,9 +157,10 @@
         tc.bus_type,
         tc.give_type,
         tc.coupon_type,
-        tc.face_value,
-        tc.subsidy_amount,
-        tc.num,
+        tc.coupon_amount,
+        tc.full_amount,
+        tc.provide_num,
+        tc.receive_num,
         tc.sell_start_time,
         tc.sell_end_time,
         tc.valid_start_time,
@@ -163,9 +182,10 @@
         tc.bus_type,
         tc.give_type,
         tc.coupon_type,
-        tc.face_value,
-        tc.subsidy_amount,
-        tc.num,
+        tc.coupon_amount,
+        tc.full_amount,
+        tc.provide_num,
+        tc.receive_num,
         tc.sell_start_time,
         tc.sell_end_time,
         tc.valid_start_time,
@@ -182,5 +202,22 @@
     <delete id="deleteById" parameterType="com.kc.biz.bean.Coupon">
        DELETE FROM tb_coupon where id = #{id}
     </delete>
+
+
+
+    <select id="findAvailableCouponList" parameterType="java.util.HashMap" resultMap="CouponVoBaseResultMap">
+        select tc.id,tc.coupon_code,tc.show_name,tc.coupon_name,
+        tc.bus_type,tc.coupon_amount,tc.rule_desc,tc.status,
+        from_unixtime(tc.sell_start_time,'%Y.%m.%d') as sell_start_time_str ,from_unixtime(tc.sell_end_time,'%Y.%m.%d') as sell_end_time_str,
+        tc.provide_num,
+        ((select count(1) from tb_coupon_order tco where tco.coupon_code = tc.coupon_code) /tc.provide_num) as buy_ratio
+        from tb_coupon tc
+        where tc.status = 1
+        and tc.sell_start_time &lt;= #{currentTime} and tc.sell_end_time &gt;=  #{currentTime}
+    </select>
+
+
+
+
 
 </mapper>

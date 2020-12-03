@@ -97,7 +97,7 @@
                         }}
                     ,{field:'vodName', title: '视频名称',width:200}
                     ,{field:'vodImgUrl', title: '视频封面',templet:function (d) {
-                            return '<img src="'+d.vodImgUrl+'" width="100px" height="40px"/>';
+                            return '<img src="'+d.vodImgUrl+'" width="100px" height="40px" onclick="openVideoView(\''+d.vodPlayUrl+'\')"/>';
                         },width:140}
                     ,{field:'vodLabel', title: '视频标签',width:300,templet:function (d) {
                             return getLabelNameList(d.labelNameList);
@@ -105,11 +105,11 @@
                     ,{field:'likeNum', title: '点赞量',sort: true,width: 100}
                     ,{field:'commentNum', title: '评论量',sort: true,width: 100}
                     ,{field:'status', title: '审核状态',sort: true,width: 100,templet :function (d){
-                            if(d.status = 0 || d.status == null || d.status == ''){
+                            if(d.status = "0" || d.status == null || d.status == ''){
                                 return "未审核";
-                            }else if(d.status == 1){
+                            }else if(d.status == "1"){
                                 return "审核通过";
-                            }else if(d.status == 2){
+                            }else if(d.status == "2"){
                                 return "审核未通过";
                             }
                         }}
@@ -155,7 +155,7 @@
             }
             var labelHtml = "";
             var strs = labelNameList.split(","); //字符分割
-            var btnSty = ["layui-bg-orange","layui-bg-green","layui-bg-cyan","layui-bg-blue","layui-bg-black","layui-bg-gray"]
+            var btnSty = ["layui-bg-orange","layui-bg-cyan","layui-bg-blue","layui-bg-black","layui-bg-gray"]
             for (var i=0; i<strs.length; i++ ){
                 labelHtml += '<span class="layui-badge '+btnSty[i]+'">'+strs[i]+'</span>&nbsp;&nbsp;&nbsp;';
             }

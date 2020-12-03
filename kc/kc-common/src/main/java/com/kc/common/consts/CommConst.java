@@ -65,6 +65,19 @@ public class CommConst {
 	public final static Integer TRANS_STATUS_1 = 1; //交易成功
 	public final static Integer TRANS_STATUS_2 = 2; //交易失败
 
+	public final static String COUPON_SELL_STATUS_NO_SELL = "未开售";
+	public final static String COUPON_SELL_STATUS_SELLING = "销售中";
+	public final static String COUPON_SELL_STATUS_PASS_SELL = "已过销售期";
+	public final static String COUPON_SELL_STATUS_SELL_COMPLETE = "已售罄";
+
+
+	public final static String COUPON_VALID_STATUS_NO_VALID = "未生效";
+	public final static String COUPON_VALID_STATUS_VALIDING = "生效中";
+	public final static String COUPON_VALID_STATUS_PASS_VALID = "已过期";
+
+
+
+
 
 	//验证码类型参数集合
 	public static List<String> VERIFY_CODE_TYPE = Arrays.asList(

@@ -91,8 +91,8 @@
                     ,{field:'transNo', title: '交易号', width: 130,sort: true}
                     ,{field:'money', title: '充值金额', width: 120,sort: true}
                     ,{field:'transTypeDesc', title: '交易类型', width: 120,sort: true}
-                    ,{field:'beforeBalance', title: '交易前余额', width: 120,sort: true}
-                    ,{field:'afterBalance', title: '交易后余额', width: 120,sort: true}
+                    ,{field:'beforeMoney', title: '交易前余额', width: 120,sort: true}
+                    ,{field:'afterMoney', title: '交易后余额', width: 120,sort: true}
                     ,{field:'remark', title: '备注', width: 140,sort: true}
                     ,{field:'status', title: '交易状态',width: 100,sort: true, templet: function(d) {
                             if(d.status == 0){

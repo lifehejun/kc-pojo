@@ -84,8 +84,8 @@
                     ,{field:'transNo', title: '交易号', width: 130}
                     ,{field:'money', title: '提现金额', width: 120}
                     ,{field:'transTypeDesc', title: '交易类型', width: 120,sort: true}
-                    ,{field:'beforeBalance', title: '交易前余额', width: 120}
-                    ,{field:'afterBalance', title: '交易后余额', width: 120}
+                    ,{field:'beforeMoney', title: '交易前余额', width: 120}
+                    ,{field:'afterMoney', title: '交易后余额', width: 120}
                     ,{field:'remark', title: '备注', width: 140}
                     ,{field:'status', title: '交易状态',width: 100,sort: true, templet: function(d) {
                             if(d.status == 0){

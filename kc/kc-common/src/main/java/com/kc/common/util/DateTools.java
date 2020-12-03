@@ -1269,4 +1269,14 @@ public class DateTools {
 		}
 	}
 
+
+	public static String timeStampUnixTimeToStr(Long timestampStr, String formats) {
+		if(null == timestampStr){
+			return "";
+		}
+		Long timestamp = timestampStr * 1000;
+		String date = new SimpleDateFormat(formats).format(new Date(timestamp));
+		return date;
+	}
+
 }

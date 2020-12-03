@@ -21,7 +21,7 @@
                 <select name="status" id="status" lay-search="">
                     <option value="">全部</option>
                     <c:forEach items="${statusEnums}" var="status">
-                        <option value="${status.key}" <c:if test="${status.key == domain.status}">selected</c:if> > ${status.value}</option>
+                        <option value="${status.key}"  > ${status.value}</option>
                     </c:forEach>
                 </select>
             </div>
@@ -74,7 +74,10 @@
                     {field:'topicCode', title: '话题Code', }
                     ,{field:'topicTitle', title: '标题'}
                     ,{field:'topicDesc', title: '话题描述'}
-                    ,{field:'topicImgUrl', title: '话题图片路径'}
+                    ,{field:'topicImgUrl', title: '话题图片路径',width: 150,templet:function (d) {
+                        var topicImgUrl = d.topicImgUrl;
+                        return '<img src= "'+topicImgUrl+'" height ="20" onclick="openImgView(\''+topicImgUrl+'\')"/>';
+                        }}
                     ,{field:'likeNum', title: '点赞量'}
                     ,{field:'viewNum', title: '浏览量'}
                     ,{field:'postNum', title: '发帖量'}

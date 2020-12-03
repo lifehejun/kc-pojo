@@ -132,6 +132,7 @@
                     {field:'phone', title: '手机号(登录名)',style:"color:#1E9FFF"}
                     ,{field:'userName', title: '用户名(昵称)', }
                     ,{field:'coreBalance', title: '主账户余额'}
+                    ,{field:'goldCoin', title: '金币余额'}
                     ,{field:'vodGradeName', title: '视频会员等级',templet:function (d) {
                             if(d.grade == 0){
                                 return "普通用户";

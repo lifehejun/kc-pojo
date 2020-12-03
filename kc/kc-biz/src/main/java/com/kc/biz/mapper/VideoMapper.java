@@ -10,7 +10,8 @@ import java.util.Map;
 public interface VideoMapper extends BaseMapper<Video> {
 
     List<Video> queryByPage(Map<String, Object> params);
-
+    List<VideoVo> findVideoPageByLabelCode(Map<String, Object> params);
+    int getVideoPageTotal(Map<String, Object> params);
     int insertVideoLike(VideoLike videoLike);
 
 }

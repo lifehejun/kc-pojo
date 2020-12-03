@@ -14,6 +14,7 @@ import com.kc.common.page.Page;
 import com.kc.common.resp.BusinessCode;
 import com.kc.common.util.DateTools;
 import com.kc.common.util.GenerationUtil;
+import com.kc.common.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -70,20 +71,20 @@ public class TransRecordServiceImpl implements ITransRecordService {
             //用户信息
             UserBean userBean = userMapper.queryByUserId(userId);
             //充值前的余额
-            BigDecimal beforeBalance = userBean.getCoreBalance();
+            BigDecimal beforeMoney = userBean.getCoreBalance();
             //充值后的余额
-            BigDecimal afterBalance = beforeBalance.add(transRecord.getMoney());
+            BigDecimal afterMoney = beforeMoney.add(transRecord.getMoney());
 
             //更新交易状态
             transRecord.setStatus(CommConst.TRANS_STATUS_1); //交易成功
-            transRecord.setBeforeBalance(beforeBalance);
-            transRecord.setAfterBalance(afterBalance);
+            transRecord.setBeforeMoney(beforeMoney);
+            transRecord.setAfterMoney(afterMoney);
             transRecord.setTransTime(DateTools.getUnixTimestampTime(new Date()));
             transRecord.setRemark("充值:人工确认");
             transRecordMapper.updateById(transRecord);
 
             //更新用户核心余额
-            userBean.setCoreBalance(afterBalance);
+            userBean.setCoreBalance(afterMoney);
             userMapper.updateByUserId(userBean);
         }else{
             throw new ApiException(BusinessCode.TRANS_RESP_4001.getCode());
@@ -103,8 +104,8 @@ public class TransRecordServiceImpl implements ITransRecordService {
         TransRecord transRecord = transRecordMapper.queryByTransNo(transNo);
 
         if(CommConst.TRANS_STATUS_0.equals(transRecord.getStatus())){
-            transRecord.setBeforeBalance(coreBalance);
-            transRecord.setAfterBalance(coreBalance);
+            transRecord.setBeforeMoney(coreBalance);
+            transRecord.setAfterMoney(coreBalance);
             transRecord.setStatus(CommConst.TRANS_STATUS_2); //交易失败
             transRecord.setRemark("充值:人工撤销");
             transRecordMapper.updateById(transRecord);
@@ -117,11 +118,7 @@ public class TransRecordServiceImpl implements ITransRecordService {
 
     @Override
     public void manualTransSubmit(UserBean user, TransRecord transRecord) throws ApiException {
-        BigDecimal money = transRecord.getMoney();
         Integer transType = transRecord.getTransType();
-        if(money.compareTo(BigDecimal.ZERO)<=0){
-            throw new ApiException(BusinessCode.TRANS_RESP_4002.getCode());
-        }
         if(null == transType){
             throw new ApiException(BusinessCode.TRANS_RESP_4003.getCode());
         }
@@ -138,8 +135,8 @@ public class TransRecordServiceImpl implements ITransRecordService {
             case 103:
                 //;
                 break;
-            case 104:
-                //;
+            case 200:
+                this.manualGoldCoinRechargeTrans(user,transRecord);
                 break;
             case 105:
                 //;
@@ -156,11 +153,34 @@ public class TransRecordServiceImpl implements ITransRecordService {
     public void manualRechargeTrans(UserBean user, TransRecord transRecord) throws ApiException {
         String userId = user.getUserId();
         Integer transType = transRecord.getTransType();
-        BigDecimal money = transRecord.getMoney();
+        String transValue = transRecord.getTransValue();
+        BigDecimal money = new BigDecimal(transValue).setScale(2,BigDecimal.ROUND_HALF_UP);
+        if(money.compareTo(BigDecimal.ZERO)<=0){
+            throw new ApiException(BusinessCode.TRANS_RESP_4002.getCode());
+        }
+
         Integer addOrSub = TransTypeEnums.getAddOrSub(transType);
         String transTypeDesc = TransTypeEnums.getName(transType);
         //构建交易记录
-        this.buildTransRecord(userId,transType,money,addOrSub,CommConst.TRANS_STATUS_1,transTypeDesc);
+        this.buildTransRecord(userId,transType,money,null,addOrSub,CommConst.TRANS_STATUS_1,null,transTypeDesc);
+    }
+
+    @Override
+    public void manualGoldCoinRechargeTrans(UserBean user, TransRecord transRecord) throws ApiException {
+        String userId = user.getUserId();
+        Integer transType = transRecord.getTransType();
+        String transValue = transRecord.getTransValue();
+        if(!StringUtil.isInt(transValue)){
+            throw new ApiException(BusinessCode.TRANS_GOLD_COIN_RESP_4006.getCode());
+        }
+        Integer goldCoinNum =  Integer.valueOf(transValue);
+        Integer addOrSub = TransTypeEnums.getAddOrSub(transType);
+        String transTypeDesc = TransTypeEnums.getName(transType);
+        if(goldCoinNum.compareTo(0)<=0){
+            throw new ApiException(BusinessCode.TRANS_GOLD_COIN_RESP_4005.getCode());
+        }
+        //构建交易记录
+        this.buildTransRecord(userId,transType,null,goldCoinNum,addOrSub,CommConst.TRANS_STATUS_1,null,transTypeDesc);
     }
 
     @Override
@@ -171,7 +191,7 @@ public class TransRecordServiceImpl implements ITransRecordService {
         Integer addOrSub = TransTypeEnums.getAddOrSub(transType);
         String transTypeDesc = TransTypeEnums.getName(transType);
         checkBusinessService.checkManualCash(user,money);
-        this.buildTransRecord(userId,transType,money,addOrSub,CommConst.TRANS_STATUS_1,transTypeDesc);
+        this.buildTransRecord(userId,transType,money,null,addOrSub,CommConst.TRANS_STATUS_1,null,transTypeDesc);
     }
 
     @Override
@@ -203,32 +223,71 @@ public class TransRecordServiceImpl implements ITransRecordService {
     }
 
     @Override
-    public int buildTransRecord(String userId, Integer transType, BigDecimal money, Integer addOrSub, Integer status, String remark) {
+    public int buildTransRecord(String userId, Integer transType, BigDecimal money,Integer goldCoin, Integer addOrSub, Integer status,String subServiceId,String remark) {
+        int res = 0;
         TransRecord transRecord = new TransRecord();
         transRecord.setUserId(userId);
         transRecord.setTransType(transType);
         transRecord.setTransNo(GenerationUtil.getTransNo());
-        transRecord.setMoney(money);
         transRecord.setAddOrSub(addOrSub);
-        UserBean userBean = userMapper.queryByUserId(userId);
-        BigDecimal beforeBalance = userBean.getCoreBalance();
-        transRecord.setBeforeBalance(beforeBalance);
-        BigDecimal afterBalance = BigDecimal.ZERO;
-        if(AddOrSubEnums.ADD.getCode().equals(addOrSub)){
-            afterBalance = beforeBalance.add(money);
-        }else if(AddOrSubEnums.SUB.getCode().equals(addOrSub)){
-            afterBalance = beforeBalance.subtract(money);
+
+        UserBean user = userMapper.queryByUserId(userId);
+        BigDecimal beforeMoney = user.getCoreBalance();
+        Integer beforeGoldCoin = user.getGoldCoin();
+
+        BigDecimal afterMoney = BigDecimal.ZERO;
+        Integer afterGoldCoin = 0;
+        boolean isGoldCoinTranFlag = false;
+        //创建金币交易
+        if(TransTypeEnums.goldCoinTransTypeCodeList.contains(transType)){
+            isGoldCoinTranFlag = true;
+            transRecord.setGoldCoin(goldCoin);
+            transRecord.setBeforeGoldCoin(beforeGoldCoin);
+
+            if(AddOrSubEnums.ADD.getCode().equals(addOrSub)){
+                afterGoldCoin = beforeGoldCoin + goldCoin;
+            }else if(AddOrSubEnums.SUB.getCode().equals(addOrSub)){
+                afterGoldCoin = beforeGoldCoin - goldCoin;
+            }else{
+                afterGoldCoin = goldCoin;//不作更改，还是原来的金币余额
+            }
+            transRecord.setAfterGoldCoin(afterGoldCoin);
+
+
+        }else if(TransTypeEnums.moneyTransTypeCodeList.contains(transType)){ //非金币交易
+            transRecord.setMoney(money);
+            transRecord.setBeforeMoney(beforeMoney);
+
+            if(AddOrSubEnums.ADD.getCode().equals(addOrSub)){
+                afterMoney = beforeMoney.add(money);
+            }else if(AddOrSubEnums.SUB.getCode().equals(addOrSub)){
+                afterMoney = beforeMoney.subtract(money);
+            }else{
+                afterMoney = beforeMoney;//不作更改，还是原来的余额
+            }
+            transRecord.setAfterMoney(afterMoney);
         }
-        transRecord.setAfterBalance(afterBalance);
+
         transRecord.setStatus(status);
         transRecord.setRemark(remark);
         transRecord.setTransTime(DateTools.getUnixTimestampTime(new Date()));
-        transRecordMapper.insert(transRecord);
 
-        //更新用户核心余额
-        userBean.setCoreBalance(afterBalance);
-        int res = userMapper.updateByUserId(userBean);
+        res = transRecordMapper.insert(transRecord);
+        //状态为交易成功才更新user
+        if(CommConst.TRANS_STATUS_1.equals(status)){
+
+            if(isGoldCoinTranFlag){
+                //更新用户金币余额
+                user.setGoldCoin(afterGoldCoin);
+                res = userMapper.updateByUserId(user);
+            }else{
+                //更新用户核心余额
+                user.setCoreBalance(afterMoney);
+                res = userMapper.updateByUserId(user);
+            }
+        }
         return res;
+
     }
 }
 

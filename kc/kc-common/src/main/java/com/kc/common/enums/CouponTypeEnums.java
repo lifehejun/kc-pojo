@@ -7,9 +7,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum CouponTypeEnums {
-    //优惠券类型：1:代金券，2，兑换券
-    COUPON_TYPE_1(1, "代金券"),
-    COUPON_TYPE_2(2, "兑换券");
+    //优惠券类型：1:满减券，2，立减券
+    COUPON_TYPE_1(1, "满减券"),
+    COUPON_TYPE_2(2, "立减券");
 
     public static final Map<Integer, String> couponTypeEnumsMap = new HashMap<>();
 

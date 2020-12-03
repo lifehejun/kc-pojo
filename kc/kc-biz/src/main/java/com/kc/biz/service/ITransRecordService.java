@@ -20,10 +20,12 @@ public interface ITransRecordService {
     void manualTransSubmit(UserBean user, TransRecord transRecord) throws ApiException;
     void manualCashTrans(UserBean user, TransRecord transRecord) throws ApiException;
     void manualRechargeTrans(UserBean user, TransRecord transRecord) throws ApiException;
+    void manualGoldCoinRechargeTrans(UserBean user, TransRecord transRecord) throws ApiException;
+
     Page<TransRecord> queryTrans(Map<String, Object> params) throws ApiException;
 
 
-    int buildTransRecord(String userId, Integer transType, BigDecimal money,Integer addOrSub,Integer status,String remark);
+    int buildTransRecord(String userId, Integer transType, BigDecimal money,Integer goldCoin,Integer addOrSub,Integer status,String subServiceId,String remark);
 
 
 

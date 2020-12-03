@@ -33,3 +33,28 @@ var _ajax_b = function(url,data,msg,index){
         }
     });
 }
+
+function openImgView(imgUrl) {
+    //图片元素
+    var img = '<img src="' + imgUrl + '" style="max-width: 300px;max-height: 300px;">';
+    layer.open({
+        type: 1,// 页面层
+        title: false,//关闭标题
+        closeBtn: 0,//不显示关闭按钮
+        shadeClose: true,//点击遮罩层关闭弹窗
+        content: img //弹窗显示内容
+    });
+}
+
+
+function openVideoView(videoPlayUrl) {
+    //视频元素
+    var videoPlayAddress = '<video width="300px" height="300px"  controls="controls" autobuffer="autobuffer"  autoplay="autoplay" loop="loop"><source src="'+videoPlayUrl+'" type="video/mp4"></source></video>';
+    layer.open({
+        type: 1,// 页面层
+        title: false,//关闭标题
+        closeBtn: 0,//不显示关闭按钮
+        shadeClose: true,//点击遮罩层关闭弹窗
+        content: videoPlayAddress //弹窗显示内容
+    });
+}

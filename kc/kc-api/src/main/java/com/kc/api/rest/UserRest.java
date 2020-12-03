@@ -285,15 +285,17 @@ public class UserRest  extends BaseRest{
     /**
      * 修改昵称
      * @param request
-     * @param newNickName
+     * @param params
      * @return
      */
-    @RequestMapping(value = "/updateNickName", method = RequestMethod.GET)
+    @UserLoginToken
+    @RequestMapping(value = "/updateNickName", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String, Object> updateNickName(HttpServletRequest request,String newNickName) {
+    public Map<String, Object> updateNickName(HttpServletRequest request,@RequestBody Map<String, String> params) {
         Map<String,Object> result = new HashMap<String,Object>();
         try {
             String userId = (String)request.getAttribute("userId");
+            String newNickName = params.get("newNickName");
             UserBean userBean = userService.updateNickName(userId,newNickName);
             result.put("newNickName",userBean.getUserName());
             return requestSuccess(result);

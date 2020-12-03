@@ -7,9 +7,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum CouponBusTypeEnums {
-    //业务类型：801:充值 802：开通视频会员
-    COUPON_BUS_TYPE_801(801, "充值"),
-    COUPON_BUS_TYPE_802(802, "开通视频会员");
+    //业务类型：800:充值券 801：视频会员券
+    COUPON_BUS_TYPE_800(800, "充值券"),
+    COUPON_BUS_TYPE_801(801, "视频会员券"),
+    COUPON_BUS_TYPE_802(802, "购物券");
 
     public static final Map<Integer, String> couponBusTypeEnumsMap = new HashMap<>();
 

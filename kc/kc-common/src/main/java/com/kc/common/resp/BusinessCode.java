@@ -78,6 +78,8 @@ public enum BusinessCode {
     TRANS_RESP_4002("4002","该笔交易金额必须大于0，操作失败"),
     TRANS_RESP_4003("4003","交易类型不能为空，操作失败"),
     TRANS_RESP_4004("4004","提现金额最低{0}元，操作失败"),
+    TRANS_GOLD_COIN_RESP_4005("4005","该笔交易金币个数必须大于0，操作失败"),
+    TRANS_GOLD_COIN_RESP_4006("4006","该笔交易金币个数必须为整数，操作失败"),
 
     COMMENT_BIZ_ID_NULL_5001("5001","评论对象业务ID不能为空"),
     COMMENT_CONT_NULL_5002("5002","评论内容不能为空"),
@@ -102,6 +104,17 @@ public enum BusinessCode {
     FILE_UPLOAD_NULL_8101("8101","上传的文件不能为空"),
     FILE_UPLOAD_TO_COS_FAIL_8102("8102","上传文件至腾讯COS失败"),
     FILE_UPLOAD_8103("8103","最少选择一个图片"),
+
+    VIDEO_ID_NULL_8201("8201","视频ID参数为空"),
+
+    COUPON_ID_NULL_8301("8301","优惠券代码参数为空"),
+    COUPON_RECEIVE_FAIL_8302("8302","领取优惠券出错，请稍候重试"),
+    COUPON_NOT_FIND_8303("8303","优惠券不存在"),
+    COUPON_INVALID_8304("8304","优惠券已失效"),
+    COUPON_SOLD_OUT_8305("8305","该优惠券已售罄"),
+    COUPON_MAX_RECEIVE_NUM_8306("8306","该优惠券每个用户最多只能领取{0}张"),
+    COUPON_NO_SELL_8307("8307","该优惠券未开售"),
+    COUPON_PASS_SELL_8308("8308","该优惠券已过销售期"),
 
     GAME_RESP_9001("9001","游戏类型不存在"),
     GAME_RESP_9002("9002","游戏ID不存在");

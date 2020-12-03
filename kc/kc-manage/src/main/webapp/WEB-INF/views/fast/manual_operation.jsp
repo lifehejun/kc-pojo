@@ -9,7 +9,7 @@
 
 <div style="padding: 20px; background-color: #F2F2F2;">
     <div class="layui-row layui-col-space15">
-        <div class="layui-col-md6">
+        <div class="layui-col-md7" style="display: none">
             <div class="layui-card">
                 <div class="layui-card-header">人工交易</div>
                 <div class="layui-card-body">
@@ -32,22 +32,36 @@
                                 <input type="text" name="coreBalance" id="coreBalance"  readonly autocomplete="off" class="layui-input">
                             </div>
                         </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">金币余额</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="goldCoin" id="goldCoin"  readonly autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
                     <form class="layui-form" action="">
                         <div class="layui-form-item">
                             <label class="layui-form-label">交易类型 <span style="color:red;">*</span></label>
                             <div class="layui-input-inline">
                                 <select name="transType" lay-verify="required">
-                                    <option value="">全部</option>
-                                    <c:forEach items="${transTypeMap}" var="transType">
-                                        <option value="${transType.key}">${transType.value}</option>
-                                    </c:forEach>
+                                    <option value="">请选择交易类型</option>
+                                    <optgroup label="金币类交易">
+                                        <c:forEach items="${goldCoinTransTypeMap}" var="goldCoinTransType">
+                                            <option value="${goldCoinTransType.key}">${goldCoinTransType.value}</option>
+                                        </c:forEach>
+
+                                    </optgroup>
+                                    <optgroup label="现金类交易">
+                                        <c:forEach items="${moneyTransTypeMap}" var="transType">
+                                            <option value="${transType.key}">${transType.value}</option>
+                                        </c:forEach>
+                                    </optgroup>
                                 </select>
                             </div>
                         </div>
                         <div class="layui-form-item">
                             <label class="layui-form-label">交易金额 <span style="color:red;">*</span></label>
                             <div class="layui-input-inline">
-                                <input type="text" name="money" id="money"  lay-verify="required|number"   autocomplete="off" class="layui-input">
+                                <input type="text" name="transValue" id="transValue"  lay-verify="required|number"    autocomplete="off" class="layui-input">
                             </div>
                         </div>
 
@@ -61,9 +75,9 @@
                 </div>
             </div>
         </div>
-        <div class="layui-col-md6">
-            <div class="layui-card">
-                <div class="layui-card-header">人工注册</div>
+        <div class="layui-col-md5">
+            <div class="layui-card" style="display: none">
+                <div class="layui-card-header">人工注册用户</div>
                 <div class="layui-card-body">
                     <form class="layui-form" action="">
                         <div class="layui-form-item">
@@ -91,6 +105,19 @@
                     </form>
                 </div>
             </div>
+
+            <!--快捷操作-->
+            <div class="layui-card">
+                <div class="layui-card-header">快捷业务</div>
+                <div class="layui-card-body">
+                        <div class="layui-form-item">
+                            <div class="layui-input-inline">
+                                <button class="layui-btn layui-btn-normal"  onclick="openVideoMember()">开通视频会员</button>
+                            </div>
+                        </div>
+                </div>
+            </div>
+            <!---->
         </div>
         <div class="layui-col-md12">
             <div class="layui-card">
@@ -142,9 +169,21 @@
         jQuery.post('/trans/findByPhone/json',data,function(data){
             if(data.code == "00"){
                 $("#coreBalance").val(data.data.user.coreBalance);
+                $("#goldCoin").val(data.data.user.goldCoin);
             }else{
                 layer.msg(data.msg, {icon:3,time:2000});
             }
+        });
+        return;
+    }
+
+    //弹窗开通视频会员
+    function openVideoMember() {
+        layer.open({
+            title:'开通视频会员',
+            type: 2,
+            area: ['60%','60%'],
+            content: '/fast/openVideoMember' //这里content是一个URL，如果你不想让iframe出现滚动条，你还可以content: ['http://sentsin.com', 'no']
         });
         return;
     }

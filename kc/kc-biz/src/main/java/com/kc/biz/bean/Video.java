@@ -131,4 +131,6 @@ public class Video implements Serializable {
     public void setVodDesc(String vodDesc) {
         this.vodDesc = vodDesc;
     }
+
+
 }

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kc.biz.mapper.AdvMapper">
+  <resultMap id="BaseResultMap" type="com.kc.biz.bean.Adv">
+    <id column="id" property="id" jdbcType="BIGINT"  />
+    <result column="adv_customer" property="advCustomer" jdbcType="VARCHAR"/>
+    <result column="adv_code" property="advCode" jdbcType="VARCHAR"/>
+    <result column="adv_position" property="advPosition" jdbcType="VARCHAR"/>
+    <result column="adv_img_url" property="advImgUrl" jdbcType="VARCHAR"/>
+    <result column="link_url" property="linkUrl" jdbcType="VARCHAR"/>
+    <result column="app_icon" property="appIcon" jdbcType="VARCHAR"/>
+    <result column="app_name" property="appName" jdbcType="VARCHAR"/>
+    <result column="app_desc" property="appDesc" jdbcType="VARCHAR"/>
+    <result column="start_time" property="startTime" jdbcType="BIGINT"/>
+    <result column="end_time" property="endTime" jdbcType="BIGINT"/>
+    <result column="status" property="status" jdbcType="BIGINT"/>
+    <result column="create_time" property="createTime" jdbcType="BIGINT"/>
+  </resultMap>
+
+    <sql id="select_condition_sql">
+        <where>
+            <trim prefix="(" suffix=")" prefixOverrides="and">
+                <if test="id != null ">
+                    and ta.id = #{id}
+                </if>
+                <if test="advCustomer != null and advCustomer != ''">
+                    and ta.adv_customer like concat('%',#{advCustomer},'%')
+                </if>
+                <if test="advCode != null and advCode != ''">
+                    and ta.adv_code = #{advCode}
+                </if>
+                <if test="advPosition != null and advPosition != ''">
+                    and ta.adv_position = #{advPosition}
+                </if>
+                <if test="status != null ">
+                    and ta.status = #{status}
+                </if>
+            </trim>
+        </where>
+    </sql>
+
+    <insert id="insert" parameterType="com.kc.biz.bean.Adv" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_adv
+        (adv_customer,adv_code,adv_position,adv_img_url,link_url,app_icon,app_name,app_desc,status,start_time,end_time,create_time)
+        VALUES
+        (#{advCustomer},#{advCode},#{advPosition},#{advImgUrl},#{linkUrl},#{appIcon},#{appName},#{appDesc},#{status},#{startTime},#{endTime},unix_timestamp())
+    </insert>
+
+
+    <select id="queryByPage" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+        SELECT
+        ta.id,
+        ta.adv_customer,
+        ta.adv_code,
+        ta.adv_position,
+        ta.adv_img_url,
+        ta.link_url,
+        ta.app_icon,
+        ta.app_name,
+        ta.app_desc,
+        ta.status,
+        ta.start_time,
+        ta.end_time,
+        ta.create_time
+        FROM tb_adv ta
+        <include refid="select_condition_sql"/>
+        ORDER BY ta.create_time DESC
+        LIMIT #{startRow}, #{pageSize}
+    </select>
+    <select id="getTotal" parameterType="com.kc.biz.bean.Adv" resultType="int">
+        SELECT  count(1)
+        FROM tb_adv ta
+        <include refid="select_condition_sql"/>
+        ORDER BY ta.create_time DESC
+    </select>
+
+    <select id="findList" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+        SELECT
+        ta.id,
+        ta.adv_customer,
+        ta.adv_code,
+        ta.adv_position,
+        ta.adv_img_url,
+        ta.link_url,
+        ta.app_icon,
+        ta.app_name,
+        ta.app_desc,
+        ta.status,
+        ta.start_time,
+        ta.end_time,
+        ta.create_time
+        FROM tb_adv ta
+        WHERE ta.status = 1
+        ORDER BY ta.create_time DESC
+    </select>
+    <update id="updateById" parameterType="com.kc.biz.bean.Adv">
+        UPDATE tb_adv ta
+        <trim prefix="set" suffixOverrides=",">
+            <if test="advCustomer !=null and advCustomer !='' ">ta.adv_customer = #{advCustomer},</if>
+            <if test="advPosition !=null   and advPosition != ''" >ta.adv_position = #{advPosition},</if>
+            <if test="advImgUrl !=null   and advImgUrl != ''" >ta.adv_img_url = #{advImgUrl},</if>
+            <if test="linkUrl !=null   and linkUrl != ''" >ta.link_url = #{linkUrl},</if>
+            <if test="appName !=null   and appName != ''" >ta.app_name = #{appName},</if>
+            <if test="appDesc !=null   and appDesc != ''" >ta.app_desc = #{appDesc},</if>
+            <if test="startTime !=null">ta.start_time = #{startTime},</if>
+            <if test="endTime !=null">ta.end_time = #{endTime},</if>
+            <if test="status !=null">ta.status = #{status},</if>
+        </trim>
+        WHERE id=#{id}
+    </update>
+
+    <select id="queryById" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+         SELECT
+        ta.id,
+        ta.adv_customer,
+        ta.adv_code,
+        ta.adv_position,
+        ta.adv_img_url,
+        ta.link_url,
+        ta.app_icon,
+        ta.app_name,
+        ta.app_desc,
+        ta.status,
+        ta.start_time,
+        ta.end_time,
+        ta.create_time
+        FROM tb_adv ta
+        WHERE ta.id = #{id}
+        ORDER BY ta.create_time DESC
+    </select>
+
+
+
+    <delete id="deleteById" parameterType="com.kc.biz.bean.Adv">
+       DELETE FROM tb_adv where id = #{id}
+    </delete>
+
+</mapper>

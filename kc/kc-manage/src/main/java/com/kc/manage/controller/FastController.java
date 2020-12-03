@@ -25,9 +25,17 @@ public class FastController extends BaseController{
     @RequestMapping("/manualOperation")
     public String manualDeposit(HttpServletRequest request, HttpSession session) {
         request.setAttribute("userTypeMap", UserTypeEnums.userTypeEnumsMap);
-        request.setAttribute("transTypeMap", TransTypeEnums.transTypeEnumsMap);
+        //request.setAttribute("transTypeMap", TransTypeEnums.transTypeEnumsMap);
+        request.setAttribute("moneyTransTypeMap", TransTypeEnums.moneyTransTypeEnumsMap);
+        request.setAttribute("goldCoinTransTypeMap", TransTypeEnums.goldCoinTransTypeEnumsMap);
         return "fast/manual_operation";
     }
+
+    @RequestMapping("/openVideoMember")
+    public String openVideoMember(HttpServletRequest request, HttpSession session) {
+         return "fast/open_video_member";
+    }
+
 
 
 

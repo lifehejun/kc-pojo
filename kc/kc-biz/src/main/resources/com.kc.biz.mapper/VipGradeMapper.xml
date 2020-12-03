@@ -18,6 +18,12 @@
                 <if test="id != null ">
                     and tvg.id = #{id}
                 </if>
+                <if test="grade != null ">
+                    and tvg.grade = #{grade}
+                </if>
+                <if test="vipCode != null and vipCode != ''">
+                    and tvg.vip_code = #{vipCode}
+                </if>
 
             </trim>
         </where>
@@ -27,7 +33,7 @@
         INSERT INTO tb_vip_grade
         (vip_code, grade,old_money,money,vip_name,vip_desc,tips)
         VALUES
-        (#{vipCode},#{grade},#{oldMoney},#{money},#{vipDesc},#{tips})
+        (#{vipCode},#{grade},#{oldMoney},#{money},#{vipName},#{vipDesc},#{tips})
     </insert>
 
 
@@ -51,6 +57,18 @@
     </select>
 
 
+    <select id="findList" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+        SELECT tvg.id,
+        tvg.vip_code,
+        tvg.grade,
+        tvg.old_money,
+        tvg.money,
+        tvg.vip_name,
+        tvg.vip_desc,
+        tvg.tips
+        FROM tb_vip_grade tvg
+        <include refid="select_condition_sql"/>
+    </select>
     <update id="updateById" parameterType="com.kc.biz.bean.VideoLabel">
         UPDATE tb_vip_grade tvg
         <trim prefix="set" suffixOverrides=",">

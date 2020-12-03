@@ -2,17 +2,26 @@ package com.kc.common.enums;
 
 import org.apache.commons.lang.StringUtils;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
 public enum  GradeEnums {
     GRADE_0(0, "普通用户","普通用户"),
     GRADE_1(1, "白银","白银周卡"),
     GRADE_2(2, "黄金","黄金月卡"),
-    GRADE_3(3, "钻石","钻石年卡"),
-    GRADE_4(4, "至尊","至尊永久卡");
-
+    GRADE_3(3, "铂金","铂金季卡"),
+    GRADE_4(4, "钻石","钻石年卡");
 
     private int code;
     private String name;
     private String vipName;
+
+    public static final Map<Integer, String> vipGradeEnumsMap = new HashMap<>();
+
+    static {
+        Arrays.stream(GradeEnums.values()).forEach(e->vipGradeEnumsMap.put(e.getCode(),e.getName()));
+    }
 
     /**
      * @param code code

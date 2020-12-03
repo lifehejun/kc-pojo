@@ -80,7 +80,10 @@
                         }}
                     ,{field:'labelName', title: '标签名称',width: 150}
                     ,{field:'labelDesc', title: '标签描述',width: 150}
-                    ,{field:'imgUrl', title: '标签背景图片'}
+                    ,{field:'imgUrl', title: '标签图标',width: 150,templet:function (d) {
+                            var imgUrl = d.imgUrl;
+                            return '<img src= "'+imgUrl+'" height ="20"  onclick="openImgView(\''+imgUrl+'\')"/>';
+                        }}
                     ,{field:'createTime', title: '创建时间', templet :function (row){
                             return createTime(row.createTime);
                         },width: 140 }
