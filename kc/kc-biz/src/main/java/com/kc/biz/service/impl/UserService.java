@@ -3,6 +3,7 @@ package com.kc.biz.service.impl;
 import com.kc.biz.bean.BankCard;
 import com.kc.biz.bean.Follow;
 import com.kc.biz.bean.UserBean;
+import com.kc.biz.bean.VipGrade;
 import com.kc.biz.cache.RedisUtil;
 import com.kc.biz.cache.UserCache;
 import com.kc.biz.mapper.BankCardMapper;
@@ -391,6 +392,31 @@ public class UserService implements IUserService {
         int n = random.nextInt(testUserList.size());
         UserBean userBean = testUserList.get(n);
         return userBean.getUserId();
+    }
+
+    @Override
+    public void syncUserVipMemberInfo(UserBean user, VipGrade vipGrade,String subServiceId) throws ApiException {
+
+        Integer currGrade = user.getGrade();
+        Integer afterGrade = currGrade;
+        Integer subServiceIdInt = Integer.valueOf(subServiceId);
+        if(subServiceIdInt > currGrade){
+            afterGrade = subServiceIdInt;
+        }
+        int day = GradeEnums.getDay(vipGrade.getGrade());
+        Long afterVideoVipEndTime = 0L;
+        Long currVideoVipEndTime = user.getVideoVipEndTime();
+
+        if(null == currVideoVipEndTime){
+            afterVideoVipEndTime = DateTools.getUnixTimestampTime(DateTools.addDay(new Date(),day));
+        }else{
+            Date currVideoVipEndDate = DateTools.fromUnixTime(Integer.valueOf(String.valueOf(currVideoVipEndTime)));
+            afterVideoVipEndTime = DateTools.getUnixTimestampTime(DateTools.addDay(currVideoVipEndDate,day));
+        }
+        //更新用户等级及会员结束时间
+        user.setGrade(afterGrade);
+        user.setVideoVipEndTime(afterVideoVipEndTime);
+        userMapper.updateByUserId(user);
     }
 
     @Override

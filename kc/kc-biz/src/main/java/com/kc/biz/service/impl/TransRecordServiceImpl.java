@@ -2,12 +2,16 @@ package com.kc.biz.service.impl;
 
 import com.kc.biz.bean.TransRecord;
 import com.kc.biz.bean.UserBean;
+import com.kc.biz.bean.VipGrade;
 import com.kc.biz.mapper.TransRecordMapper;
 import com.kc.biz.mapper.UserMapper;
+import com.kc.biz.mapper.VipGradeMapper;
 import com.kc.biz.service.ICheckBusinessService;
 import com.kc.biz.service.ITransRecordService;
+import com.kc.biz.service.IUserService;
 import com.kc.common.consts.CommConst;
 import com.kc.common.enums.AddOrSubEnums;
+import com.kc.common.enums.GradeEnums;
 import com.kc.common.enums.TransTypeEnums;
 import com.kc.common.exception.ApiException;
 import com.kc.common.page.Page;
@@ -37,6 +41,10 @@ public class TransRecordServiceImpl implements ITransRecordService {
     private UserMapper userMapper;
     @Autowired
     private ICheckBusinessService checkBusinessService;
+    @Autowired
+    private VipGradeMapper vipGradeMapper;
+    @Autowired
+    private IUserService userService;
 
 
     @Override
@@ -133,7 +141,7 @@ public class TransRecordServiceImpl implements ITransRecordService {
                 //;
                 break;
             case 103:
-                //;
+                this.manualOpenVideoVipTrans(user,transRecord);
                 break;
             case 200:
                 this.manualGoldCoinRechargeTrans(user,transRecord);
@@ -162,7 +170,7 @@ public class TransRecordServiceImpl implements ITransRecordService {
         Integer addOrSub = TransTypeEnums.getAddOrSub(transType);
         String transTypeDesc = TransTypeEnums.getName(transType);
         //构建交易记录
-        this.buildTransRecord(userId,transType,money,null,addOrSub,CommConst.TRANS_STATUS_1,null,transTypeDesc);
+        this.buildTransRecord(userId,transType,money,null,addOrSub,CommConst.TRANS_STATUS_1,transTypeDesc);
     }
 
     @Override
@@ -180,7 +188,30 @@ public class TransRecordServiceImpl implements ITransRecordService {
             throw new ApiException(BusinessCode.TRANS_GOLD_COIN_RESP_4005.getCode());
         }
         //构建交易记录
-        this.buildTransRecord(userId,transType,null,goldCoinNum,addOrSub,CommConst.TRANS_STATUS_1,null,transTypeDesc);
+        this.buildTransRecord(userId,transType,null,goldCoinNum,addOrSub,CommConst.TRANS_STATUS_1,transTypeDesc);
+    }
+
+    @Override
+    public void manualOpenVideoVipTrans(UserBean user, TransRecord transRecord) throws ApiException {
+        String userId = user.getUserId();
+        Integer transType = transRecord.getTransType();
+        String subServiceId = transRecord.getSubServiceId(); //子业务id号=>>与会员等级code对应
+        Integer addOrSub = TransTypeEnums.getAddOrSub(transType);
+        String transTypeDesc = TransTypeEnums.getName(transType);
+
+        //vip会员等级信息
+        VipGrade vipGrade = vipGradeMapper.findByVipCode(subServiceId);
+        if(null == vipGrade){
+            throw new ApiException(BusinessCode.TRANS_VIP_INFO_NULL_RESP_4007.getCode());
+        }
+        //开通会员需要支付的金额
+        BigDecimal money = vipGrade.getMoney();
+        //构建交易记录
+        int res = this.buildTransRecord(userId,transType,money,null,addOrSub,CommConst.TRANS_STATUS_1,transTypeDesc);
+        //交易记录创建成功success,and 修改用户等级信息
+        if(res >0){
+            userService.syncUserVipMemberInfo(user,vipGrade,subServiceId);
+        }
     }
 
     @Override
@@ -191,7 +222,7 @@ public class TransRecordServiceImpl implements ITransRecordService {
         Integer addOrSub = TransTypeEnums.getAddOrSub(transType);
         String transTypeDesc = TransTypeEnums.getName(transType);
         checkBusinessService.checkManualCash(user,money);
-        this.buildTransRecord(userId,transType,money,null,addOrSub,CommConst.TRANS_STATUS_1,null,transTypeDesc);
+        this.buildTransRecord(userId,transType,money,null,addOrSub,CommConst.TRANS_STATUS_1,transTypeDesc);
     }
 
     @Override
@@ -223,7 +254,7 @@ public class TransRecordServiceImpl implements ITransRecordService {
     }
 
     @Override
-    public int buildTransRecord(String userId, Integer transType, BigDecimal money,Integer goldCoin, Integer addOrSub, Integer status,String subServiceId,String remark) {
+    public int buildTransRecord(String userId, Integer transType, BigDecimal money,Integer goldCoin, Integer addOrSub, Integer status,String remark) {
         int res = 0;
         TransRecord transRecord = new TransRecord();
         transRecord.setUserId(userId);
@@ -238,6 +269,7 @@ public class TransRecordServiceImpl implements ITransRecordService {
         BigDecimal afterMoney = BigDecimal.ZERO;
         Integer afterGoldCoin = 0;
         boolean isGoldCoinTranFlag = false;
+        boolean isSyncUserFlag = true;
         //创建金币交易
         if(TransTypeEnums.goldCoinTransTypeCodeList.contains(transType)){
             isGoldCoinTranFlag = true;
@@ -250,6 +282,7 @@ public class TransRecordServiceImpl implements ITransRecordService {
                 afterGoldCoin = beforeGoldCoin - goldCoin;
             }else{
                 afterGoldCoin = goldCoin;//不作更改，还是原来的金币余额
+                isSyncUserFlag = false;
             }
             transRecord.setAfterGoldCoin(afterGoldCoin);
 
@@ -264,6 +297,7 @@ public class TransRecordServiceImpl implements ITransRecordService {
                 afterMoney = beforeMoney.subtract(money);
             }else{
                 afterMoney = beforeMoney;//不作更改，还是原来的余额
+                isSyncUserFlag = false;
             }
             transRecord.setAfterMoney(afterMoney);
         }
@@ -279,10 +313,13 @@ public class TransRecordServiceImpl implements ITransRecordService {
             if(isGoldCoinTranFlag){
                 //更新用户金币余额
                 user.setGoldCoin(afterGoldCoin);
-                res = userMapper.updateByUserId(user);
             }else{
                 //更新用户核心余额
                 user.setCoreBalance(afterMoney);
+            }
+
+            //是否同步更新，如果没有金额的改变则不更新
+            if(isSyncUserFlag){
                 res = userMapper.updateByUserId(user);
             }
         }

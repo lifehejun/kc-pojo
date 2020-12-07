@@ -1,6 +1,7 @@
 package com.kc.biz.service;
 
 import com.kc.biz.bean.UserBean;
+import com.kc.biz.bean.VipGrade;
 import com.kc.biz.vo.FollowUserVo;
 import com.kc.biz.vo.RegIpPhoneVo;
 import com.kc.biz.vo.StatisticsVo;
@@ -30,6 +31,7 @@ public interface IUserService {
     StatisticsVo findStatisticsInfo(); //获取统计信息
     String findTestUserIdRandom();//随机获取一个测试用户id
 
+    void syncUserVipMemberInfo(UserBean user, VipGrade vipGrade,String subServiceId) throws ApiException;
     UserBean updateNickName(String userId,String newNickName) throws ApiException; //修改昵称
     int updateLoginPwd(String userId, String newPwd) throws ApiException;//修改登陆密码
     int bindPhone(String userId, String phone) throws ApiException;//绑定手机

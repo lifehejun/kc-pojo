@@ -21,11 +21,12 @@ public interface ITransRecordService {
     void manualCashTrans(UserBean user, TransRecord transRecord) throws ApiException;
     void manualRechargeTrans(UserBean user, TransRecord transRecord) throws ApiException;
     void manualGoldCoinRechargeTrans(UserBean user, TransRecord transRecord) throws ApiException;
+    void manualOpenVideoVipTrans(UserBean user, TransRecord transRecord) throws ApiException;
 
     Page<TransRecord> queryTrans(Map<String, Object> params) throws ApiException;
 
-
-    int buildTransRecord(String userId, Integer transType, BigDecimal money,Integer goldCoin,Integer addOrSub,Integer status,String subServiceId,String remark);
+    //创建交易记录
+    int buildTransRecord(String userId, Integer transType, BigDecimal money,Integer goldCoin,Integer addOrSub,Integer status,String remark);
 
 
 

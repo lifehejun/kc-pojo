@@ -69,6 +69,20 @@
         FROM tb_vip_grade tvg
         <include refid="select_condition_sql"/>
     </select>
+
+    <select id="findByVipCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT tvg.id,
+        tvg.vip_code,
+        tvg.grade,
+        tvg.old_money,
+        tvg.money,
+        tvg.vip_name,
+        tvg.vip_desc,
+        tvg.tips
+        FROM tb_vip_grade tvg
+        WHERE tvg.vip_code = #{vipCode}
+    </select>
+
     <update id="updateById" parameterType="com.kc.biz.bean.VideoLabel">
         UPDATE tb_vip_grade tvg
         <trim prefix="set" suffixOverrides=",">

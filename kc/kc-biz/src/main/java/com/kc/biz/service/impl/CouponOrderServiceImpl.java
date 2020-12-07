@@ -100,6 +100,7 @@ public class CouponOrderServiceImpl implements ICouponOrderService {
                 couponOrder.setReceiveTime(DateTools.getLongCurrTime());
                 asyncService.addCouponOrder(couponOrder);
 
+
             }catch (Exception e){
                 /** 删除用户领取优惠券锁 **/
                 redisUtil.removeLockReceiveCoupon(userId,couponCode);

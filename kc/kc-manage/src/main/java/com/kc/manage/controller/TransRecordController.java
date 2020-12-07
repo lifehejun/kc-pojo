@@ -5,6 +5,7 @@ import com.kc.biz.bean.UserBean;
 import com.kc.biz.service.ITransRecordService;
 import com.kc.biz.service.IUserService;
 import com.kc.common.consts.CommConst;
+import com.kc.common.enums.GradeEnums;
 import com.kc.common.enums.TransTypeEnums;
 import com.kc.common.enums.UserStatusEnums;
 import com.kc.common.exception.ApiException;
@@ -79,6 +80,7 @@ public class TransRecordController extends BaseController{
             if(UserStatusEnums.USER_STATUS_0.getStatus().equals(user.getStatus())){
                 return requestError("该用户以冻结,不能进行交易,请重新输入");
             }
+            user.setVodGradeName(GradeEnums.getName(user.getGrade()));
             result.put("user",user);
             return requestSuccess(result);
         }catch (ApiException e){

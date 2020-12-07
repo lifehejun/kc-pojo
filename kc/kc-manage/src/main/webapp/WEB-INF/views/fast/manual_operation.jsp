@@ -182,7 +182,7 @@
         layer.open({
             title:'开通视频会员',
             type: 2,
-            area: ['60%','60%'],
+            area: ['60%','65%'],
             content: '/fast/openVideoMember' //这里content是一个URL，如果你不想让iframe出现滚动条，你还可以content: ['http://sentsin.com', 'no']
         });
         return;

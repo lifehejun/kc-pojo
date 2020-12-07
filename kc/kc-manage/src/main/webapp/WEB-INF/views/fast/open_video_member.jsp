@@ -13,12 +13,9 @@
         <div class="layui-input-inline">
             <button class="layui-btn layui-btn-normal"  onclick="findByPhone()">查询信息</button>
         </div>
-        <div class="layui-input-inline">
-            <span style="color: red"> 请先输入手机号</span>
-        </div>
     </div>
 
-    <div class="layui-form">
+    <div class="layui-form" style="width: 52%;margin-left: 50px">
         <table class="layui-table" lay-size="sm">
             <colgroup>
                 <col width="100">
@@ -29,24 +26,12 @@
             </thead>
             <tbody>
             <tr>
-                <td>贤心</td>
-                <td>汉族</td>
+                <td>会员等级</td>
+                <td id="gradeName"></td>
             </tr>
             <tr>
-                <td>张爱玲</td>
-                <td>汉族</td>
-            </tr>
-            <tr>
-                <td>Helen Keller</td>
-                <td>拉丁美裔</td>
-            </tr>
-            <tr>
-                <td>岳飞</td>
-                <td>汉族</td>
-            </tr>
-            <tr>
-                <td>孟子</td>
-                <td>华夏族（汉族）</td>
+                <td>会员到期日</td>
+                <td id="vipEndTimeStr"></td>
             </tr>
             </tbody>
         </table>
@@ -92,10 +77,18 @@
         }
         jQuery.post('/trans/findByPhone/json',data,function(data){
             if(data.code == "00"){
-                $("#coreBalance").val(data.data.user.coreBalance);
-                $("#goldCoin").val(data.data.user.goldCoin);
+                $("#gradeName").html(data.data.user.vodGradeName);
+                var vipEndTime = data.data.user.videoVipEndTime;
+                if(vipEndTime == "" || vipEndTime == undefined || vipEndTime == null){
+                    $("#vipEndTimeStr").html("--");
+                }else{
+                    $("#vipEndTimeStr").html(createTime(vipEndTime));
+                }
+
             }else{
                 layer.msg(data.msg, {icon:3,time:2000});
+                $("#gradeName").html("");
+                $("#vipEndTimeStr").html("");
             }
         });
         return;

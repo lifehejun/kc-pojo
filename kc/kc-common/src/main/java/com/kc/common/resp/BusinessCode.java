@@ -80,6 +80,7 @@ public enum BusinessCode {
     TRANS_RESP_4004("4004","提现金额最低{0}元，操作失败"),
     TRANS_GOLD_COIN_RESP_4005("4005","该笔交易金币个数必须大于0，操作失败"),
     TRANS_GOLD_COIN_RESP_4006("4006","该笔交易金币个数必须为整数，操作失败"),
+    TRANS_VIP_INFO_NULL_RESP_4007("4007","未查询到该VIP通道，开通失败"),
 
     COMMENT_BIZ_ID_NULL_5001("5001","评论对象业务ID不能为空"),
     COMMENT_CONT_NULL_5002("5002","评论内容不能为空"),
