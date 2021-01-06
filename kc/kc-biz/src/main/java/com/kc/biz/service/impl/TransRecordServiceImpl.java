@@ -3,12 +3,15 @@ package com.kc.biz.service.impl;
 import com.kc.biz.bean.TransRecord;
 import com.kc.biz.bean.UserBean;
 import com.kc.biz.bean.VipGrade;
+import com.kc.biz.cache.RedisUtil;
+import com.kc.biz.dto.MemberOrderReqDto;
 import com.kc.biz.mapper.TransRecordMapper;
 import com.kc.biz.mapper.UserMapper;
 import com.kc.biz.mapper.VipGradeMapper;
 import com.kc.biz.service.ICheckBusinessService;
 import com.kc.biz.service.ITransRecordService;
 import com.kc.biz.service.IUserService;
+import com.kc.biz.vo.MemberOrderRespVo;
 import com.kc.common.consts.CommConst;
 import com.kc.common.enums.AddOrSubEnums;
 import com.kc.common.enums.GradeEnums;
@@ -19,6 +22,7 @@ import com.kc.common.resp.BusinessCode;
 import com.kc.common.util.DateTools;
 import com.kc.common.util.GenerationUtil;
 import com.kc.common.util.StringUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +40,9 @@ import java.util.Map;
 public class TransRecordServiceImpl implements ITransRecordService {
 
     @Autowired
+    private RedisUtil redisUtil;
+
+    @Autowired
     private TransRecordMapper transRecordMapper;
     @Autowired
     private UserMapper userMapper;
@@ -45,6 +52,7 @@ public class TransRecordServiceImpl implements ITransRecordService {
     private VipGradeMapper vipGradeMapper;
     @Autowired
     private IUserService userService;
+
 
 
     @Override
@@ -97,7 +105,6 @@ public class TransRecordServiceImpl implements ITransRecordService {
         }else{
             throw new ApiException(BusinessCode.TRANS_RESP_4001.getCode());
         }
-
 
     }
 
@@ -158,6 +165,36 @@ public class TransRecordServiceImpl implements ITransRecordService {
     }
 
     @Override
+    public MemberOrderRespVo userTransSubmit(String userId, MemberOrderReqDto memberOrderReqDto) throws ApiException {
+        Integer transType = memberOrderReqDto.getTransType();
+        if(null == transType){
+            throw new ApiException(BusinessCode.TRANS_RESP_4003.getCode());
+        }
+        switch(transType){
+            case 100: //充值
+                break;
+            case 101: //提现
+                break;
+            case 102:
+                //;
+                break;
+            case 103: //视频会员开通
+                return this.userOpenVideoVipTrans(userId,memberOrderReqDto);
+                break;
+            case 200://充值金币
+                return this.userGoldCoinRechargeTrans(userId,memberOrderReqDto);
+                break;
+            case 105:
+                //;
+                break;
+            case 106:
+                //;
+                break;
+            default: break;
+        }
+    }
+
+    @Override
     public void manualRechargeTrans(UserBean user, TransRecord transRecord) throws ApiException {
         String userId = user.getUserId();
         Integer transType = transRecord.getTransType();
@@ -192,6 +229,18 @@ public class TransRecordServiceImpl implements ITransRecordService {
     }
 
     @Override
+    public MemberOrderRespVo userGoldCoinRechargeTrans(String userId, MemberOrderReqDto memberOrderReqDto) throws ApiException {
+        Integer transType = memberOrderReqDto.getTransType();
+        String subServiceId = memberOrderReqDto.getSubServiceId();
+        Integer addOrSub = TransTypeEnums.getAddOrSub(transType);
+        String transTypeDesc = TransTypeEnums.getName(transType);
+        //构建交易记录
+        //String transNo = this.buildTransRecord(userId,transType,null,goldCoinNum,addOrSub,CommConst.TRANS_STATUS_0,transTypeDesc);
+        return null;
+
+    }
+
+    @Override
     public void manualOpenVideoVipTrans(UserBean user, TransRecord transRecord) throws ApiException {
         String userId = user.getUserId();
         Integer transType = transRecord.getTransType();
@@ -207,11 +256,17 @@ public class TransRecordServiceImpl implements ITransRecordService {
         //开通会员需要支付的金额
         BigDecimal money = vipGrade.getMoney();
         //构建交易记录
-        int res = this.buildTransRecord(userId,transType,money,null,addOrSub,CommConst.TRANS_STATUS_1,transTypeDesc);
+        String transNo = this.buildTransRecord(userId,transType,money,null,addOrSub,CommConst.TRANS_STATUS_1,transTypeDesc);
         //交易记录创建成功success,and 修改用户等级信息
-        if(res >0){
+        if(StringUtils.isNotBlank(transNo)){
             userService.syncUserVipMemberInfo(user,vipGrade,subServiceId);
         }
+    }
+
+    @Override
+    public MemberOrderRespVo userOpenVideoVipTrans(String userId, MemberOrderReqDto memberOrderReqDto) throws ApiException {
+
+        return null;
     }
 
     @Override
@@ -254,12 +309,13 @@ public class TransRecordServiceImpl implements ITransRecordService {
     }
 
     @Override
-    public int buildTransRecord(String userId, Integer transType, BigDecimal money,Integer goldCoin, Integer addOrSub, Integer status,String remark) {
+    public String buildTransRecord(String userId, Integer transType, BigDecimal money,Integer goldCoin, Integer addOrSub, Integer status,String remark) {
         int res = 0;
+        String transNo = GenerationUtil.getTransNo();
         TransRecord transRecord = new TransRecord();
         transRecord.setUserId(userId);
         transRecord.setTransType(transType);
-        transRecord.setTransNo(GenerationUtil.getTransNo());
+        transRecord.setTransNo(transNo);
         transRecord.setAddOrSub(addOrSub);
 
         UserBean user = userMapper.queryByUserId(userId);
@@ -317,14 +373,34 @@ public class TransRecordServiceImpl implements ITransRecordService {
                 //更新用户核心余额
                 user.setCoreBalance(afterMoney);
             }
-
             //是否同步更新，如果没有金额的改变则不更新
             if(isSyncUserFlag){
-                res = userMapper.updateByUserId(user);
+                userMapper.updateByUserId(user);
             }
         }
-        return res;
+        return transNo;
 
+    }
+
+    @Override
+    public MemberOrderRespVo createMemberOrder(String userId, MemberOrderReqDto memberOrderReqDto) throws ApiException {
+
+        /** 增加用户会员下单锁，防止重复提交 **/
+        String subServiceId = memberOrderReqDto.getSubServiceId();
+        if(redisUtil.lockForMemberOrder(userId,subServiceId)){
+            try{
+                return this.userTransSubmit(userId,memberOrderReqDto);
+            }catch (Exception e){
+                /** 删除用户会员下单锁 **/
+                redisUtil.removeLockMemberOrder(userId,subServiceId);
+                if (e instanceof  ApiException) {
+                    throw (ApiException) e;
+                } else {
+                    throw new ApiException(BusinessCode.TRANS_MEMBER_ORDER_ERROR.getCode());
+                }
+            }
+        }
+        return null;
     }
 }
 

@@ -64,4 +64,25 @@ public class RedisUtil extends BaseRedis {
     }
 
 
+    /**
+     * 用户用户会员下单锁
+     * @param userId
+     * @param subServiceId
+     * @return
+     */
+    public boolean lockForMemberOrder(String userId,String subServiceId) {
+        // 过期时间5分钟
+        return setKeyAndValueTimeountIfAbsent(RedisKeyEnums.LOCK_USER_MEMBER_ORDER.getCode() + userId +":"+subServiceId,DateTools.getSysCurrTime(), 300);
+    }
+
+    /**
+     * 删除用户会员下单锁
+     * @param userId
+     * @param subServiceId
+     */
+    public void removeLockMemberOrder(String userId,String subServiceId) {
+        removeValueByKey(RedisKeyEnums.LOCK_USER_MEMBER_ORDER.getCode() + userId+":"+subServiceId);
+    }
+
+
 }

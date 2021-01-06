@@ -82,6 +82,9 @@ public enum BusinessCode {
     TRANS_GOLD_COIN_RESP_4006("4006","该笔交易金币个数必须为整数，操作失败"),
     TRANS_VIP_INFO_NULL_RESP_4007("4007","未查询到该VIP通道，开通失败"),
 
+    TRANS_MEMBER_ORDER_ERROR("4100","会员下单失败,请重试"),
+
+
     COMMENT_BIZ_ID_NULL_5001("5001","评论对象业务ID不能为空"),
     COMMENT_CONT_NULL_5002("5002","评论内容不能为空"),
     COMMENT_CONT_LEN_5003("5003","评论内容长度不能超过50字符"),

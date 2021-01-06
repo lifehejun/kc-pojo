@@ -30,6 +30,7 @@ public enum RedisKeyEnums {
     AUTH_USER_TOKEN("kc:auth:user:", "用户token"),
     LOCK_USER_REGISTER("kc:lock:userRegister:", "用户注册锁"),
     LOCK_USER_RECEIVE_COUPON("kc:lock:userReceiveCoupon:", "用户领取优惠券锁"),
+    LOCK_USER_MEMBER_ORDER("kc:lock:userMemberOrder:", "用户会员订单锁"),
     ;
 
 
